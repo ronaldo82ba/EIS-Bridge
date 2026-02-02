@@ -1,0 +1,566 @@
+/* EIS Bridge Developer Portal — extends theme.css */
+
+@import url("../../styles/theme.css");
+
+:root {
+  --portal-code-bg: #1e2430;
+  --portal-code-text: #e8ecf1;
+  --portal-code-accent: #7ec8ff;
+  --portal-border: rgba(46, 58, 69, 0.14);
+  --portal-sidebar-width: 14rem;
+}
+
+/* Portal header & nav */
+
+.portal-header .logo {
+  text-decoration: none;
+  flex-wrap: wrap;
+}
+
+.portal-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--bridge-teal);
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid rgba(0, 168, 168, 0.35);
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.nav-toggle {
+  display: none;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--slate-gray);
+  background: var(--cloud-white);
+  border: 1px solid var(--portal-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.portal-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.portal-nav a {
+  display: block;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--slate-gray);
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.portal-nav a:hover {
+  color: var(--eis-blue);
+  background: rgba(0, 87, 217, 0.06);
+}
+
+.portal-nav a[aria-current="page"] {
+  color: var(--eis-blue);
+  background: rgba(0, 87, 217, 0.1);
+}
+
+.marketing-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--bridge-teal);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.marketing-link:hover {
+  text-decoration: underline;
+}
+
+/* Portal layout */
+
+.portal-main {
+  padding-block: 2.5rem 4rem;
+  min-height: calc(100vh - 12rem);
+}
+
+.portal-hero {
+  background: linear-gradient(135deg, #fff 0%, var(--cloud-white) 55%, rgba(0, 168, 168, 0.07) 100%);
+  border-bottom: 1px solid rgba(46, 58, 69, 0.08);
+  padding-block: 3rem 3.5rem;
+}
+
+.portal-hero h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--eis-blue);
+}
+
+.portal-hero .lead {
+  margin: 0 0 1.75rem;
+  font-size: clamp(1rem, 2vw, 1.1875rem);
+  color: var(--slate-gray);
+  max-width: 40rem;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.btn-secondary {
+  color: var(--eis-blue);
+  background: #fff;
+  border: 2px solid var(--eis-blue);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 87, 217, 0.06);
+  transform: translateY(-1px);
+}
+
+.page-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--eis-blue);
+  letter-spacing: -0.02em;
+}
+
+.page-intro {
+  margin: 0 0 2rem;
+  color: var(--slate-gray);
+  max-width: 42rem;
+}
+
+.content-section {
+  margin-bottom: 2.5rem;
+}
+
+.content-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--eis-blue);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(0, 168, 168, 0.35);
+}
+
+.content-section h3 {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--slate-gray);
+}
+
+.content-section p,
+.content-section li {
+  color: var(--slate-gray);
+}
+
+.content-section ul,
+.content-section ol {
+  padding-left: 1.25rem;
+}
+
+/* Endpoint blocks */
+
+.endpoint-block {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--portal-border);
+}
+
+.endpoint-block:last-child {
+  border-bottom: none;
+}
+
+.method-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
+  border-radius: 0.25rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.method-post { background: rgba(0, 87, 217, 0.12); color: var(--eis-blue); }
+.method-get { background: rgba(0, 168, 168, 0.15); color: #007a7a; }
+
+.endpoint-path {
+  font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--graphite-black);
+}
+
+.field-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  margin: 1rem 0;
+}
+
+.field-table th,
+.field-table td {
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  border: 1px solid var(--portal-border);
+  vertical-align: top;
+}
+
+.field-table th {
+  background: rgba(0, 87, 217, 0.06);
+  font-weight: 700;
+  color: var(--eis-blue);
+}
+
+.field-table td code {
+  font-size: 0.8125rem;
+}
+
+.field-table tr:nth-child(even) td {
+  background: rgba(247, 249, 250, 0.7);
+}
+
+.badge-required {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.2rem;
+  background: rgba(255, 195, 0, 0.25);
+  color: #8a6d00;
+}
+
+.badge-optional {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.2rem;
+  background: rgba(46, 58, 69, 0.1);
+  color: var(--slate-gray);
+}
+
+/* Code blocks */
+
+pre {
+  margin: 0.75rem 0 1.25rem;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  background: var(--portal-code-bg);
+  color: var(--portal-code-text);
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  box-shadow: var(--shadow-sm);
+}
+
+pre code {
+  font-family: ui-monospace, "Cascadia Code", "Consolas", "Courier New", monospace;
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+code {
+  font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
+  font-size: 0.875em;
+  padding: 0.15rem 0.35rem;
+  background: rgba(46, 58, 69, 0.08);
+  border-radius: 0.25rem;
+  color: var(--graphite-black);
+}
+
+.code-label {
+  display: block;
+  margin: 1rem 0 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--slate-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Quickstart steps */
+
+.steps {
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.step {
+  counter-increment: step;
+  margin-bottom: 2.5rem;
+  padding-left: 3.25rem;
+  position: relative;
+}
+
+.step::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  background: var(--eis-blue);
+  border-radius: 50%;
+}
+
+.step h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--eis-blue);
+  border: none;
+  padding: 0;
+}
+
+.step-success {
+  padding: 1.25rem 1.5rem;
+  background: rgba(0, 168, 168, 0.08);
+  border-left: 4px solid var(--bridge-teal);
+  border-radius: var(--radius);
+}
+
+/* Cards & grids */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.portal-card {
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid var(--portal-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border-top: 3px solid var(--bridge-teal);
+}
+
+.portal-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.0625rem;
+  color: var(--eis-blue);
+}
+
+.portal-card p {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+  color: var(--slate-gray);
+}
+
+/* Tools tabs (language snippets) */
+
+.snippet-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--portal-border);
+  padding-bottom: 0;
+}
+
+.snippet-nav a {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--slate-gray);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  margin-bottom: -1px;
+}
+
+.snippet-nav a:hover {
+  color: var(--eis-blue);
+}
+
+.snippet-block {
+  margin-bottom: 2rem;
+}
+
+.snippet-block h3 {
+  margin: 1.5rem 0 0.5rem;
+}
+
+/* FAQ */
+
+.faq-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--portal-border);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-item h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.0625rem;
+  color: var(--eis-blue);
+}
+
+/* Checklists */
+
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.checklist li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.checklist li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--bridge-teal);
+  border-radius: 0.2rem;
+  background: #fff;
+}
+
+.checklist-section {
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border: 1px solid var(--portal-border);
+  border-radius: var(--radius);
+}
+
+.checklist-section h3 {
+  margin: 0 0 1rem;
+  color: var(--eis-blue);
+}
+
+.callout {
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  background: rgba(0, 87, 217, 0.06);
+  border-left: 4px solid var(--eis-blue);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  color: var(--slate-gray);
+}
+
+.callout-warning {
+  background: rgba(255, 195, 0, 0.12);
+  border-left-color: var(--signal-yellow);
+}
+
+.changelog-entry {
+  margin-bottom: 1.5rem;
+}
+
+.changelog-entry h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: var(--slate-gray);
+}
+
+.changelog-entry ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--slate-gray);
+  font-size: 0.9375rem;
+}
+
+.anchor-target {
+  scroll-margin-top: 5rem;
+}
+
+/* Responsive nav */
+
+@media (max-width: 900px) {
+  .portal-header .header-inner {
+    flex-wrap: wrap;
+  }
+
+  .nav-toggle {
+    display: block;
+    margin-left: auto;
+  }
+
+  .portal-nav {
+    display: none;
+    width: 100%;
+    padding-top: 0.75rem;
+  }
+
+  .nav-check:checked ~ .portal-nav {
+    display: block;
+  }
+
+  .portal-nav ul {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .portal-nav a {
+    padding: 0.6rem 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta-row .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .step {
+    padding-left: 0;
+    padding-top: 3rem;
+  }
+
+  .step::before {
+    top: 0;
+  }
+
+  .field-table {
+    font-size: 0.8125rem;
+  }
+
+  .field-table th,
+  .field-table td {
+    padding: 0.5rem;
+  }
+}

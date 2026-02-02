@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge Standard Sale Object — JSON schema, field reference, validation, and idempotency rules.">
+  <title>Data Model — EIS Bridge Developer Portal</title>
+  <link rel="stylesheet" href="styles/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header portal-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
+        <span class="logo-mark" aria-hidden="true">EIS</span>
+        <span class="logo-text">Bridge</span>
+        <span class="portal-badge">Developer Portal</span>
+      </a>
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle">Menu</label>
+      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="quickstart.html">Quickstart</a></li>
+          <li><a href="api.html">API Reference</a></li>
+          <li><a href="data-model.html" aria-current="page">Data Model</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="testing.html">Testing</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </nav>
+      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
+    </div>
+  </header>
+
+  <main id="main" class="portal-main">
+    <div class="container">
+      <h1 class="page-title">Standard Sale Object</h1>
+      <p class="page-intro">
+        The only JSON format your POS needs to produce. Wrap this object in <code>{ "transaction": { ... } }</code> when calling <code>POST /transactions</code>. Machine-readable schema: <a href="../docs/schemas/sale-object.schema.json">sale-object.schema.json</a>.
+      </p>
+
+      <section class="content-section" aria-labelledby="full-example-heading">
+        <h2 id="full-example-heading">Full example</h2>
+        <pre><code>{
+  "transaction_id": "POS-123456",
+  "transaction_datetime": "2026-06-07T14:23:55+08:00",
+  "merchant_code": "MRC123",
+  "branch_code": "BR001",
+  "pos_device_id": "POS01",
+  "invoice_type": "OR",
+  "currency": "PHP",
+  "customer": {
+    "name": "Juan Dela Cruz",
+    "tin": "123-456-789-000",
+    "address": "Quezon City",
+    "email": "juan@example.com",
+    "mobile": "09171234567"
+  },
+  "items": [
+    {
+      "line_no": 1,
+      "sku": "SKU001",
+      "barcode": "1234567890123",
+      "description": "Product A",
+      "qty": 2,
+      "unit": "PCS",
+      "unit_price": 100.0,
+      "discount": 0.0,
+      "vat_rate": 12.0,
+      "vat_exempt": false,
+      "zero_rated": false
+    }
+  ],
+  "totals": {
+    "gross": 200.0,
+    "discount": 0.0,
+    "vatable_sales": 178.57,
+    "vat_amount": 21.43,
+    "vat_exempt_sales": 0.0,
+    "zero_rated_sales": 0.0,
+    "service_charge": 0.0,
+    "net": 200.0
+  },
+  "payment": {
+    "method": "CASH",
+    "amount": 200.0,
+    "details": {
+      "card_type": null,
+      "card_last4": null,
+      "reference_no": null,
+      "wallet_provider": null
+    }
+  },
+  "references": {
+    "original_transaction_id": null,
+    "return_or_void": false,
+    "return_reason": null
+  },
+  "metadata": {
+    "pos_version": "1.0.0",
+    "cashier_id": "C001",
+    "cashier_name": "Maria Santos"
+  }
+}</code></pre>
+      </section>
+
+      <section class="content-section" aria-labelledby="fields-heading">
+        <h2 id="fields-heading">Field reference</h2>
+        <table class="field-table">
+          <thead>
+            <tr>
+              <th scope="col">Field</th>
+              <th scope="col">Type</th>
+              <th scope="col">Required</th>
+              <th scope="col">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>transaction_id</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Unique per merchant + branch + device. Used for idempotency.</td>
+            </tr>
+            <tr>
+              <td><code>transaction_datetime</code></td>
+              <td>string (date-time)</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>ISO 8601 datetime with timezone offset (e.g. <code>2026-06-07T14:23:55+08:00</code>).</td>
+            </tr>
+            <tr>
+              <td><code>merchant_code</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>EIS Bridge merchant identifier assigned during onboarding.</td>
+            </tr>
+            <tr>
+              <td><code>branch_code</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>EIS Bridge branch identifier assigned during onboarding.</td>
+            </tr>
+            <tr>
+              <td><code>pos_device_id</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>EIS Bridge POS device identifier assigned during onboarding.</td>
+            </tr>
+            <tr>
+              <td><code>invoice_type</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Invoice or receipt type (e.g. <code>OR</code>).</td>
+            </tr>
+            <tr>
+              <td><code>currency</code></td>
+              <td>string</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>ISO 4217 currency code. Default: <code>PHP</code>.</td>
+            </tr>
+            <tr>
+              <td><code>customer</code></td>
+              <td>object</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Buyer details: <code>name</code>, <code>tin</code>, <code>address</code>, <code>email</code>, <code>mobile</code>.</td>
+            </tr>
+            <tr>
+              <td><code>items[]</code></td>
+              <td>array</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Minimum 1 line item. Each requires <code>sku</code>, <code>description</code>, <code>qty</code>, <code>unit_price</code>.</td>
+            </tr>
+            <tr>
+              <td><code>items[].line_no</code></td>
+              <td>integer</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Line number (minimum 1).</td>
+            </tr>
+            <tr>
+              <td><code>items[].sku</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Product SKU.</td>
+            </tr>
+            <tr>
+              <td><code>items[].barcode</code></td>
+              <td>string</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Product barcode.</td>
+            </tr>
+            <tr>
+              <td><code>items[].description</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Line item description.</td>
+            </tr>
+            <tr>
+              <td><code>items[].qty</code></td>
+              <td>number</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Quantity; must be &gt; 0 (except return/refund scenarios).</td>
+            </tr>
+            <tr>
+              <td><code>items[].unit</code></td>
+              <td>string</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Unit of measure (e.g. <code>PCS</code>).</td>
+            </tr>
+            <tr>
+              <td><code>items[].unit_price</code></td>
+              <td>number</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Unit price; minimum 0.</td>
+            </tr>
+            <tr>
+              <td><code>items[].discount</code></td>
+              <td>number</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Line discount; minimum 0.</td>
+            </tr>
+            <tr>
+              <td><code>items[].vat_rate</code></td>
+              <td>number</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>VAT rate percentage; minimum 0.</td>
+            </tr>
+            <tr>
+              <td><code>items[].vat_exempt</code></td>
+              <td>boolean</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Whether line is VAT-exempt.</td>
+            </tr>
+            <tr>
+              <td><code>items[].zero_rated</code></td>
+              <td>boolean</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Whether line is zero-rated.</td>
+            </tr>
+            <tr>
+              <td><code>totals</code></td>
+              <td>object</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Transaction totals. Requires <code>gross</code> and <code>net</code>.</td>
+            </tr>
+            <tr>
+              <td><code>totals.gross</code></td>
+              <td>number</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Gross total; minimum 0.</td>
+            </tr>
+            <tr>
+              <td><code>totals.net</code></td>
+              <td>number</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Net total; minimum 0.</td>
+            </tr>
+            <tr>
+              <td><code>totals.discount</code></td>
+              <td>number</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Total discount; minimum 0.</td>
+            </tr>
+            <tr>
+              <td><code>totals.vatable_sales</code></td>
+              <td>number</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>VATable sales amount.</td>
+            </tr>
+            <tr>
+              <td><code>totals.vat_amount</code></td>
+              <td>number</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>VAT amount.</td>
+            </tr>
+            <tr>
+              <td><code>payment</code></td>
+              <td>object</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Payment details. Requires <code>method</code> and <code>amount</code>.</td>
+            </tr>
+            <tr>
+              <td><code>payment.method</code></td>
+              <td>string</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Payment method: <code>CASH</code>, <code>CARD</code>, <code>E-WALLET</code>, <code>SPLIT</code>, etc.</td>
+            </tr>
+            <tr>
+              <td><code>payment.amount</code></td>
+              <td>number</td>
+              <td><span class="badge-required">Required</span></td>
+              <td>Payment amount; minimum 0.</td>
+            </tr>
+            <tr>
+              <td><code>payment.details</code></td>
+              <td>object</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Card/wallet details: <code>card_type</code>, <code>card_last4</code>, <code>reference_no</code>, <code>wallet_provider</code>.</td>
+            </tr>
+            <tr>
+              <td><code>references</code></td>
+              <td>object</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>Void/return linkage: <code>original_transaction_id</code>, <code>return_or_void</code>, <code>return_reason</code>.</td>
+            </tr>
+            <tr>
+              <td><code>metadata</code></td>
+              <td>object</td>
+              <td><span class="badge-optional">Optional</span></td>
+              <td>POS metadata: <code>pos_version</code>, <code>cashier_id</code>, <code>cashier_name</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="content-section" aria-labelledby="validation-heading">
+        <h2 id="validation-heading">Validation rules</h2>
+        <ul>
+          <li><strong>Date format:</strong> <code>transaction_datetime</code> must be ISO 8601 with timezone (e.g. <code>2026-06-07T14:23:55+08:00</code>). Formats like <code>07/06/2026 14:23</code> are rejected.</li>
+          <li><strong>Numeric fields:</strong> <code>qty</code> must be &gt; 0; <code>unit_price</code> and totals must be &ge; 0.</li>
+          <li><strong>Arrays:</strong> <code>items</code> must contain at least one entry.</li>
+          <li><strong>Enums:</strong> <code>invoice_type</code> is typically <code>OR</code> (Official Receipt). <code>payment.method</code> accepts <code>CASH</code>, <code>CARD</code>, <code>E-WALLET</code>, <code>SPLIT</code>.</li>
+          <li><strong>Email:</strong> <code>customer.email</code> must be a valid email when provided.</li>
+          <li><strong>Additional properties:</strong> Unknown top-level fields are rejected (<code>additionalProperties: false</code>).</li>
+        </ul>
+      </section>
+
+      <section class="content-section" id="idempotency" aria-labelledby="idempotency-heading">
+        <h2 id="idempotency-heading">Idempotency &amp; duplicates</h2>
+        <p>
+          <code>transaction_id</code> must be unique per <strong>merchant + branch + device</strong> combination. This prevents double-sending the same sale.
+        </p>
+        <h3>Identical resubmission</h3>
+        <p>If the same <code>transaction_id</code> is sent again with identical data:</p>
+        <pre><code>{
+  "status": "duplicate",
+  "transaction_id": "POS-123456",
+  "bridge_transaction_id": "EB-20260607-000001",
+  "message": "Transaction already processed."
+}</code></pre>
+        <h3>Conflict (different data, same ID)</h3>
+        <p>Re-submitting the same <code>transaction_id</code> with different items or totals returns HTTP <code>409</code> with <code>error: "transaction_conflict"</code>.</p>
+        <p class="callout">Always generate <code>transaction_id</code> from your POS receipt/invoice number and scope it per merchant, branch, and device.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer portal-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+</body>
+</html>

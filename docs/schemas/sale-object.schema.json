@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eisbridge.ph/schemas/sale-object.schema.json",
+  "title": "EIS Bridge Standard Sale Object",
+  "description": "Standard POS to EIS Bridge sale/invoice payload.",
+  "type": "object",
+  "required": [
+    "transaction_id",
+    "transaction_datetime",
+    "merchant_code",
+    "branch_code",
+    "pos_device_id",
+    "invoice_type",
+    "items",
+    "totals",
+    "payment"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Unique transaction identifier per merchant, branch, and device."
+    },
+    "transaction_datetime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 datetime with timezone offset."
+    },
+    "merchant_code": {
+      "type": "string",
+      "description": "EIS Bridge merchant identifier assigned during onboarding."
+    },
+    "branch_code": {
+      "type": "string",
+      "description": "EIS Bridge branch identifier assigned during onboarding."
+    },
+    "pos_device_id": {
+      "type": "string",
+      "description": "EIS Bridge POS device identifier assigned during onboarding."
+    },
+    "invoice_type": {
+      "type": "string",
+      "description": "Invoice or receipt type (e.g. OR)."
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code.",
+      "default": "PHP"
+    },
+    "customer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "tin": { "type": "string" },
+        "address": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "mobile": { "type": "string" }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sku", "description", "qty", "unit_price"],
+        "additionalProperties": false,
+        "properties": {
+          "line_no": { "type": "integer", "minimum": 1 },
+          "sku": { "type": "string" },
+          "barcode": { "type": "string" },
+          "description": { "type": "string" },
+          "qty": { "type": "number", "exclusiveMinimum": 0 },
+          "unit": { "type": "string" },
+          "unit_price": { "type": "number", "minimum": 0 },
+          "discount": { "type": "number", "minimum": 0 },
+          "vat_rate": { "type": "number", "minimum": 0 },
+          "vat_exempt": { "type": "boolean" },
+          "zero_rated": { "type": "boolean" }
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "required": ["gross", "net"],
+      "additionalProperties": false,
+      "properties": {
+        "gross": { "type": "number", "minimum": 0 },
+        "discount": { "type": "number", "minimum": 0 },
+        "vatable_sales": { "type": "number", "minimum": 0 },
+        "vat_amount": { "type": "number", "minimum": 0 },
+        "vat_exempt_sales": { "type": "number", "minimum": 0 },
+        "zero_rated_sales": { "type": "number", "minimum": 0 },
+        "service_charge": { "type": "number", "minimum": 0 },
+        "net": { "type": "number", "minimum": 0 }
+      }
+    },
+    "payment": {
+      "type": "object",
+      "required": ["method", "amount"],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "description": "Payment method (e.g. CASH)."
+        },
+        "amount": { "type": "number", "minimum": 0 },
+        "details": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "card_type": { "type": ["string", "null"] },
+            "card_last4": { "type": ["string", "null"] },
+            "reference_no": { "type": ["string", "null"] },
+            "wallet_provider": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "original_transaction_id": { "type": ["string", "null"] },
+        "return_or_void": { "type": "boolean" },
+        "return_reason": { "type": ["string", "null"] }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pos_version": { "type": "string" },
+        "cashier_id": { "type": "string" },
+        "cashier_name": { "type": "string" }
+      }
+    }
+  }
+}

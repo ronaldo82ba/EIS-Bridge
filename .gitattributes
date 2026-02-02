@@ -1,0 +1,11 @@
+﻿# EIS Bridge — language statistics
+# Marketing site, portal, and docs are not the core product (Laravel API is)
+
+index.html linguist-documentation
+styles/** linguist-documentation
+portal/** linguist-documentation
+docs/** linguist-documentation
+
+# Optional: ensure static assets don't count
+*.css linguist-documentation
+*.html linguist-detectable=false

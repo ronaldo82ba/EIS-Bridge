@@ -1,0 +1,117 @@
+{
+  "info": {
+    "name": "EIS Bridge API",
+    "_postman_id": "eis-bridge-collection-001",
+    "description": "Postman Collection for POS/ERP vendors integrating with EIS Bridge.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Send Transaction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{API_KEY}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/transactions",
+          "host": ["{{BASE_URL}}"],
+          "path": ["transactions"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transaction\": {\n    \"transaction_id\": \"POS-10001\",\n    \"transaction_datetime\": \"2026-06-07T14:23:55+08:00\",\n    \"merchant_code\": \"MRC123\",\n    \"branch_code\": \"BR001\",\n    \"pos_device_id\": \"POS01\",\n    \"invoice_type\": \"OR\",\n    \"items\": [\n      {\n        \"sku\": \"SKU001\",\n        \"description\": \"Product A\",\n        \"qty\": 1,\n        \"unit_price\": 100\n      }\n    ],\n    \"totals\": {\n      \"gross\": 100,\n      \"net\": 100\n    },\n    \"payment\": {\n      \"method\": \"CASH\",\n      \"amount\": 100\n    }\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "Batch Submit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{API_KEY}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/transactions/batch",
+          "host": ["{{BASE_URL}}"],
+          "path": ["transactions", "batch"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"batch_id\": \"BATCH-001\",\n  \"transactions\": [\n    {\n      \"transaction_id\": \"POS-10001\",\n      \"transaction_datetime\": \"2026-06-07T14:23:55+08:00\",\n      \"merchant_code\": \"MRC123\",\n      \"branch_code\": \"BR001\",\n      \"pos_device_id\": \"POS01\",\n      \"invoice_type\": \"OR\",\n      \"items\": [\n        {\n          \"sku\": \"SKU001\",\n          \"description\": \"Product A\",\n          \"qty\": 1,\n          \"unit_price\": 100\n        }\n      ],\n      \"totals\": {\n        \"gross\": 100,\n        \"net\": 100\n      },\n      \"payment\": {\n        \"method\": \"CASH\",\n        \"amount\": 100\n      }\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Transaction Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{API_KEY}}"
+          }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/transactions/{{BRIDGE_TRANSACTION_ID}}",
+          "host": ["{{BASE_URL}}"],
+          "path": ["transactions", "{{BRIDGE_TRANSACTION_ID}}"]
+        }
+      }
+    },
+    {
+      "name": "Configure Webhook",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{API_KEY}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/vendors/webhook",
+          "host": ["{{BASE_URL}}"],
+          "path": ["vendors", "webhook"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"webhook_url\": \"https://yourpos.com/eis/webhook\",\n  \"secret\": \"your_secret\"\n}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "https://sandbox.eisbridge.ph/v1"
+    },
+    {
+      "key": "API_KEY",
+      "value": "YOUR_API_KEY"
+    },
+    {
+      "key": "BRIDGE_TRANSACTION_ID",
+      "value": "EB-20260607-000001"
+    }
+  ]
+}

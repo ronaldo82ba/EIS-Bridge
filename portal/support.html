@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge developer support — API keys, FAQ, changelog, and contact.">
+  <title>Support — EIS Bridge Developer Portal</title>
+  <link rel="stylesheet" href="styles/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header portal-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
+        <span class="logo-mark" aria-hidden="true">EIS</span>
+        <span class="logo-text">Bridge</span>
+        <span class="portal-badge">Developer Portal</span>
+      </a>
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle">Menu</label>
+      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="quickstart.html">Quickstart</a></li>
+          <li><a href="api.html">API Reference</a></li>
+          <li><a href="data-model.html">Data Model</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="testing.html">Testing</a></li>
+          <li><a href="support.html" aria-current="page">Support</a></li>
+        </ul>
+      </nav>
+      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
+    </div>
+  </header>
+
+  <main id="main" class="portal-main">
+    <div class="container">
+      <h1 class="page-title">Support</h1>
+      <p class="page-intro">
+        Get help with integration, API keys, and production certification.
+      </p>
+
+      <section class="content-section anchor-target" id="get-api-key" aria-labelledby="api-key-heading">
+        <h2 id="api-key-heading">Get API Key</h2>
+        <p>
+          Vendor API keys are issued to <strong>registered POS/ERP vendors</strong> during onboarding. Your vendor administrator can generate and rotate keys in the EIS Bridge Console.
+        </p>
+        <ol>
+          <li>Complete vendor registration with EIS Bridge.</li>
+          <li>Receive sandbox credentials: API key, test <code>merchant_code</code>, <code>branch_code</code>, and <code>pos_device_id</code>.</li>
+          <li>Integrate and pass the <a href="testing.html">QA certification suite</a>.</li>
+          <li>Request production API key after certification sign-off.</li>
+        </ol>
+        <p class="callout">
+          Not yet registered? Contact <a href="mailto:support@eisbridge.ph">support@eisbridge.ph</a> to begin vendor onboarding.
+        </p>
+      </section>
+
+      <section class="content-section" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact</h2>
+        <ul>
+          <li>Email: <a href="mailto:support@eisbridge.ph">support@eisbridge.ph</a></li>
+          <li>Support ticket: <a href="#">Open a ticket</a> (placeholder)</li>
+        </ul>
+      </section>
+
+      <section class="content-section" aria-labelledby="changelog-heading">
+        <h2 id="changelog-heading">Changelog</h2>
+
+        <article class="changelog-entry">
+          <h3>v1.0 — Initial release (2026)</h3>
+          <p>First public Vendor API release.</p>
+          <ul>
+            <li><code>POST /transactions</code> — single transaction submit</li>
+            <li><code>POST /transactions/batch</code> — batch submit</li>
+            <li><code>GET /transactions/{bridge_transaction_id}</code> — status retrieval</li>
+            <li><code>GET /transactions</code> — list with filters</li>
+            <li><code>POST /vendors/webhook</code> — webhook configuration</li>
+            <li>Standard Sale Object JSON schema v1.0</li>
+            <li>Postman Collection v1.0</li>
+            <li>QA Integration Test Suite v1.0</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="content-section" aria-labelledby="faq-heading">
+        <h2 id="faq-heading">FAQ</h2>
+
+        <article class="faq-item">
+          <h3>Why am I getting validation_error?</h3>
+          <p>
+            A <code>validation_error</code> (HTTP 400) means one or more fields failed schema validation. Check the <code>fields</code> array in the response for the specific paths — common causes include missing <code>totals.net</code>, invalid ISO 8601 datetime, negative <code>qty</code>, or unknown properties. Validate your payload against the <a href="data-model.html">Standard Sale Object</a> and <a href="../docs/schemas/sale-object.schema.json">JSON schema</a>.
+          </p>
+        </article>
+
+        <article class="faq-item">
+          <h3>How do I handle duplicates?</h3>
+          <p>
+            Use a stable <code>transaction_id</code> from your POS receipt number, scoped per merchant + branch + device. If you resubmit identical data, EIS Bridge returns <code>status: duplicate</code> with the original <code>bridge_transaction_id</code> — treat this as success. If the same ID is sent with different data, you receive HTTP 409 (<code>transaction_conflict</code>). See <a href="data-model.html#idempotency">Idempotency rules</a>.
+          </p>
+        </article>
+
+        <article class="faq-item">
+          <h3>How do I test T+3 scenarios?</h3>
+          <p>
+            Run test case <strong>TC-72 (Offline POS — Delayed Transmission)</strong>: create a sale with <code>transaction_datetime</code> set 24–48 hours in the past, then submit. The transaction should still be accepted within the T+3 compliance window. Full steps are in the <a href="../docs/qa/integration-test-cases-v1.md">QA test suite</a>.
+          </p>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer portal-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+</body>
+</html>

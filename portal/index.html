@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge Developer Portal — integrate any POS with one API for instant BIR EIS compliance.">
+  <title>EIS Bridge Developer Portal</title>
+  <link rel="stylesheet" href="styles/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header portal-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
+        <span class="logo-mark" aria-hidden="true">EIS</span>
+        <span class="logo-text">Bridge</span>
+        <span class="portal-badge">Developer Portal</span>
+      </a>
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle">Menu</label>
+      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
+        <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="quickstart.html">Quickstart</a></li>
+          <li><a href="api.html">API Reference</a></li>
+          <li><a href="data-model.html">Data Model</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="testing.html">Testing</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </nav>
+      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
+    </div>
+  </header>
+
+  <section class="portal-hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <h1 id="hero-heading">One API. Any POS. Instant EIS compliance.</h1>
+      <p class="lead">
+        Send standardized sales JSON from your POS or ERP to EIS Bridge. We handle BIR EIS mapping, signing, transmission, queueing, retries, and acknowledgment tracking — so you ship compliance without rewriting your software.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="support.html#get-api-key">Get API Key</a>
+        <a class="btn btn-secondary" href="quickstart.html">Quickstart: Send Your First Transaction</a>
+        <a class="btn btn-secondary" href="api.html">API Reference</a>
+      </div>
+      <p class="page-intro" style="margin-bottom: 0; font-size: 0.9375rem;">
+        API keys are issued to registered vendors. See <a href="support.html#get-api-key">Get API Key</a> for onboarding.
+      </p>
+    </div>
+  </section>
+
+  <main id="main" class="portal-main">
+    <div class="container">
+      <section class="content-section" aria-labelledby="value-heading">
+        <h2 id="value-heading">Built for production integrations</h2>
+        <p>
+          In ten seconds: map your POS sale to one JSON object, POST it to EIS Bridge, and store the returned <code>bridge_transaction_id</code>. Poll status or receive webhooks when BIR acknowledges the invoice. One integration path for every merchant on your platform.
+        </p>
+      </section>
+
+      <div class="card-grid">
+        <article class="portal-card">
+          <h3>Quickstart</h3>
+          <p>Five steps from API key to your first acknowledged transaction.</p>
+          <a class="btn btn-primary" href="quickstart.html">Start integrating</a>
+        </article>
+        <article class="portal-card">
+          <h3>API Reference</h3>
+          <p>Full endpoint documentation, request/response samples, and error codes.</p>
+          <a class="btn btn-secondary" href="api.html">View endpoints</a>
+        </article>
+        <article class="portal-card">
+          <h3>Data Model</h3>
+          <p>Standard Sale Object schema, field reference, and validation rules.</p>
+          <a class="btn btn-secondary" href="data-model.html">Explore schema</a>
+        </article>
+        <article class="portal-card">
+          <h3>Tools &amp; Testing</h3>
+          <p>Postman collection, code samples, and QA certification suite.</p>
+          <a class="btn btn-secondary" href="tools.html">Developer tools</a>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer portal-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge Vendor API reference — authentication, endpoints, webhooks, and error codes.">
+  <title>API Reference — EIS Bridge Developer Portal</title>
+  <link rel="stylesheet" href="styles/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header portal-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
+        <span class="logo-mark" aria-hidden="true">EIS</span>
+        <span class="logo-text">Bridge</span>
+        <span class="portal-badge">Developer Portal</span>
+      </a>
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle">Menu</label>
+      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="quickstart.html">Quickstart</a></li>
+          <li><a href="api.html" aria-current="page">API Reference</a></li>
+          <li><a href="data-model.html">Data Model</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="testing.html">Testing</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </nav>
+      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
+    </div>
+  </header>
+
+  <main id="main" class="portal-main">
+    <div class="container">
+      <h1 class="page-title">API Reference</h1>
+      <p class="page-intro">
+        The EIS Bridge Vendor API lets POS/ERP vendors send standardized sales data for BIR EIS mapping, signing, and transmission. All paths are relative to the base URL.
+      </p>
+
+      <section class="content-section" id="overview" aria-labelledby="overview-heading">
+        <h2 id="overview-heading">Base URLs</h2>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">Environment</th><th scope="col">Base URL</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sandbox</td><td><code>https://sandbox.eisbridge.ph/v1</code></td></tr>
+            <tr><td>Production</td><td><code>https://api.eisbridge.ph/v1</code></td></tr>
+          </tbody>
+        </table>
+        <p>Content-Type: <code>application/json</code> · Encoding: UTF-8</p>
+      </section>
+
+      <section class="content-section" id="authentication" aria-labelledby="auth-heading">
+        <h2 id="auth-heading">Authentication</h2>
+        <p>Each vendor receives a unique API key. Include it in every request:</p>
+        <pre><code>Authorization: Bearer VENDOR_API_KEY_123
+Content-Type: application/json</code></pre>
+        <p>If the API key is missing or invalid:</p>
+        <pre><code>{
+  "error": "unauthorized",
+  "message": "Invalid or missing API key."
+}</code></pre>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">HTTP Code</th><th scope="col">Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized — invalid or missing API key</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="content-section" aria-labelledby="endpoints-heading">
+        <h2 id="endpoints-heading">Endpoints</h2>
+
+        <article class="endpoint-block" id="post-transactions">
+          <h3>
+            <span class="method-badge method-post">POST</span>
+            <span class="endpoint-path">/transactions</span>
+          </h3>
+          <p><strong>Description:</strong> Submit a single sale or invoice to EIS Bridge for EIS processing.</p>
+
+          <h4>Request URL</h4>
+          <pre><code>POST {BASE_URL}/transactions</code></pre>
+
+          <h4>Headers</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">Header</th><th scope="col">Value</th><th scope="col">Required</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Authorization</code></td><td><code>Bearer {VENDOR_API_KEY}</code></td><td>Yes</td></tr>
+              <tr><td><code>Content-Type</code></td><td><code>application/json</code></td><td>Yes</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Request body schema</h4>
+          <pre><code>{
+  "transaction": { /* Standard Sale Object — see Data Model */ }
+}</code></pre>
+
+          <h4>Sample request</h4>
+          <pre><code>POST /v1/transactions HTTP/1.1
+Host: api.eisbridge.ph
+Authorization: Bearer VENDOR_API_KEY_123
+Content-Type: application/json
+
+{
+  "transaction": {
+    "transaction_id": "POS-123456",
+    "transaction_datetime": "2026-06-07T14:23:55+08:00",
+    "merchant_code": "MRC123",
+    "branch_code": "BR001",
+    "pos_device_id": "POS01",
+    "invoice_type": "OR",
+    "items": [
+      {
+        "sku": "SKU001",
+        "description": "Product A",
+        "qty": 1,
+        "unit_price": 100
+      }
+    ],
+    "totals": { "gross": 100, "net": 100 },
+    "payment": { "method": "CASH", "amount": 100 }
+  }
+}</code></pre>
+
+          <h4>Sample response — success</h4>
+          <pre><code>{
+  "status": "accepted",
+  "transaction_id": "POS-123456",
+  "bridge_transaction_id": "EB-20260607-000001",
+  "merchant_code": "MRC123",
+  "branch_code": "BR001",
+  "pos_device_id": "POS01",
+  "processing_status": "queued",
+  "message": "Transaction accepted for EIS processing."
+}</code></pre>
+
+          <h4>Sample response — validation error</h4>
+          <pre><code>{
+  "status": "rejected",
+  "error": "validation_error",
+  "message": "Missing required field: totals.net",
+  "fields": ["totals.net"]
+}</code></pre>
+
+          <h4>Error codes</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">HTTP</th><th scope="col">Error</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>201</code></td><td>—</td><td>Transaction accepted for processing</td></tr>
+              <tr><td><code>400</code></td><td><code>validation_error</code></td><td>Missing or invalid fields</td></tr>
+              <tr><td><code>401</code></td><td><code>unauthorized</code></td><td>Invalid or missing API key</td></tr>
+              <tr><td><code>403</code></td><td>—</td><td>No access to merchant/branch</td></tr>
+              <tr><td><code>409</code></td><td><code>transaction_conflict</code></td><td>Duplicate <code>transaction_id</code> with different data</td></tr>
+              <tr><td><code>409</code></td><td><code>duplicate</code></td><td>Identical resubmission — returns existing <code>bridge_transaction_id</code></td></tr>
+              <tr><td><code>500</code></td><td>—</td><td>Internal server error</td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="endpoint-block" id="post-transactions-batch">
+          <h3>
+            <span class="method-badge method-post">POST</span>
+            <span class="endpoint-path">/transactions/batch</span>
+          </h3>
+          <p><strong>Description:</strong> Submit multiple transactions in a single API call.</p>
+
+          <h4>Request URL</h4>
+          <pre><code>POST {BASE_URL}/transactions/batch</code></pre>
+
+          <h4>Headers</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">Header</th><th scope="col">Value</th><th scope="col">Required</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Authorization</code></td><td><code>Bearer {VENDOR_API_KEY}</code></td><td>Yes</td></tr>
+              <tr><td><code>Content-Type</code></td><td><code>application/json</code></td><td>Yes</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Request body schema</h4>
+          <pre><code>{
+  "batch_id": "string",
+  "transactions": [ /* Standard Sale Object[] */ ]
+}</code></pre>
+
+          <h4>Sample request</h4>
+          <pre><code>{
+  "batch_id": "BATCH-20260607-001",
+  "transactions": [
+    {
+      "transaction_id": "POS-123456",
+      "transaction_datetime": "2026-06-07T14:23:55+08:00",
+      "merchant_code": "MRC123",
+      "branch_code": "BR001",
+      "pos_device_id": "POS01",
+      "invoice_type": "OR",
+      "items": [{ "sku": "SKU001", "description": "Product A", "qty": 1, "unit_price": 100 }],
+      "totals": { "gross": 100, "net": 100 },
+      "payment": { "method": "CASH", "amount": 100 }
+    },
+    {
+      "transaction_id": "POS-123457",
+      "transaction_datetime": "2026-06-07T14:24:10+08:00",
+      "merchant_code": "MRC123",
+      "branch_code": "BR001",
+      "pos_device_id": "POS01",
+      "invoice_type": "OR",
+      "items": [{ "sku": "SKU002", "description": "Product B", "qty": 2, "unit_price": 50 }],
+      "totals": { "gross": 100, "net": 100 },
+      "payment": { "method": "CASH", "amount": 100 }
+    }
+  ]
+}</code></pre>
+
+          <h4>Sample response</h4>
+          <pre><code>{
+  "status": "accepted",
+  "batch_id": "BATCH-20260607-001",
+  "summary": {
+    "total": 2,
+    "accepted": 2,
+    "rejected": 0
+  },
+  "results": [
+    {
+      "transaction_id": "POS-123456",
+      "bridge_transaction_id": "EB-20260607-000001",
+      "processing_status": "queued"
+    },
+    {
+      "transaction_id": "POS-123457",
+      "bridge_transaction_id": "EB-20260607-000002",
+      "processing_status": "queued"
+    }
+  ]
+}</code></pre>
+
+          <h4>Error codes</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">HTTP</th><th scope="col">Error</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>201</code></td><td>—</td><td>Batch accepted; check <code>summary</code> and per-item <code>results</code></td></tr>
+              <tr><td><code>400</code></td><td><code>validation_error</code></td><td>Invalid batch structure</td></tr>
+              <tr><td><code>401</code></td><td><code>unauthorized</code></td><td>Invalid or missing API key</td></tr>
+              <tr><td><code>500</code></td><td>—</td><td>Internal server error</td></tr>
+            </tbody>
+          </table>
+          <p class="callout">Individual transactions within a batch may be rejected while others are accepted. Inspect each entry in <code>results</code>.</p>
+        </article>
+
+        <article class="endpoint-block" id="get-transaction">
+          <h3>
+            <span class="method-badge method-get">GET</span>
+            <span class="endpoint-path">/transactions/{bridge_transaction_id}</span>
+          </h3>
+          <p><strong>Description:</strong> Retrieve EIS Bridge and BIR EIS processing status for a submitted transaction.</p>
+
+          <h4>Request URL</h4>
+          <pre><code>GET {BASE_URL}/transactions/{bridge_transaction_id}</code></pre>
+
+          <h4>Headers</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">Header</th><th scope="col">Value</th><th scope="col">Required</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Authorization</code></td><td><code>Bearer {VENDOR_API_KEY}</code></td><td>Yes</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Request body schema</h4>
+          <p>None.</p>
+
+          <h4>Sample request</h4>
+          <pre><code>GET /v1/transactions/EB-20260607-000001 HTTP/1.1
+Authorization: Bearer VENDOR_API_KEY_123</code></pre>
+
+          <h4>Sample response</h4>
+          <pre><code>{
+  "bridge_transaction_id": "EB-20260607-000001",
+  "transaction_id": "POS-123456",
+  "merchant_code": "MRC123",
+  "branch_code": "BR001",
+  "pos_device_id": "POS01",
+  "processing_status": "sent",
+  "eis_status": "acknowledged",
+  "eis_reference_no": "EIS-INV-20260607-123456",
+  "last_update": "2026-06-07T14:25:10+08:00",
+  "logs": [
+    { "timestamp": "2026-06-07T14:24:00+08:00", "event": "queued" },
+    { "timestamp": "2026-06-07T14:24:30+08:00", "event": "sent_to_eis" },
+    { "timestamp": "2026-06-07T14:25:10+08:00", "event": "eis_acknowledged" }
+  ]
+}</code></pre>
+
+          <h4>Error codes</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">HTTP</th><th scope="col">Error</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>200</code></td><td>—</td><td>Status retrieved successfully</td></tr>
+              <tr><td><code>401</code></td><td><code>unauthorized</code></td><td>Invalid or missing API key</td></tr>
+              <tr><td><code>404</code></td><td>—</td><td>Transaction not found</td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="endpoint-block" id="get-transactions">
+          <h3>
+            <span class="method-badge method-get">GET</span>
+            <span class="endpoint-path">/transactions</span>
+          </h3>
+          <p><strong>Description:</strong> List transactions filtered by date, merchant, branch, and status.</p>
+
+          <h4>Request URL</h4>
+          <pre><code>GET {BASE_URL}/transactions?{query_params}</code></pre>
+
+          <h4>Headers</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">Header</th><th scope="col">Value</th><th scope="col">Required</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Authorization</code></td><td><code>Bearer {VENDOR_API_KEY}</code></td><td>Yes</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Query parameters</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">Parameter</th><th scope="col">Required</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>merchant_code</code></td><td>Optional</td><td>Filter by merchant</td></tr>
+              <tr><td><code>branch_code</code></td><td>Optional</td><td>Filter by branch</td></tr>
+              <tr><td><code>from</code></td><td>Optional</td><td>Start of date range (ISO datetime)</td></tr>
+              <tr><td><code>to</code></td><td>Optional</td><td>End of date range (ISO datetime)</td></tr>
+              <tr><td><code>status</code></td><td>Optional</td><td><code>queued</code> | <code>sent</code> | <code>acknowledged</code> | <code>rejected</code></td></tr>
+              <tr><td><code>page</code></td><td>Optional</td><td>Page number (default <code>1</code>)</td></tr>
+              <tr><td><code>page_size</code></td><td>Optional</td><td>Results per page (default <code>50</code>)</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Sample request</h4>
+          <pre><code>GET /v1/transactions?merchant_code=MRC123&amp;from=2026-06-07T00:00:00+08:00&amp;to=2026-06-07T23:59:59+08:00&amp;page=1&amp;page_size=50
+Authorization: Bearer VENDOR_API_KEY_123</code></pre>
+
+          <h4>Sample response</h4>
+          <pre><code>{
+  "page": 1,
+  "page_size": 50,
+  "total": 1,
+  "transactions": [
+    {
+      "bridge_transaction_id": "EB-20260607-000001",
+      "transaction_id": "POS-123456",
+      "merchant_code": "MRC123",
+      "branch_code": "BR001",
+      "processing_status": "sent",
+      "eis_status": "acknowledged"
+    }
+  ]
+}</code></pre>
+
+          <h4>Error codes</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">HTTP</th><th scope="col">Error</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>200</code></td><td>—</td><td>List returned successfully</td></tr>
+              <tr><td><code>400</code></td><td><code>validation_error</code></td><td>Invalid query parameters</td></tr>
+              <tr><td><code>401</code></td><td><code>unauthorized</code></td><td>Invalid or missing API key</td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="endpoint-block" id="webhook">
+          <h3>
+            <span class="method-badge method-post">POST</span>
+            <span class="endpoint-path">/vendors/webhook</span>
+          </h3>
+          <p><strong>Description:</strong> Configure a webhook URL to receive push notifications when BIR EIS responds. Webhooks are optional but recommended.</p>
+
+          <h4>Request URL</h4>
+          <pre><code>POST {BASE_URL}/vendors/webhook</code></pre>
+
+          <h4>Headers</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">Header</th><th scope="col">Value</th><th scope="col">Required</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Authorization</code></td><td><code>Bearer {VENDOR_API_KEY}</code></td><td>Yes</td></tr>
+              <tr><td><code>Content-Type</code></td><td><code>application/json</code></td><td>Yes</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Request body schema</h4>
+          <pre><code>{
+  "webhook_url": "string (HTTPS URL)",
+  "secret": "string (shared secret for HMAC verification)"
+}</code></pre>
+
+          <h4>Sample request</h4>
+          <pre><code>{
+  "webhook_url": "https://posvendor.com/eisbridge/webhook",
+  "secret": "your_webhook_secret"
+}</code></pre>
+
+          <h4>Sample response</h4>
+          <pre><code>{
+  "status": "configured",
+  "webhook_url": "https://posvendor.com/eisbridge/webhook",
+  "message": "Webhook URL and secret saved successfully."
+}</code></pre>
+
+          <h4>Webhook payload (outbound to your endpoint)</h4>
+          <pre><code>{
+  "event": "transaction.eis_acknowledged",
+  "bridge_transaction_id": "EB-20260607-000001",
+  "transaction_id": "POS-123456",
+  "merchant_code": "MRC123",
+  "branch_code": "BR001",
+  "eis_status": "acknowledged",
+  "eis_reference_no": "EIS-INV-20260607-123456",
+  "timestamp": "2026-06-07T14:25:10+08:00",
+  "signature": "HMAC_SHA256_SIGNATURE"
+}</code></pre>
+          <p>Verify the <code>signature</code> field using HMAC-SHA256 and your shared webhook secret.</p>
+
+          <h4>Error codes</h4>
+          <table class="field-table">
+            <thead>
+              <tr><th scope="col">HTTP</th><th scope="col">Error</th><th scope="col">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>200</code></td><td>—</td><td>Webhook configured successfully</td></tr>
+              <tr><td><code>400</code></td><td><code>validation_error</code></td><td>Invalid webhook URL</td></tr>
+              <tr><td><code>401</code></td><td><code>unauthorized</code></td><td>Invalid or missing API key</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </section>
+
+      <section class="content-section" id="errors" aria-labelledby="errors-heading">
+        <h2 id="errors-heading">Global error format</h2>
+        <pre><code>{
+  "error": "validation_error",
+  "message": "Missing required field: totals.net",
+  "fields": ["totals.net"],
+  "code": "EB-VAL-001"
+}</code></pre>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">HTTP Code</th><th scope="col">Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>200</code></td><td>OK</td></tr>
+            <tr><td><code>201</code></td><td>Created / Accepted</td></tr>
+            <tr><td><code>400</code></td><td>Bad request (validation error)</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized (invalid/missing API key)</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden (no access to merchant/branch)</td></tr>
+            <tr><td><code>404</code></td><td>Not found</td></tr>
+            <tr><td><code>409</code></td><td>Conflict (duplicate <code>transaction_id</code>)</td></tr>
+            <tr><td><code>500</code></td><td>Internal server error</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer portal-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge quickstart — send your first BIR EIS transaction in five steps.">
+  <title>Quickstart — EIS Bridge Developer Portal</title>
+  <link rel="stylesheet" href="styles/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header portal-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
+        <span class="logo-mark" aria-hidden="true">EIS</span>
+        <span class="logo-text">Bridge</span>
+        <span class="portal-badge">Developer Portal</span>
+      </a>
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle">Menu</label>
+      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="quickstart.html" aria-current="page">Quickstart</a></li>
+          <li><a href="api.html">API Reference</a></li>
+          <li><a href="data-model.html">Data Model</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="testing.html">Testing</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </nav>
+      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
+    </div>
+  </header>
+
+  <main id="main" class="portal-main">
+    <div class="container">
+      <h1 class="page-title">Quickstart</h1>
+      <p class="page-intro">
+        Integrate your POS in minutes. Follow these five steps to authenticate, submit a sale, and confirm BIR EIS acknowledgment.
+      </p>
+
+      <ol class="steps">
+        <li class="step">
+          <h2>Get your API key</h2>
+          <p>
+            Obtain a Vendor API key from your vendor administrator in the EIS Bridge Console. API keys are issued to registered POS/ERP vendors during onboarding. You will also receive <code>merchant_code</code>, <code>branch_code</code>, and <code>pos_device_id</code> for test accounts.
+          </p>
+          <p><a href="support.html#get-api-key">Get API Key &rarr;</a></p>
+        </li>
+
+        <li class="step">
+          <h2>Set BASE_URL and headers</h2>
+          <p>Use the Sandbox environment for development. Every request requires your API key and JSON content type.</p>
+          <span class="code-label">Environment &amp; headers</span>
+          <pre><code># Sandbox (development)
+export BASE_URL="https://sandbox.eisbridge.ph/v1"
+export API_KEY="YOUR_VENDOR_API_KEY"
+
+# Production
+# export BASE_URL="https://api.eisbridge.ph/v1"
+
+curl -X GET "$BASE_URL/transactions?page=1&amp;page_size=1" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json"</code></pre>
+        </li>
+
+        <li class="step">
+          <h2>POST /transactions</h2>
+          <p>Submit a single sale wrapped in a <code>transaction</code> object. Use the Standard Sale Object format documented in the <a href="data-model.html">Data Model</a>.</p>
+          <span class="code-label">Request</span>
+          <pre><code>curl -X POST "$BASE_URL/transactions" \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "transaction": {
+    "transaction_id": "POS-10001",
+    "transaction_datetime": "2026-06-07T14:23:55+08:00",
+    "merchant_code": "MRC123",
+    "branch_code": "BR001",
+    "pos_device_id": "POS01",
+    "invoice_type": "OR",
+    "items": [
+      {
+        "sku": "SKU001",
+        "description": "Product A",
+        "qty": 1,
+        "unit_price": 100
+      }
+    ],
+    "totals": {
+      "gross": 100,
+      "net": 100
+    },
+    "payment": {
+      "method": "CASH",
+      "amount": 100
+    }
+  }
+}'</code></pre>
+          <span class="code-label">Response</span>
+          <pre><code>{
+  "status": "accepted",
+  "transaction_id": "POS-10001",
+  "bridge_transaction_id": "EB-20260607-000001",
+  "merchant_code": "MRC123",
+  "branch_code": "BR001",
+  "pos_device_id": "POS01",
+  "processing_status": "queued",
+  "message": "Transaction accepted for EIS processing."
+}</code></pre>
+          <p>Store <code>bridge_transaction_id</code> in your POS for status lookups and webhook correlation.</p>
+        </li>
+
+        <li class="step">
+          <h2>GET transaction status</h2>
+          <p>Poll until BIR EIS processing completes, or configure <a href="api.html#webhook">webhooks</a> for push notifications.</p>
+          <span class="code-label">Request</span>
+          <pre><code>curl -X GET "$BASE_URL/transactions/EB-20260607-000001" \
+  -H "Authorization: Bearer $API_KEY"</code></pre>
+          <span class="code-label">Response</span>
+          <pre><code>{
+  "bridge_transaction_id": "EB-20260607-000001",
+  "transaction_id": "POS-10001",
+  "merchant_code": "MRC123",
+  "branch_code": "BR001",
+  "pos_device_id": "POS01",
+  "processing_status": "sent",
+  "eis_status": "acknowledged",
+  "eis_reference_no": "EIS-INV-20260607-123456",
+  "last_update": "2026-06-07T14:25:10+08:00"
+}</code></pre>
+        </li>
+
+        <li class="step">
+          <h2>Done — EIS acknowledged</h2>
+          <div class="step-success">
+            <p>
+              When <code>eis_status</code> is <strong>acknowledged</strong>, BIR EIS has accepted the invoice. Persist <code>eis_reference_no</code> for audit and customer receipts. Your POS is now EIS-compliant for this transaction.
+            </p>
+            <p style="margin-bottom: 0;">
+              Next: run the <a href="testing.html">QA test suite</a>, explore <a href="api.html">batch submit and webhooks</a>, or download the <a href="tools.html">Postman collection</a>.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </main>
+
+  <footer class="site-footer portal-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+</body>
+</html>

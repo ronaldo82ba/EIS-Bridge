@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge integration testing — QA test cases and production certification checklist.">
+  <title>Testing — EIS Bridge Developer Portal</title>
+  <link rel="stylesheet" href="styles/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header portal-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
+        <span class="logo-mark" aria-hidden="true">EIS</span>
+        <span class="logo-text">Bridge</span>
+        <span class="portal-badge">Developer Portal</span>
+      </a>
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle">Menu</label>
+      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="quickstart.html">Quickstart</a></li>
+          <li><a href="api.html">API Reference</a></li>
+          <li><a href="data-model.html">Data Model</a></li>
+          <li><a href="tools.html">Tools</a></li>
+          <li><a href="testing.html" aria-current="page">Testing</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </nav>
+      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
+    </div>
+  </header>
+
+  <main id="main" class="portal-main">
+    <div class="container">
+      <h1 class="page-title">Integration Testing</h1>
+      <p class="page-intro">
+        Validate your POS integration against the QA Suite v1.0 before production certification. Run all tests against Sandbox first.
+      </p>
+
+      <section class="content-section" aria-labelledby="tc-heading">
+        <h2 id="tc-heading">Test case summary</h2>
+
+        <h3>Basic Connectivity</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-01</td><td>Valid API Key</td><td>HTTP 200/201; no auth errors</td></tr>
+            <tr><td>TC-02</td><td>Invalid API Key</td><td>HTTP 401; <code>error: unauthorized</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Single Transaction</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-10</td><td>Minimum Required Fields</td><td><code>status: accepted</code>; <code>bridge_transaction_id</code> returned</td></tr>
+            <tr><td>TC-11</td><td>Full Sale Object</td><td>Accepted; optional fields preserved</td></tr>
+            <tr><td>TC-12</td><td>Multiple Items</td><td>All line items processed; totals align</td></tr>
+            <tr><td>TC-13</td><td>Different Payment Methods</td><td>CASH, CARD, E-WALLET, SPLIT each accepted</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Validation &amp; Error Handling</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-20</td><td>Missing Required Field</td><td>HTTP 400; <code>validation_error</code>; <code>fields</code> array</td></tr>
+            <tr><td>TC-21</td><td>Invalid Date Format</td><td>HTTP 400; date format validation error</td></tr>
+            <tr><td>TC-22</td><td>Negative Quantity</td><td>Rejected; validation error on qty</td></tr>
+            <tr><td>TC-23</td><td>Zero or Negative Price</td><td>Rejected; validation error on unit_price</td></tr>
+            <tr><td>TC-24</td><td>Invalid Merchant/Branch Code</td><td>HTTP 403; merchant not found</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Duplicate Handling</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-30</td><td>Same transaction_id sent twice</td><td><code>status: duplicate</code>; same <code>bridge_transaction_id</code></td></tr>
+            <tr><td>TC-31</td><td>Same ID, different data</td><td>HTTP 409; <code>transaction_conflict</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Batch Submission</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-40</td><td>Valid Batch</td><td>All transactions accepted; summary counts correct</td></tr>
+            <tr><td>TC-41</td><td>Batch with 1 invalid transaction</td><td>Valid items queued; invalid flagged in results</td></tr>
+            <tr><td>TC-42</td><td>Large Batch (100–500)</td><td>No timeout; all valid items queued</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Status Retrieval</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-50</td><td>Query valid bridge_transaction_id</td><td>Returns status, eis_status, logs</td></tr>
+            <tr><td>TC-51</td><td>Query invalid ID</td><td>HTTP 404</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Webhooks</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-60</td><td>Configure Webhook</td><td>HTTP 200; URL and secret saved</td></tr>
+            <tr><td>TC-61</td><td>Receive EIS acknowledgment webhook</td><td>Payload with <code>transaction.eis_acknowledged</code></td></tr>
+            <tr><td>TC-62</td><td>Invalid Webhook URL</td><td>HTTP 400; validation error</td></tr>
+            <tr><td>TC-63</td><td>Signature Verification</td><td>HMAC-SHA256 matches <code>signature</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Compliance &amp; Edge Cases</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-70</td><td>Void Transaction</td><td>Void accepted; linked to original</td></tr>
+            <tr><td>TC-71</td><td>Return/Refund</td><td>Return accepted; reference preserved</td></tr>
+            <tr><td>TC-72</td><td>Offline POS (Delayed Transmission)</td><td>Accepted within T+3 window</td></tr>
+            <tr><td>TC-73</td><td>High Volume Spike</td><td>1,000 txns in 5 min; all queued</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Security</h3>
+        <table class="field-table">
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Pass criteria</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TC-80</td><td>Missing Authorization Header</td><td>HTTP 401</td></tr>
+            <tr><td>TC-81</td><td>Tampered Payload</td><td>Rejected; no partial processing</td></tr>
+            <tr><td>TC-82</td><td>SQL/Script Injection Attempt</td><td>Sanitized or rejected safely</td></tr>
+          </tbody>
+        </table>
+
+        <p><a href="../docs/qa/integration-test-cases-v1.md">Full QA test suite (v1.0) &rarr;</a></p>
+      </section>
+
+      <section class="content-section" aria-labelledby="cert-heading">
+        <h2 id="cert-heading">Production certification</h2>
+        <p>Vendor must pass all integration test areas before production certification:</p>
+        <ul class="checklist">
+          <li>Single transaction submission (TC-10, TC-11, TC-12, TC-13)</li>
+          <li>Batch submission (TC-40, TC-41, TC-42)</li>
+          <li>Status retrieval (TC-50, TC-51)</li>
+          <li>Duplicate handling (TC-30, TC-31)</li>
+          <li>Error handling (TC-20 through TC-24)</li>
+          <li>Webhook acknowledgment (TC-60 through TC-63)</li>
+          <li>Offline/T+3 scenario (TC-72)</li>
+          <li>High-volume test (TC-73)</li>
+          <li>Refund/Void handling (TC-70, TC-71)</li>
+          <li>Security tests (TC-80 through TC-82)</li>
+        </ul>
+        <p class="callout callout-warning">Once all items pass, your vendor account is certified for EIS Bridge Production.</p>
+      </section>
+
+      <section class="content-section" aria-labelledby="env-heading">
+        <h2 id="env-heading">Sandbox vs Production checklist</h2>
+
+        <div class="checklist-section">
+          <h3>Sandbox</h3>
+          <ul class="checklist">
+            <li>Base URL: <code>https://sandbox.eisbridge.ph/v1</code></li>
+            <li>Sandbox API key from vendor onboarding</li>
+            <li>Test merchant/branch/device codes assigned</li>
+            <li>All QA test cases executed and documented</li>
+            <li>Webhook endpoint reachable (HTTPS recommended)</li>
+            <li>Error handling verified (400, 401, 403, 409)</li>
+            <li>Duplicate and idempotency behavior confirmed</li>
+          </ul>
+        </div>
+
+        <div class="checklist-section">
+          <h3>Production</h3>
+          <ul class="checklist">
+            <li>Base URL: <code>https://api.eisbridge.ph/v1</code></li>
+            <li>Production API key issued after certification</li>
+            <li>Live merchant/branch/device codes configured per client</li>
+            <li>Certification sign-off from EIS Bridge</li>
+            <li>Production webhook URL registered</li>
+            <li>Monitoring and retry logic in place</li>
+            <li>Support contact and escalation path documented</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer portal-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+</body>
+</html>

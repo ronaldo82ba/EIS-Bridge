@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge developer tools — Postman collection, code samples, and JSON schema.">
+  <title>Tools — EIS Bridge Developer Portal</title>
+  <link rel="stylesheet" href="styles/portal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header portal-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
+        <span class="logo-mark" aria-hidden="true">EIS</span>
+        <span class="logo-text">Bridge</span>
+        <span class="portal-badge">Developer Portal</span>
+      </a>
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle">Menu</label>
+      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="quickstart.html">Quickstart</a></li>
+          <li><a href="api.html">API Reference</a></li>
+          <li><a href="data-model.html">Data Model</a></li>
+          <li><a href="tools.html" aria-current="page">Tools</a></li>
+          <li><a href="testing.html">Testing</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </nav>
+      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
+    </div>
+  </header>
+
+  <main id="main" class="portal-main">
+    <div class="container">
+      <h1 class="page-title">Developer Tools</h1>
+      <p class="page-intro">
+        Import the Postman collection, validate payloads against the JSON schema, and copy starter code for your stack.
+      </p>
+
+      <section class="content-section" aria-labelledby="postman-heading">
+        <h2 id="postman-heading">Postman Collection v1.0</h2>
+        <p>
+          Ready-to-import requests for transaction submit, batch, status, and webhook configuration. In Postman, choose <strong>Import &rarr; Upload Files</strong> and set collection variables <code>BASE_URL</code>, <code>API_KEY</code>, and <code>BRIDGE_TRANSACTION_ID</code> before sending.
+        </p>
+        <a class="btn btn-primary" href="../docs/postman/EIS-Bridge-API-v1.postman_collection.json" download>EIS-Bridge-API-v1.postman_collection.json</a>
+      </section>
+
+      <section class="content-section" aria-labelledby="schema-heading">
+        <h2 id="schema-heading">JSON Schema</h2>
+        <p>Machine-readable Standard Sale Object schema for validation, IDE autocomplete, and CI checks.</p>
+        <a class="btn btn-secondary" href="../docs/schemas/sale-object.schema.json">sale-object.schema.json</a>
+        <span style="margin-left: 0.5rem;">·</span>
+        <a href="data-model.html">Field reference</a>
+      </section>
+
+      <section class="content-section" aria-labelledby="snippets-heading">
+        <h2 id="snippets-heading">Code samples — POST /transactions</h2>
+        <p>Minimal examples using environment variables for <code>BASE_URL</code> and <code>API_KEY</code>.</p>
+
+        <div class="snippet-block" id="nodejs">
+          <h3>Node.js</h3>
+          <pre><code>const BASE_URL = process.env.BASE_URL;
+const API_KEY = process.env.API_KEY;
+
+const payload = {
+  transaction: {
+    transaction_id: "POS-10001",
+    transaction_datetime: "2026-06-07T14:23:55+08:00",
+    merchant_code: "MRC123",
+    branch_code: "BR001",
+    pos_device_id: "POS01",
+    invoice_type: "OR",
+    items: [{ sku: "SKU001", description: "Product A", qty: 1, unit_price: 100 }],
+    totals: { gross: 100, net: 100 },
+    payment: { method: "CASH", amount: 100 }
+  }
+};
+
+const res = await fetch(`${BASE_URL}/transactions`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
+
+console.log(await res.json());</code></pre>
+        </div>
+
+        <div class="snippet-block" id="php">
+          <h3>PHP</h3>
+          <pre><code>$baseUrl = getenv('BASE_URL');
+$apiKey  = getenv('API_KEY');
+
+$payload = [
+  'transaction' => [
+    'transaction_id'       => 'POS-10001',
+    'transaction_datetime' => '2026-06-07T14:23:55+08:00',
+    'merchant_code'        => 'MRC123',
+    'branch_code'          => 'BR001',
+    'pos_device_id'        => 'POS01',
+    'invoice_type'         => 'OR',
+    'items' => [[
+      'sku' => 'SKU001', 'description' => 'Product A',
+      'qty' => 1, 'unit_price' => 100
+    ]],
+    'totals'  => ['gross' => 100, 'net' => 100],
+    'payment' => ['method' => 'CASH', 'amount' => 100]
+  ]
+];
+
+$ch = curl_init("$baseUrl/transactions");
+curl_setopt_array($ch, [
+  CURLOPT_POST           => true,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER     => [
+    "Authorization: Bearer $apiKey",
+    'Content-Type: application/json'
+  ],
+  CURLOPT_POSTFIELDS     => json_encode($payload)
+]);
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;</code></pre>
+        </div>
+
+        <div class="snippet-block" id="java">
+          <h3>Java</h3>
+          <pre><code>String baseUrl = System.getenv("BASE_URL");
+String apiKey  = System.getenv("API_KEY");
+
+String json = """
+  {"transaction":{"transaction_id":"POS-10001",
+  "transaction_datetime":"2026-06-07T14:23:55+08:00",
+  "merchant_code":"MRC123","branch_code":"BR001",
+  "pos_device_id":"POS01","invoice_type":"OR",
+  "items":[{"sku":"SKU001","description":"Product A","qty":1,"unit_price":100}],
+  "totals":{"gross":100,"net":100},
+  "payment":{"method":"CASH","amount":100}}}
+  """;
+
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create(baseUrl + "/transactions"))
+    .header("Authorization", "Bearer " + apiKey)
+    .header("Content-Type", "application/json")
+    .POST(HttpRequest.BodyPublishers.ofString(json))
+    .build();
+
+HttpResponse&lt;String&gt; response = client.send(request,
+    HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());</code></pre>
+        </div>
+
+        <div class="snippet-block" id="csharp">
+          <h3>C#</h3>
+          <pre><code>var baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
+var apiKey  = Environment.GetEnvironmentVariable("API_KEY");
+
+var payload = new {
+  transaction = new {
+    transaction_id = "POS-10001",
+    transaction_datetime = "2026-06-07T14:23:55+08:00",
+    merchant_code = "MRC123",
+    branch_code = "BR001",
+    pos_device_id = "POS01",
+    invoice_type = "OR",
+    items = new[] {
+      new { sku = "SKU001", description = "Product A", qty = 1, unit_price = 100 }
+    },
+    totals = new { gross = 100, net = 100 },
+    payment = new { method = "CASH", amount = 100 }
+  }
+};
+
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Authorization =
+    new AuthenticationHeaderValue("Bearer", apiKey);
+
+var content = new StringContent(
+    JsonSerializer.Serialize(payload),
+    Encoding.UTF8, "application/json");
+
+var response = await client.PostAsync($"{baseUrl}/transactions", content);
+Console.WriteLine(await response.Content.ReadAsStringAsync());</code></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer portal-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+</body>
+</html>
