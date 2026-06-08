@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature\Eis;
 
 use App\Jobs\RetryFailedTransmissionJob;
 use App\Jobs\TransmitInvoiceJob;
@@ -9,17 +9,70 @@ use App\Models\Invoice;
 use App\Models\Merchant;
 use App\Models\Vendor;
 use App\Services\Eis\EisClient;
+use App\Services\Eis\EisResponseParser;
 use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Tests\TestCase;
 
-class TransmitInvoiceJobTest extends TestCase
+class RejectionShortCircuitTest extends TestCase
 {
-    public function test_eis_rejection_does_not_dispatch_retry_job(): void
+    public function test_parser_treats_http_200_rejected_body_as_failure(): void
+    {
+        $parser = new EisResponseParser;
+
+        $result = $parser->parse([
+            'status' => 'rejected',
+            'message' => 'Invalid TIN format',
+        ], 200);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('rejected', $result['eis_status']);
+    }
+
+    public function test_parser_treats_http_200_acknowledged_body_as_success(): void
+    {
+        $parser = new EisResponseParser;
+
+        $result = $parser->parse([
+            'status' => 'acknowledged',
+            'reference_no' => 'EIS-REF-001',
+        ], 200);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('acknowledged', $result['eis_status']);
+    }
+
+    public function test_parser_treats_http_422_validation_failed_as_rejection(): void
+    {
+        $parser = new EisResponseParser;
+
+        $result = $parser->parse([
+            'status' => 'validation_failed',
+            'message' => 'Invalid document type',
+        ], 422);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('rejected', $result['eis_status']);
+    }
+
+    public function test_parser_treats_http_503_as_transient_failure(): void
+    {
+        $parser = new EisResponseParser;
+
+        $result = $parser->parse([
+            'status' => 'error',
+            'message' => 'Service unavailable',
+        ], 503);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('failed', $result['eis_status']);
+    }
+
+    public function test_eis_rejection_skips_retry_and_fires_rejected_webhook_only(): void
     {
         $vendor = Vendor::create([
-            'name' => 'Transmit Vendor',
-            'api_key' => hash('sha256', 'transmit-key'),
+            'name' => 'Reject Vendor',
+            'api_key' => hash('sha256', 'reject-key'),
             'webhook_url' => 'https://vendor.example/hook',
             'webhook_secret' => 'secret',
             'status' => 'active',
@@ -27,19 +80,19 @@ class TransmitInvoiceJobTest extends TestCase
 
         Merchant::create([
             'vendor_id' => $vendor->id,
-            'merchant_code' => 'MRC-TX',
-            'name' => 'Transmit Merchant',
+            'merchant_code' => 'MRC-REJ',
+            'name' => 'Reject Merchant',
             'tin' => '123-456-789-000',
         ]);
 
         $invoice = Invoice::create([
-            'bridge_transaction_id' => 'EB-TX-001',
-            'transaction_id' => 'POS-TX-001',
-            'merchant_code' => 'MRC-TX',
+            'bridge_transaction_id' => 'EB-REJ-001',
+            'transaction_id' => 'POS-REJ-001',
+            'merchant_code' => 'MRC-REJ',
             'branch_code' => 'BR001',
             'pos_device_id' => 'POS01',
-            'raw_pos_json' => ['transaction_id' => 'POS-TX-001'],
-            'signed_json' => ['payload' => ['transaction_id' => 'POS-TX-001'], 'signature' => 'sig'],
+            'raw_pos_json' => ['transaction_id' => 'POS-REJ-001'],
+            'signed_json' => ['payload' => ['transaction_id' => 'POS-REJ-001'], 'signature' => 'sig'],
             'processing_status' => 'signed',
         ]);
 
@@ -68,13 +121,16 @@ class TransmitInvoiceJobTest extends TestCase
         Queue::assertPushed(WebhookDeliveryJob::class, function (WebhookDeliveryJob $job) {
             return $job->event === 'transaction.eis_rejected';
         });
+        Queue::assertNotPushed(WebhookDeliveryJob::class, function (WebhookDeliveryJob $job) {
+            return $job->event === 'transaction.eis_failed';
+        });
     }
 
-    public function test_transient_failure_dispatches_retry_job(): void
+    public function test_transient_failure_dispatches_retry_and_fires_failed_webhook(): void
     {
         $vendor = Vendor::create([
-            'name' => 'Transmit Vendor',
-            'api_key' => hash('sha256', 'transmit-key'),
+            'name' => 'Fail Vendor',
+            'api_key' => hash('sha256', 'fail-key'),
             'webhook_url' => 'https://vendor.example/hook',
             'webhook_secret' => 'secret',
             'status' => 'active',
@@ -82,19 +138,19 @@ class TransmitInvoiceJobTest extends TestCase
 
         Merchant::create([
             'vendor_id' => $vendor->id,
-            'merchant_code' => 'MRC-TX',
-            'name' => 'Transmit Merchant',
+            'merchant_code' => 'MRC-FAIL',
+            'name' => 'Fail Merchant',
             'tin' => '123-456-789-000',
         ]);
 
         $invoice = Invoice::create([
-            'bridge_transaction_id' => 'EB-TX-002',
-            'transaction_id' => 'POS-TX-002',
-            'merchant_code' => 'MRC-TX',
+            'bridge_transaction_id' => 'EB-FAIL-001',
+            'transaction_id' => 'POS-FAIL-001',
+            'merchant_code' => 'MRC-FAIL',
             'branch_code' => 'BR001',
             'pos_device_id' => 'POS01',
-            'raw_pos_json' => ['transaction_id' => 'POS-TX-002'],
-            'signed_json' => ['payload' => ['transaction_id' => 'POS-TX-002'], 'signature' => 'sig'],
+            'raw_pos_json' => ['transaction_id' => 'POS-FAIL-001'],
+            'signed_json' => ['payload' => ['transaction_id' => 'POS-FAIL-001'], 'signature' => 'sig'],
             'processing_status' => 'signed',
         ]);
 
@@ -124,6 +180,9 @@ class TransmitInvoiceJobTest extends TestCase
         });
         Queue::assertPushed(WebhookDeliveryJob::class, function (WebhookDeliveryJob $job) {
             return $job->event === 'transaction.eis_failed';
+        });
+        Queue::assertNotPushed(WebhookDeliveryJob::class, function (WebhookDeliveryJob $job) {
+            return $job->event === 'transaction.eis_rejected';
         });
     }
 }

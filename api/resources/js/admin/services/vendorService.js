@@ -9,6 +9,7 @@ export const vendorService = {
     regenerateKey: (id) => api.post(`/vendors/${id}/rotate-api-key`),
     suspend: (id) => api.post(`/vendors/${id}/suspend`),
     updateWebhook: (id, data) => api.patch(`/webhooks/${id}`, data),
+    testWebhook: (id) => api.post(`/webhooks/${id}/test`),
     listIpWhitelist: (id) => api.get(`/vendors/${id}/ip-whitelist`),
     addIpWhitelist: (id, data) => api.post(`/vendors/${id}/ip-whitelist`, data),
     removeIpWhitelist: (id, entryId) => api.delete(`/vendors/${id}/ip-whitelist/${entryId}`),

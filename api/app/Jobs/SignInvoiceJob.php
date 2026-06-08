@@ -21,6 +21,8 @@ class SignInvoiceJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $tries = 1;
+
     public function __construct(
         public int $invoiceId,
     ) {
@@ -96,8 +98,6 @@ class SignInvoiceJob implements ShouldQueue
                 ),
                 ['message' => $e->getMessage(), 'event' => 'signing_failed']
             );
-
-            throw $e;
         }
     }
 }

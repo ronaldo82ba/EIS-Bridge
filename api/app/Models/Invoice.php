@@ -5,9 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Invoice extends Model
 {
+    public static function generateBridgeTransactionId(): string
+    {
+        return 'EB-'.(string) Str::ulid();
+    }
+
     protected $fillable = [
         'bridge_transaction_id',
         'transaction_id',

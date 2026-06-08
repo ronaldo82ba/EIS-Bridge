@@ -220,7 +220,7 @@ export function applyRealtimeUpdate(prevData, event, filters = {}) {
 /**
  * Subscribe to analytics broadcast updates when Echo is enabled.
  */
-export function useRealtimeAnalytics({ data, setData, filters = {}, onRetryFailed }) {
+export function useRealtimeAnalytics({ data: _data, setData, filters = {}, onRetryFailed }) {
     const setDataRef = useRef(setData);
     const filtersRef = useRef(filters);
     const onRetryFailedRef = useRef(onRetryFailed);

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\ProcessInvoiceJob;
+use App\Jobs\MapInvoiceJob;
 use App\Models\Branch;
 use App\Models\Device;
 use App\Models\Invoice;
@@ -81,7 +81,7 @@ class Phase2EngineTest extends TestCase
         ];
     }
 
-    public function test_full_phase2_pipeline_via_process_invoice_job(): void
+    public function test_full_phase2_pipeline_via_map_invoice_job(): void
     {
         config(['eis.sandbox_mode' => true]);
 
@@ -97,7 +97,7 @@ class Phase2EngineTest extends TestCase
             'processing_status' => 'queued',
         ]);
 
-        ProcessInvoiceJob::dispatch($invoice->id);
+        MapInvoiceJob::dispatch($invoice->id);
 
         $invoice->refresh();
 

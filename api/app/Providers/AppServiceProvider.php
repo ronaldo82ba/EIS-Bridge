@@ -18,10 +18,13 @@ use App\Policies\InvoicePolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\VendorPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Foundation\Events\DiagnosingHealth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use RuntimeException;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +41,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->guardProductionSandboxConfig();
+
+        Event::listen(DiagnosingHealth::class, function () {
+            $this->guardProductionSandboxConfig();
+        });
+
         Gate::policy(Vendor::class, VendorPolicy::class);
         Gate::policy(Merchant::class, MerchantPolicy::class);
         Gate::policy(Branch::class, BranchPolicy::class);
@@ -97,5 +106,14 @@ class AppServiceProvider extends ServiceProvider
                     'message' => 'Too many login attempts. Please try again later.',
                 ], 429));
         });
+    }
+
+    private function guardProductionSandboxConfig(): void
+    {
+        if ($this->app->environment('production') && config('eis.sandbox_mode')) {
+            throw new RuntimeException(
+                'EIS sandbox mode (EIS_SANDBOX_MODE=true) cannot be enabled when APP_ENV=production.'
+            );
+        }
     }
 }

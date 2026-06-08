@@ -2,19 +2,14 @@ import { NavLink } from 'react-router-dom';
 
 const navItems = [
     { to: '/dashboard', label: 'Dashboard' },
-    { to: '/vendors', label: 'Vendors' },
-    { to: '/vendors/analytics', label: 'Vendor Analytics' },
-    { to: '/vendors/health', label: 'Vendor Health' },
     { to: '/merchants', label: 'Merchants' },
-    { to: '/merchants/analytics', label: 'Merchant Analytics' },
-    { to: '/merchants/health', label: 'Merchant Health' },
-    { to: '/merchants/new', label: 'New Merchant' },
-    { to: '/invoices', label: 'Invoices' },
-    { to: '/invoices/search', label: 'Invoice Search' },
-    { to: '/invoices/analytics', label: 'Invoice Analytics' },
-    { to: '/queues', label: 'Queues' },
-    { to: '/monitoring/queues', label: 'Queue Monitor' },
-    { to: '/alerts', label: 'Alerts' },
+    { to: '/branches', label: 'Branches' },
+    { to: '/certificates', label: 'Certificates' },
+    { to: '/webhooks', label: 'Webhooks' },
+    { to: '/billing', label: 'Billing' },
+    { to: '/logs', label: 'Logs' },
+    { to: '/monitoring', label: 'Monitoring' },
+    { to: '/settings', label: 'Settings' },
 ];
 
 function linkClassName({ isActive }) {

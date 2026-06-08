@@ -92,7 +92,7 @@ export default function InvoiceSearch() {
     });
 
     const merchants = merchantsData?.data ?? [];
-    const rows = data?.data ?? [];
+    const rows = useMemo(() => data?.data ?? [], [data?.data]);
     const rowIds = useMemo(() => rows.map((row) => row.id), [rows]);
     const allPageSelected = rowIds.length > 0 && rowIds.every((id) => isSelected(id));
 

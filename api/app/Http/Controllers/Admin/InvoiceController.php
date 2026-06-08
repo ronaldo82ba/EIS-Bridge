@@ -7,7 +7,7 @@ use App\Jobs\Bulk\ForceRetransmitJob;
 use App\Jobs\Bulk\RetryMappingJob;
 use App\Jobs\Bulk\RetrySigningJob;
 use App\Jobs\Bulk\RetryTransmissionJob;
-use App\Jobs\ProcessInvoiceJob;
+use App\Jobs\MapInvoiceJob;
 use App\Models\Invoice;
 use App\Models\Merchant;
 use App\Services\Analytics\InvoiceAnalyticsService;
@@ -169,7 +169,7 @@ class InvoiceController extends AdminController
         $this->authorize('view', $invoice);
 
         $invoice->update(['processing_status' => 'queued']);
-        ProcessInvoiceJob::dispatch($invoice->id);
+        MapInvoiceJob::dispatch($invoice->id);
 
         return response()->json([
             'message' => 'Invoice queued for retry.',

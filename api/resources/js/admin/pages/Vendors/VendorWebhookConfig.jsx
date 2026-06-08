@@ -29,6 +29,19 @@ export default function VendorWebhookConfig() {
         onError: (error) => message.error(error.response?.data?.message ?? 'Save failed'),
     });
 
+    const testMutation = useMutation({
+        mutationFn: () => vendorService.testWebhook(id),
+        onSuccess: (response) => {
+            message.success(response.data?.message ?? 'Test webhook sent');
+        },
+        onError: (error) => {
+            message.error(error.response?.data?.message ?? 'Test webhook failed');
+        },
+    });
+
+    const testDisabled =
+        testMutation.isPending || isLoading || !vendor?.webhook_url;
+
     return (
         <>
             <Typography.Title level={2}>Webhook Config — {vendor?.name ?? `Vendor #${id}`}</Typography.Title>
@@ -37,7 +50,7 @@ export default function VendorWebhookConfig() {
                 <Alert
                     type="error"
                     message="Failed to load vendor"
-                    description="TODO: backend PATCH /admin/webhooks/{vendorId}"
+                    description="Could not load webhook configuration for this vendor."
                     showIcon
                     style={{ marginBottom: 16 }}
                 />
@@ -59,9 +72,13 @@ export default function VendorWebhookConfig() {
                 <Button type="primary" htmlType="submit" loading={updateMutation.isPending || isLoading}>
                     Save
                 </Button>
-                <Button style={{ marginLeft: 8 }} disabled>
-                    Send test ping
-                    {/* TODO: backend POST /admin/webhooks/{vendorId}/test */}
+                <Button
+                    style={{ marginLeft: 8 }}
+                    loading={testMutation.isPending}
+                    disabled={testDisabled}
+                    onClick={() => testMutation.mutate()}
+                >
+                    Test Webhook
                 </Button>
             </Form>
         </>

@@ -66,8 +66,11 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+php artisan storage:link
 php artisan serve
 ```
+
+The `storage:link` command creates the public symlink for uploaded certificate files and other storage-backed assets.
 
 Use the sandbox API key from `.env` (`SANDBOX_API_KEY`, default `VENDOR_API_KEY_123`) in the `Authorization: Bearer` header.
 

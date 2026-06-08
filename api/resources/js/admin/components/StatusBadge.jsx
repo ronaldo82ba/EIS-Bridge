@@ -3,12 +3,15 @@ const STATUS_STYLES = {
     acknowledged: 'bg-green-100 text-green-800',
     sent: 'bg-green-100 text-green-800',
     success: 'bg-green-100 text-green-800',
+    valid: 'bg-green-100 text-green-800',
     pending: 'bg-yellow-100 text-yellow-800',
     queued: 'bg-yellow-100 text-yellow-800',
+    expiring: 'bg-yellow-100 text-yellow-800',
     suspended: 'bg-slate-100 text-slate-600',
     inactive: 'bg-slate-100 text-slate-600',
     failed: 'bg-red-100 text-red-800',
     rejected: 'bg-red-100 text-red-800',
+    expired: 'bg-red-100 text-red-800',
     resolved: 'bg-slate-100 text-slate-600',
 };
 

@@ -7,5 +7,4 @@ export const invoiceService = {
     get: (id) => api.get(`/invoices/${id}`),
     retry: (id) => api.post(`/invoices/${id}/retry`),
     bulk: (action, ids) => api.post('/invoices/bulk', { action, ids }),
-    getAnalytics: (range, params = {}) => api.get('/invoices/analytics', { params: { range, ...params } }),
 };

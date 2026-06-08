@@ -2,14 +2,13 @@
 
 namespace App\Services;
 
-use App\Jobs\ProcessInvoiceJob;
+use App\Jobs\MapInvoiceJob;
 use App\Support\InvoiceBroadcaster;
 use App\Models\Branch;
 use App\Models\Device;
 use App\Models\Invoice;
 use App\Models\Merchant;
 use App\Models\TransmissionLog;
-use Illuminate\Support\Str;
 
 class TransactionProcessor
 {
@@ -59,7 +58,7 @@ class TransactionProcessor
             ];
         }
 
-        $bridgeId = 'EB-' . now()->format('Ymd') . '-' . Str::padLeft(Invoice::count() + 1, 6, '0');
+        $bridgeId = Invoice::generateBridgeTransactionId();
 
         $invoice = Invoice::create([
             'bridge_transaction_id' => $bridgeId,
@@ -80,7 +79,7 @@ class TransactionProcessor
 
         InvoiceBroadcaster::created($invoice);
 
-        ProcessInvoiceJob::dispatch($invoice->id)->onQueue('mapping');
+        MapInvoiceJob::dispatch($invoice->id)->onQueue('mapping');
 
         return [
             'http_status'           => 201,

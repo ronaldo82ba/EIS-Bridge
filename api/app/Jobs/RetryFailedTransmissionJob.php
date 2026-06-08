@@ -62,7 +62,15 @@ class RetryFailedTransmissionJob implements ShouldQueue
                 return;
             }
 
-            $this->handleFailure($invoice, $maxAttempts, $result['eis_status'] ?? 'failed', $result['error'] ?? 'EIS rejected transmission.');
+            $eisStatus = $result['eis_status'] ?? 'failed';
+
+            if ($eisStatus === 'rejected') {
+                $this->finalizeRejection($invoice, $result['error'] ?? 'EIS rejected transmission.');
+
+                return;
+            }
+
+            $this->handleFailure($invoice, $maxAttempts, $eisStatus, $result['error'] ?? 'EIS transmission failed.');
         } catch (\Throwable $e) {
             TransmissionLog::create([
                 'invoice_id' => $invoice->id,
@@ -100,6 +108,33 @@ class RetryFailedTransmissionJob implements ShouldQueue
         return $backoff[min($index, count($backoff) - 1)] ?? 60;
     }
 
+    private function finalizeRejection(Invoice $invoice, string $message): void
+    {
+        $invoice->update([
+            'processing_status' => 'transmission_failed',
+            'eis_status' => 'rejected',
+        ]);
+        InvoiceBroadcaster::statusUpdated($invoice);
+
+        MerchantActivityService::broadcastForInvoice($invoice, 'eis_rejected', [
+            'source_event' => 'eis_rejected',
+            'metadata' => ['message' => $message, 'eis_status' => 'rejected'],
+        ]);
+
+        AlertEmitter::eisRejection($invoice, 'rejected', [
+            'message' => $message,
+            'attempts' => $this->attempt,
+        ]);
+
+        WebhookDispatcher::dispatchEvent($invoice->fresh(), 'transaction.eis_rejected');
+
+        Log::warning('EIS rejected invoice during retry', [
+            'invoice_id' => $invoice->id,
+            'attempt' => $this->attempt,
+            'message' => $message,
+        ]);
+    }
+
     private function handleFailure(Invoice $invoice, int $maxAttempts, string $eisStatus, string $message): void
     {
         if ($this->attempt >= $maxAttempts) {
@@ -109,30 +144,21 @@ class RetryFailedTransmissionJob implements ShouldQueue
             ]);
             InvoiceBroadcaster::statusUpdated($invoice);
 
-            if ($eisStatus === 'rejected') {
-                MerchantActivityService::broadcastForInvoice($invoice, 'eis_rejected', [
-                    'source_event' => 'eis_rejected',
-                    'metadata' => ['message' => $message, 'eis_status' => $eisStatus],
-                ]);
-                AlertEmitter::eisRejection($invoice, $eisStatus, [
+            AlertEmitter::processingFailure(
+                $invoice,
+                sprintf(
+                    'Transmission retries exhausted for invoice %s',
+                    $invoice->bridge_transaction_id ?? $invoice->id
+                ),
+                [
                     'message' => $message,
                     'attempts' => $this->attempt,
-                ]);
-            } else {
-                AlertEmitter::processingFailure(
-                    $invoice,
-                    sprintf(
-                        'Transmission retries exhausted for invoice %s',
-                        $invoice->bridge_transaction_id ?? $invoice->id
-                    ),
-                    [
-                        'message' => $message,
-                        'attempts' => $this->attempt,
-                        'max_attempts' => $maxAttempts,
-                    ],
-                    \App\Models\Alert::SEVERITY_CRITICAL
-                );
-            }
+                    'max_attempts' => $maxAttempts,
+                ],
+                \App\Models\Alert::SEVERITY_CRITICAL
+            );
+
+            WebhookDispatcher::dispatchEvent($invoice->fresh(), 'transaction.eis_failed');
 
             Log::error('EIS transmission retries exhausted', [
                 'invoice_id' => $invoice->id,

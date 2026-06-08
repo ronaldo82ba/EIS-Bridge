@@ -68,9 +68,9 @@ class RetryFailedTransmissionJobTest extends TestCase
         $this->assertSame(7200, $job->calculateBackoff(99));
     }
 
-    public function test_max_attempts_sets_retry_failed_status(): void
+    public function test_rejection_finalizes_immediately_without_retry(): void
     {
-        config(['eis.retry_max_attempts' => 1]);
+        config(['eis.retry_max_attempts' => 5]);
 
         $invoice = $this->seedInvoice();
 
@@ -88,12 +88,41 @@ class RetryFailedTransmissionJobTest extends TestCase
 
         Queue::fake();
 
+        (new RetryFailedTransmissionJob($invoice->id, 2))->handle($client);
+
+        $invoice->refresh();
+
+        $this->assertSame('transmission_failed', $invoice->processing_status);
+        $this->assertSame('rejected', $invoice->eis_status);
+        Queue::assertNothingPushed();
+    }
+
+    public function test_max_attempts_sets_retry_failed_status(): void
+    {
+        config(['eis.retry_max_attempts' => 1]);
+
+        $invoice = $this->seedInvoice();
+
+        $client = Mockery::mock(EisClient::class);
+        $client->shouldReceive('send')
+            ->once()
+            ->andReturn([
+                'success' => false,
+                'eis_status' => 'failed',
+                'eis_reference_no' => null,
+                'error' => 'EIS unavailable',
+            ]);
+
+        $this->app->instance(EisClient::class, $client);
+
+        Queue::fake();
+
         (new RetryFailedTransmissionJob($invoice->id, 1))->handle($client);
 
         $invoice->refresh();
 
         $this->assertSame('retry_failed', $invoice->processing_status);
-        $this->assertSame('rejected', $invoice->eis_status);
+        $this->assertSame('failed', $invoice->eis_status);
         Queue::assertNothingPushed();
     }
 

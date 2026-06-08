@@ -66,6 +66,12 @@ class TransmitInvoiceJob implements ShouldQueue
                 return;
             }
 
+            if (($result['eis_status'] ?? '') === 'rejected') {
+                $this->markRejected($invoice, $result['eis_status']);
+
+                return;
+            }
+
             $this->markTransmissionFailed($invoice, $result['eis_status'] ?? 'failed');
         } catch (\Throwable $e) {
             TransmissionLog::create([
@@ -88,6 +94,26 @@ class TransmitInvoiceJob implements ShouldQueue
         }
     }
 
+    private function markRejected(Invoice $invoice, string $eisStatus): void
+    {
+        $invoice->update([
+            'processing_status' => 'transmission_failed',
+            'eis_status' => $eisStatus,
+        ]);
+        InvoiceBroadcaster::statusUpdated($invoice);
+
+        MerchantActivityService::broadcastForInvoice($invoice, 'eis_rejected', [
+            'source_event' => 'eis_rejected',
+            'metadata' => ['eis_status' => $eisStatus],
+        ]);
+
+        AlertEmitter::eisRejection($invoice, $eisStatus, [
+            'processing_status' => 'transmission_failed',
+        ]);
+
+        WebhookDispatcher::dispatchEvent($invoice->fresh(), 'transaction.eis_rejected');
+    }
+
     private function markTransmissionFailed(Invoice $invoice, string $eisStatus): void
     {
         $invoice->update([
@@ -96,26 +122,16 @@ class TransmitInvoiceJob implements ShouldQueue
         ]);
         InvoiceBroadcaster::statusUpdated($invoice);
 
-        if ($eisStatus === 'rejected') {
-            MerchantActivityService::broadcastForInvoice($invoice, 'eis_rejected', [
-                'source_event' => 'eis_rejected',
-                'metadata' => ['eis_status' => $eisStatus],
-            ]);
-            AlertEmitter::eisRejection($invoice, $eisStatus, [
-                'processing_status' => 'transmission_failed',
-            ]);
-        } else {
-            AlertEmitter::processingFailure(
-                $invoice,
-                sprintf(
-                    'Transmission failed for invoice %s',
-                    $invoice->bridge_transaction_id ?? $invoice->id
-                ),
-                ['eis_status' => $eisStatus]
-            );
-        }
+        AlertEmitter::processingFailure(
+            $invoice,
+            sprintf(
+                'Transmission failed for invoice %s',
+                $invoice->bridge_transaction_id ?? $invoice->id
+            ),
+            ['eis_status' => $eisStatus]
+        );
 
-        WebhookDispatcher::dispatchEvent($invoice->fresh(), 'transaction.eis_rejected');
+        WebhookDispatcher::dispatchEvent($invoice->fresh(), 'transaction.eis_failed');
 
         RetryFailedTransmissionJob::dispatch($invoice->id, 1)->onQueue('retry');
     }

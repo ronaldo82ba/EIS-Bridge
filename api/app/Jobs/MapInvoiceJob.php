@@ -21,6 +21,8 @@ class MapInvoiceJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $tries = 1;
+
     public function __construct(
         public int $invoiceId,
     ) {
@@ -70,7 +72,6 @@ class MapInvoiceJob implements ShouldQueue
             ]);
         } catch (\Throwable $e) {
             $this->markFailed($invoice, 'mapping_failed', $e->getMessage());
-            throw $e;
         }
     }
 
