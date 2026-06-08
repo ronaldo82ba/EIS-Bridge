@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge Online Store — hardware, software, and licensing for BIR EIS compliance.">
+  <title>Online Store — EIS Bridge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/store.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="store-header">
+    <div class="container store-header__inner">
+      <a href="index.html" class="store-logo" aria-label="EIS Bridge Online Store home">
+        <span class="store-logo__mark">EIS</span>
+        <span class="store-logo__text">Bridge Store</span>
+      </a>
+      <nav class="store-nav" aria-label="Store navigation">
+        <a href="../index.html">Marketing</a>
+        <a href="../portal/index.html">Developer Portal</a>
+      </nav>
+      <div class="cart-indicator" aria-live="polite">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-indicator__label">Cart</span>
+        <span id="cart-count" class="cart-indicator__count" hidden>0</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="store-main">
+    <div class="container">
+      <div class="store-hero">
+        <h1>Products</h1>
+        <p>Browse hardware, software, and licensing for BIR EIS compliance.</p>
+      </div>
+
+      <section class="search-section" aria-label="Product search">
+        <form id="search-form" class="search-bar">
+          <div class="search-bar__field">
+            <svg class="search-bar__icon icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input
+              id="search-input"
+              type="search"
+              name="search"
+              placeholder="Search products…"
+              autocomplete="off"
+              aria-label="Search products"
+            >
+          </div>
+          <button type="submit" class="search-bar__submit">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            Search
+          </button>
+        </form>
+
+        <button
+          type="button"
+          id="advanced-toggle"
+          class="advanced-toggle"
+          aria-expanded="false"
+          aria-controls="advanced-panel"
+        >
+          Advanced Search
+          <svg class="icon advanced-toggle__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+
+        <div id="advanced-panel" class="advanced-panel" hidden>
+          <form id="filter-form" class="advanced-form">
+            <div class="advanced-form__grid">
+              <label class="field">
+                <span class="field__label">Category</span>
+                <select id="filter-category" name="category">
+                  <option value="">All categories</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Price min</span>
+                <input id="filter-price-min" type="number" name="price_min" min="0" step="1" placeholder="0">
+              </label>
+
+              <label class="field">
+                <span class="field__label">Price max</span>
+                <input id="filter-price-max" type="number" name="price_max" min="0" step="1" placeholder="Any">
+              </label>
+
+              <label class="field">
+                <span class="field__label">Brand</span>
+                <select id="filter-brand" name="brand">
+                  <option value="">All brands</option>
+                </select>
+              </label>
+
+              <fieldset class="field field--checkboxes">
+                <legend class="field__label">Availability</legend>
+                <label class="checkbox">
+                  <input id="filter-in-stock" type="checkbox" name="in_stock">
+                  In stock
+                </label>
+                <label class="checkbox">
+                  <input id="filter-out-of-stock" type="checkbox" name="out_of_stock">
+                  Out of stock
+                </label>
+              </fieldset>
+            </div>
+
+            <button type="submit" class="apply-filters-btn">Apply Filters</button>
+          </form>
+        </div>
+      </section>
+
+      <p id="empty-state" class="empty-state" hidden>No results found</p>
+
+      <section id="product-grid" class="product-grid" aria-label="Product listings"></section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="quantity-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="quantity-modal-title">
+    <div class="modal__panel">
+      <h2 id="quantity-modal-title">Add quantity</h2>
+      <p id="quantity-product-name" class="modal__product"></p>
+      <label class="field">
+        <span class="field__label">Quantity</span>
+        <input id="quantity-input" type="number" min="1" max="99" value="1">
+      </label>
+      <p class="modal__hint">Tip: hold Shift when clicking Add to Cart to choose quantity.</p>
+      <div class="modal__actions">
+        <button type="button" id="quantity-cancel" class="btn-secondary">Cancel</button>
+        <button type="button" id="quantity-confirm" class="btn-primary">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="store-footer">
+    <div class="container">
+      <p>&copy; 2026 EIS Bridge · <a href="../index.html">Back to home</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

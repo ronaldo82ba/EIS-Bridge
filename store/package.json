@@ -1,0 +1,8 @@
+{
+  "name": "eis-bridge-store",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/store.test.js"
+  }
+}
