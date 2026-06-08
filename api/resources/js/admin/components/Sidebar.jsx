@@ -1,9 +1,13 @@
-import { NavLink } from 'react-router-dom';
+﻿import { NavLink } from 'react-router-dom';
 
 const navItems = [
     { to: '/dashboard', label: 'Dashboard' },
+    { to: '/vendors', label: 'Vendors' },
     { to: '/merchants', label: 'Merchants' },
     { to: '/branches', label: 'Branches' },
+    { to: '/invoices', label: 'Invoices' },
+    { to: '/alerts', label: 'Alerts' },
+    { to: '/queues', label: 'Queues' },
     { to: '/certificates', label: 'Certificates' },
     { to: '/webhooks', label: 'Webhooks' },
     { to: '/billing', label: 'Billing' },
@@ -21,13 +25,17 @@ function linkClassName({ isActive }) {
     ].join(' ');
 }
 
+function isNavEnd(path) {
+    return path === '/dashboard';
+}
+
 export default function Sidebar() {
     return (
         <aside className="flex w-56 shrink-0 flex-col bg-slate-900 text-white">
             <div className="border-b border-slate-700 px-5 py-4 text-lg font-semibold">EIS Bridge</div>
             <nav className="flex-1 py-3">
                 {navItems.map((item) => (
-                    <NavLink key={item.to} to={item.to} className={linkClassName} end={item.to === '/dashboard'}>
+                    <NavLink key={item.to} to={item.to} className={linkClassName} end={isNavEnd(item.to)}>
                         {item.label}
                     </NavLink>
                 ))}
