@@ -54,8 +54,17 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+            'channels' => array_filter(array_merge(
+                explode(',', (string) env('LOG_STACK', 'single')),
+                filter_var(env('LOG_SYSTEM_DB', true), FILTER_VALIDATE_BOOLEAN) ? ['system_db'] : []
+            )),
             'ignore_exceptions' => false,
+        ],
+
+        'system_db' => [
+            'driver' => 'monolog',
+            'handler' => App\Logging\SystemLogHandler::class,
+            'level' => env('LOG_SYSTEM_DB_LEVEL', 'warning'),
         ],
 
         'single' => [

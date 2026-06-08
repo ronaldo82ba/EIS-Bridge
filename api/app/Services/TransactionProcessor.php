@@ -2,7 +2,12 @@
 
 namespace App\Services;
 
+use App\Jobs\ProcessInvoiceJob;
+use App\Support\InvoiceBroadcaster;
+use App\Models\Branch;
+use App\Models\Device;
 use App\Models\Invoice;
+use App\Models\Merchant;
 use App\Models\TransmissionLog;
 use Illuminate\Support\Str;
 
@@ -30,6 +35,12 @@ class TransactionProcessor
                 'message'     => 'Missing required field: ' . $fieldList,
                 'fields'      => $missingFields,
             ];
+        }
+
+        $deviceLockResult = $this->rejectIfDeviceLocked($data);
+
+        if ($deviceLockResult !== null) {
+            return $deviceLockResult;
         }
 
         $existing = Invoice::where('transaction_id', $data['transaction_id'])
@@ -66,6 +77,10 @@ class TransactionProcessor
             'timestamp'  => now(),
             'metadata'   => null,
         ]);
+
+        InvoiceBroadcaster::created($invoice);
+
+        ProcessInvoiceJob::dispatch($invoice->id)->onQueue('mapping');
 
         return [
             'http_status'           => 201,
@@ -109,5 +124,45 @@ class TransactionProcessor
             ],
             'results'  => $results,
         ];
+    }
+
+    private function rejectIfDeviceLocked(array $data): ?array
+    {
+        $merchantCode = (string) ($data['merchant_code'] ?? '');
+        $branchCode = (string) ($data['branch_code'] ?? '');
+        $posDeviceId = (string) ($data['pos_device_id'] ?? '');
+
+        if ($merchantCode === '' || $branchCode === '' || $posDeviceId === '') {
+            return null;
+        }
+
+        $merchant = Merchant::where('merchant_code', $merchantCode)->first();
+
+        if (! $merchant) {
+            return null;
+        }
+
+        $branch = Branch::where('merchant_id', $merchant->id)
+            ->where('branch_code', $branchCode)
+            ->first();
+
+        if (! $branch) {
+            return null;
+        }
+
+        $device = Device::where('branch_id', $branch->id)
+            ->where('pos_device_id', $posDeviceId)
+            ->first();
+
+        if ($device && $device->status === 'locked') {
+            return [
+                'http_status' => 403,
+                'status' => 'rejected',
+                'error' => 'device_locked',
+                'message' => 'This POS device is locked and cannot send transactions.',
+            ];
+        }
+
+        return null;
     }
 }

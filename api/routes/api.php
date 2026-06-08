@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WebhookController;
+use Illuminate\Support\Facades\Route;
 
-Route::middleware('api_key')->group(function () {
-    Route::post('/transactions', [TransactionController::class, 'store']);
-    Route::post('/transactions/batch', [TransactionController::class, 'batch']);
+Route::middleware(['api_key', 'vendor.ip', 'throttle:vendor-api'])->group(function () {
+    Route::post('/transactions', [TransactionController::class, 'store'])
+        ->middleware('throttle:vendor-transactions');
+    Route::post('/transactions/batch', [TransactionController::class, 'batch'])
+        ->middleware('throttle:vendor-transactions');
     Route::get('/transactions/{bridgeTransactionId}', [TransactionController::class, 'show']);
     Route::get('/transactions', [TransactionController::class, 'index']);
 

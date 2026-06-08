@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eisbridge.ph/schemas/bir-eis-invoice.schema.json",
+  "title": "EIS Bridge BIR EIS Invoice Payload",
+  "description": "Mapped BIR EIS invoice structure produced by PosToBirMapper. Fields marked with _comment require BIR official spec confirmation.",
+  "type": "object",
+  "required": [
+    "document_type",
+    "transaction_id",
+    "transaction_datetime",
+    "currency",
+    "merchant",
+    "branch",
+    "device",
+    "line_items",
+    "totals",
+    "payment",
+    "eis_fields"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "document_type": {
+      "type": "string",
+      "description": "Invoice/receipt type (e.g. OR, SI). MUST match BIR EIS document type codes.",
+      "_comment": "Confirm allowed values with official BIR EIS specification."
+    },
+    "transaction_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "POS transaction identifier."
+    },
+    "transaction_datetime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 datetime of the sale."
+    },
+    "currency": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3,
+      "description": "ISO 4217 currency code (default PHP)."
+    },
+    "merchant": {
+      "type": "object",
+      "required": ["code"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "name": { "type": ["string", "null"] },
+        "tin": {
+          "type": ["string", "null"],
+          "_comment": "BIR TIN format must match official EIS spec (e.g. XXX-XXX-XXX-XXX)."
+        },
+        "address": { "type": ["string", "null"] }
+      }
+    },
+    "branch": {
+      "type": "object",
+      "required": ["code"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "name": { "type": ["string", "null"] },
+        "address": { "type": ["string", "null"] }
+      }
+    },
+    "device": {
+      "type": "object",
+      "required": ["pos_device_id"],
+      "additionalProperties": false,
+      "properties": {
+        "pos_device_id": { "type": "string", "minLength": 1 },
+        "name": { "type": ["string", "null"] }
+      }
+    },
+    "ptt": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "ptt_number": { "type": "string" },
+        "valid_from": { "type": ["string", "null"], "format": "date" },
+        "valid_to": { "type": ["string", "null"], "format": "date" },
+        "status": { "type": "string" }
+      },
+      "_comment": "PTT block presence and field names require BIR confirmation."
+    },
+    "line_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "line_no",
+          "sku",
+          "description",
+          "quantity",
+          "unit_price",
+          "gross_amount"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "line_no": { "type": "integer", "minimum": 1 },
+          "sku": { "type": "string" },
+          "barcode": { "type": ["string", "null"] },
+          "description": { "type": "string" },
+          "quantity": { "type": "number", "exclusiveMinimum": 0 },
+          "unit": { "type": "string" },
+          "unit_price": { "type": "number", "minimum": 0 },
+          "discount_amount": { "type": "number", "minimum": 0 },
+          "gross_amount": { "type": "number", "minimum": 0 },
+          "vat_rate": { "type": "number", "minimum": 0 },
+          "vatable_sales": { "type": "number", "minimum": 0 },
+          "vat_amount": { "type": "number", "minimum": 0 },
+          "vat_exempt_sales": { "type": "number", "minimum": 0 },
+          "zero_rated_sales": { "type": "number", "minimum": 0 },
+          "vat_exempt": { "type": "boolean" },
+          "zero_rated": { "type": "boolean" }
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "required": [
+        "gross_amount",
+        "discount_amount",
+        "vatable_sales",
+        "vat_amount",
+        "vat_exempt_sales",
+        "zero_rated_sales",
+        "service_charge",
+        "net_amount"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "gross_amount": { "type": "number", "minimum": 0 },
+        "discount_amount": { "type": "number", "minimum": 0 },
+        "vatable_sales": { "type": "number", "minimum": 0 },
+        "vat_amount": { "type": "number", "minimum": 0 },
+        "vat_exempt_sales": { "type": "number", "minimum": 0 },
+        "zero_rated_sales": { "type": "number", "minimum": 0 },
+        "service_charge": { "type": "number", "minimum": 0 },
+        "net_amount": { "type": "number", "minimum": 0 }
+      }
+    },
+    "payment": {
+      "type": "object",
+      "required": ["method", "amount"],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "_comment": "Payment method codes must match BIR EIS enumeration."
+        },
+        "amount": { "type": "number", "minimum": 0 },
+        "details": { "type": ["object", "null", "string"] }
+      }
+    },
+    "customer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "buyer_name": { "type": "string" },
+        "buyer_tin": { "type": "string" },
+        "buyer_address": { "type": "string" },
+        "buyer_email": { "type": "string", "format": "email" },
+        "buyer_mobile": { "type": "string" }
+      }
+    },
+    "references": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "original_transaction_id": { "type": ["string", "null"] },
+        "return_or_void": { "type": "boolean" },
+        "return_reason": { "type": ["string", "null"] }
+      }
+    },
+    "metadata": {
+      "type": ["object", "null"]
+    },
+    "eis_fields": {
+      "type": "object",
+      "required": ["submission_version", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "bridge_transaction_id": { "type": ["string", "null"] },
+        "submission_version": { "type": "string" },
+        "source": { "type": "string", "const": "EIS_BRIDGE" }
+      },
+      "_comment": "Bridge-specific metadata; confirm whether BIR accepts extension fields."
+    }
+  }
+}

@@ -12,6 +12,8 @@ class Branch extends Model
         'merchant_id',
         'branch_code',
         'name',
+        'address',
+        'status',
     ];
 
     public function merchant(): BelongsTo

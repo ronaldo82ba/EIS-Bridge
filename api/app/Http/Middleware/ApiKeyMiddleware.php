@@ -2,16 +2,21 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Security\VendorApiKeyService;
 use Closure;
-use App\Models\Vendor;
+use Illuminate\Http\Request;
 
 class ApiKeyMiddleware
 {
-    public function handle($request, Closure $next)
+    public function __construct(
+        private readonly VendorApiKeyService $apiKeyService,
+    ) {}
+
+    public function handle(Request $request, Closure $next)
     {
         $header = $request->header('Authorization');
 
-        if (!$header || !str_starts_with($header, 'Bearer ')) {
+        if (! $header || ! str_starts_with($header, 'Bearer ')) {
             return response()->json([
                 'error' => 'unauthorized',
                 'message' => 'Missing Authorization header.',
@@ -19,10 +24,9 @@ class ApiKeyMiddleware
         }
 
         $apiKey = substr($header, 7);
+        $vendor = $this->apiKeyService->validate($apiKey);
 
-        $vendor = Vendor::where('api_key', $apiKey)->first();
-
-        if (!$vendor) {
+        if (! $vendor) {
             return response()->json([
                 'error' => 'unauthorized',
                 'message' => 'Invalid API key.',

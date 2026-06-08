@@ -6,18 +6,27 @@ use App\Models\Branch;
 use App\Models\Device;
 use App\Models\Merchant;
 use App\Models\Vendor;
+use App\Services\Security\VendorApiKeyService;
 use Illuminate\Database\Seeder;
 
 class VendorSeeder extends Seeder
 {
     public function run(): void
     {
-        $apiKey = env('SANDBOX_API_KEY', 'VENDOR_API_KEY_123');
+        $plainKey = env('SANDBOX_API_KEY', 'VENDOR_API_KEY_123');
+        $apiKeyService = app(VendorApiKeyService::class);
 
         $vendor = Vendor::firstOrCreate(
-            ['api_key' => $apiKey],
-            ['name' => 'Sandbox Vendor']
+            ['name' => 'Sandbox Vendor'],
+            [
+                'api_key' => '',
+                'webhook_url' => null,
+            ]
         );
+
+        if (! $apiKeyService->validate($plainKey)) {
+            $apiKeyService->assignInitialKey($vendor, $plainKey);
+        }
 
         $merchant = Merchant::firstOrCreate(
             ['vendor_id' => $vendor->id, 'merchant_code' => 'MRC123'],

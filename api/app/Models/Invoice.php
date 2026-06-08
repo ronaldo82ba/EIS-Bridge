@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model
@@ -27,8 +28,24 @@ class Invoice extends Model
         'signed_json'  => 'array',
     ];
 
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_code', 'merchant_code');
+    }
+
+    public function webhookDeliveries(): HasMany
+    {
+        return $this->hasMany(WebhookDelivery::class);
+    }
+
     public function transmissionLogs(): HasMany
     {
         return $this->hasMany(TransmissionLog::class);
+    }
+
+    /** @alias transmissionLogs() */
+    public function logs(): HasMany
+    {
+        return $this->transmissionLogs();
     }
 }

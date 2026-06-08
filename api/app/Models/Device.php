@@ -11,6 +11,7 @@ class Device extends Model
         'branch_id',
         'pos_device_id',
         'name',
+        'status',
     ];
 
     public function branch(): BelongsTo
