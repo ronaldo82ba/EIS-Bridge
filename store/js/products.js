@@ -1,7 +1,7 @@
 /** @typedef {{ id: string, name: string, sku: string, category: string, brand: string, price: number, inStock: boolean, image?: string }} Product */
 
 /** @type {Product[]} */
-export const PRODUCTS = [
+export const MAIN_PRODUCTS = [
     { id: 'p1', name: 'Thermal Receipt Printer', sku: 'TRP-200', category: 'Hardware', brand: 'PrintPro', price: 8499, inStock: true },
     { id: 'p2', name: 'Barcode Scanner USB', sku: 'BCS-110', category: 'Hardware', brand: 'ScanTech', price: 3299, inStock: true },
     { id: 'p3', name: 'Cash Drawer 16"', sku: 'CDR-016', category: 'Hardware', brand: 'PrintPro', price: 4599, inStock: false },
@@ -20,5 +20,8 @@ export const PRODUCTS = [
     { id: 'p16', name: 'Certificate Management Add-on', sku: 'SW-CERT-01', category: 'Software', brand: 'EIS Bridge', price: 2499, inStock: true },
 ];
 
-export const CATEGORIES = [...new Set(PRODUCTS.map((p) => p.category))].sort();
-export const BRANDS = [...new Set(PRODUCTS.map((p) => p.brand))].sort();
+/** @deprecated Use MAIN_PRODUCTS — kept for backward compatibility in tests */
+export const PRODUCTS = MAIN_PRODUCTS;
+
+export const CATEGORIES = [...new Set(MAIN_PRODUCTS.map((p) => p.category))].sort();
+export const BRANDS = [...new Set(MAIN_PRODUCTS.map((p) => p.brand))].sort();

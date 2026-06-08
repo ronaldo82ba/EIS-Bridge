@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { filterProducts } from '../js/productFilters.js';
 import { createCartStore } from '../js/cartStore.js';
-import { PRODUCTS } from '../js/products.js';
+import { DEFAULT_STORE_INVENTORY, deriveFilterOptions, resolveProductCatalog } from '../js/productCatalog.js';
+import { MAIN_PRODUCTS, PRODUCTS } from '../js/products.js';
 
 class MemoryStorage {
     constructor() {
@@ -113,4 +114,21 @@ test('responsive grid CSS defines mobile, tablet, and desktop breakpoints', asyn
     assert.match(css, /@media \(min-width:\s*640px\)/);
     assert.match(css, /@media \(min-width:\s*1024px\)/);
     assert.match(css, /gap:\s*20px/);
+});
+
+test('resolveProductCatalog uses main list when toggle is on', () => {
+    const products = resolveProductCatalog(true, DEFAULT_STORE_INVENTORY, MAIN_PRODUCTS);
+    assert.deepEqual(products, MAIN_PRODUCTS);
+});
+
+test('resolveProductCatalog uses store inventory when toggle is off', () => {
+    const products = resolveProductCatalog(false, DEFAULT_STORE_INVENTORY, MAIN_PRODUCTS);
+    assert.deepEqual(products, DEFAULT_STORE_INVENTORY);
+    assert.ok(products.every((product) => !MAIN_PRODUCTS.some((main) => main.id === product.id)));
+});
+
+test('deriveFilterOptions builds categories and brands from active catalog', () => {
+    const options = deriveFilterOptions(DEFAULT_STORE_INVENTORY);
+    assert.deepEqual(options.categories, ['Accessories', 'Bundles', 'Services']);
+    assert.deepEqual(options.brands, ['EIS Bridge', 'PrintPro']);
 });

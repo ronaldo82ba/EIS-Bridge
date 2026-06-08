@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import StatusBadge from '../../components/StatusBadge';
 import StatCard from '../../components/StatCard';
 import VendorLicenses from '../../components/VendorLicenses';
+import VendorStoreInventory from '../../components/VendorStoreInventory';
 import { toastError, toastSuccess } from '../../components/Toast';
 import { vendorService } from '../../services/vendorService';
 
@@ -264,6 +265,10 @@ export default function VendorDetail() {
                     <StatCard title="Rejected" value={stats.today_rejected ?? 0} accent="red" />
                     <StatCard title="Webhook Failures" value={stats.webhook_failures ?? 0} accent="amber" />
                 </div>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-white p-6">
+                <VendorStoreInventory vendorId={vendorId} />
             </div>
 
             <div className="rounded-lg border border-slate-200 bg-white p-6">

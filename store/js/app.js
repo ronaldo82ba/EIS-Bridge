@@ -1,6 +1,7 @@
-import { PRODUCTS, CATEGORIES, BRANDS } from './products.js';
 import { filterProducts } from './productFilters.js';
 import { createCartStore } from './cartStore.js';
+import { deriveFilterOptions } from './productCatalog.js';
+import { loadStoreProducts } from './productLoader.js';
 
 const cart = createCartStore(window.localStorage);
 
@@ -37,6 +38,9 @@ let activeFilters = {
     inStock: false,
     outOfStock: false,
 };
+
+/** @type {import('./products.js').Product[]} */
+let catalogProducts = [];
 
 /** @type {string | null} */
 let pendingProductId = null;
@@ -85,7 +89,7 @@ function getFilterValues() {
 }
 
 function renderProducts() {
-    const filtered = filterProducts(PRODUCTS, activeFilters);
+    const filtered = filterProducts(catalogProducts, activeFilters);
     els.productGrid.innerHTML = '';
 
     if (filtered.length === 0) {
@@ -124,15 +128,19 @@ function renderProducts() {
     });
 }
 
-function populateSelectOptions() {
-    CATEGORIES.forEach((category) => {
+function populateSelectOptions(products) {
+    const { categories, brands } = deriveFilterOptions(products);
+
+    els.category.innerHTML = '<option value="">All categories</option>';
+    categories.forEach((category) => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
         els.category.appendChild(option);
     });
 
-    BRANDS.forEach((brand) => {
+    els.brand.innerHTML = '<option value="">All brands</option>';
+    brands.forEach((brand) => {
         const option = document.createElement('option');
         option.value = brand;
         option.textContent = brand;
@@ -176,7 +184,7 @@ function addProductToCart(productId, quantity = 1) {
 
     window.setTimeout(() => {
         disabledButtons.delete(productId);
-        if (button && PRODUCTS.find((p) => p.id === productId)?.inStock) {
+        if (button && catalogProducts.find((product) => product.id === productId)?.inStock) {
             button.disabled = false;
             button.classList.remove('add-to-cart-btn--loading');
         }
@@ -216,7 +224,7 @@ function bindEvents() {
             return;
         }
 
-        const product = PRODUCTS.find((item) => item.id === productId);
+        const product = catalogProducts.find((item) => item.id === productId);
         if (!product || !product.inStock) {
             return;
         }
@@ -248,7 +256,14 @@ function bindEvents() {
     });
 }
 
-populateSelectOptions();
-bindEvents();
-updateCartCount();
-renderProducts();
+async function bootstrap() {
+    bindEvents();
+    updateCartCount();
+
+    const { products } = await loadStoreProducts();
+    catalogProducts = products;
+    populateSelectOptions(catalogProducts);
+    renderProducts();
+}
+
+bootstrap();

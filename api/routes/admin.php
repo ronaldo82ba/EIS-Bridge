@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\PttController;
 use App\Http\Controllers\Admin\QueueController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\StoreInventoryController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\VendorIpWhitelistController;
 use App\Http\Controllers\Admin\WebhookController;
@@ -127,6 +128,13 @@ Route::middleware(['auth:sanctum', 'admin', 'throttle:admin-api'])->group(functi
     Route::get('/vendors/{vendor}/ip-whitelist', [VendorIpWhitelistController::class, 'index']);
     Route::post('/vendors/{vendor}/ip-whitelist', [VendorIpWhitelistController::class, 'store']);
     Route::delete('/vendors/{vendor}/ip-whitelist/{whitelist}', [VendorIpWhitelistController::class, 'destroy']);
+
+    Route::get('/vendors/{vendor}/store-inventory', [StoreInventoryController::class, 'index']);
+    Route::get('/vendors/{vendor}/store-inventory/preview', [StoreInventoryController::class, 'preview']);
+    Route::post('/vendors/{vendor}/store-inventory', [StoreInventoryController::class, 'store']);
+    Route::patch('/vendors/{vendor}/store-inventory/{inventoryItem}', [StoreInventoryController::class, 'update']);
+    Route::delete('/vendors/{vendor}/store-inventory/{inventoryItem}', [StoreInventoryController::class, 'destroy']);
+    Route::patch('/vendors/{vendor}/store-settings', [StoreInventoryController::class, 'updateSettings']);
 
     Route::prefix('billing')->group(function () {
         Route::get('/summary', [BillingController::class, 'summary']);

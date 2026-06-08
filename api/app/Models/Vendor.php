@@ -19,6 +19,7 @@ class Vendor extends Model
         'webhook_url',
         'webhook_secret',
         'status',
+        'use_main_online_store_product_list',
         'eis_retry_max_attempts',
     ];
 
@@ -30,6 +31,7 @@ class Vendor extends Model
 
     protected $casts = [
         'api_key_rotated_at' => 'datetime',
+        'use_main_online_store_product_list' => 'boolean',
     ];
 
     public function merchants(): HasMany
@@ -50,6 +52,11 @@ class Vendor extends Model
     public function licenses(): HasMany
     {
         return $this->hasMany(VendorLicense::class);
+    }
+
+    public function storeInventoryItems(): HasMany
+    {
+        return $this->hasMany(StoreInventoryItem::class);
     }
 
     public function billingInvoices(): \Illuminate\Database\Eloquent\Relations\MorphMany
