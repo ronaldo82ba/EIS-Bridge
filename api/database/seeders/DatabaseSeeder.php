@@ -12,7 +12,6 @@ class DatabaseSeeder extends Seeder
             VendorSeeder::class,
             AdminUserSeeder::class,
             LicensePlanSeeder::class,
-            OnlineStoreProductSeeder::class,
         ]);
     }
 }
