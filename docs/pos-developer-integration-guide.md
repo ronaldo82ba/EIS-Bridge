@@ -6,14 +6,15 @@
 
 ## Overview
 
-EIS Bridge allows any POS or ERP system to become BIR EIS-compliant without rewriting your software. You simply send standardized sales JSON to EIS Bridge — we handle:
+EIS Bridge lets POS and ERP vendors connect to the BIR Electronic Invoicing System **without changing POS source code**. Map each sale to the **Standard Sale Object**, POST it to the Vendor API, and receive immediate async acceptance — EIS Bridge handles:
 
 - JSON → BIR EIS mapping
-- Digital signing
-- Transmission to BIR
-- Queueing & retries
-- T+3 compliance
-- Acknowledgment tracking
+- Digital signing (JWS)
+- Queued transmission to BIR
+- Retries and T+3 compliance
+- Acknowledgment tracking (poll or webhooks)
+
+**Merchant-side BIR requirements still apply:** each merchant taxpayer completes EIS registration, EIS CERT, and Permit to Transmit (PTT) on [eis-cert.bir.gov.ph](https://eis-cert.bir.gov.ph/). EIS Bridge guides the technical workflow; it does not replace taxpayer registration.
 
 This guide shows how to integrate in minutes.
 
@@ -30,16 +31,18 @@ Content-Type: application/json
 
 ### Base URLs
 
-| Environment | Base URL |
-|-------------|----------|
-| Sandbox | `https://sandbox.eisbridge.ph/v1` |
-| Production | `https://api.eisbridge.ph/v1` |
+| Environment | Base URL | Status |
+|-------------|----------|--------|
+| Sandbox | `https://sandbox.eisbridge.ph/v1` | Provisioned on request during vendor onboarding |
+| Production | `https://api.eisbridge.ph/v1` | Available after vendor certification |
+
+Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for sandbox credentials, or run the API locally (see root README).
 
 ---
 
 ## Standard Sale Object — Minimum Required Fields
 
-Send this structure to EIS Bridge:
+This is the **only JSON format** your POS needs to produce. Send this structure to EIS Bridge:
 
 ```json
 {
@@ -68,13 +71,15 @@ Send this structure to EIS Bridge:
 }
 ```
 
-Everything else is optional.
+Everything else is optional. Full field reference: [vendor-api.md](vendor-api.md) · JSON Schema: [schemas/sale-object.schema.json](schemas/sale-object.schema.json)
 
 ---
 
-## Submit a Transaction
+## Submit a Transaction (async acceptance)
 
 **`POST /transactions`**
+
+EIS Bridge accepts the transaction immediately and processes BIR transmission in the background. Checkout does not wait on BIR response time.
 
 ```http
 POST /v1/transactions HTTP/1.1
@@ -97,7 +102,8 @@ Response:
 {
   "status": "accepted",
   "bridge_transaction_id": "EB-20260607-000001",
-  "processing_status": "queued"
+  "processing_status": "queued",
+  "message": "Transaction accepted for EIS processing."
 }
 ```
 
@@ -124,6 +130,8 @@ Response:
 }
 ```
 
+When `eis_status` is `acknowledged`, BIR EIS has accepted the invoice. Persist `eis_reference_no` for audit and customer receipts.
+
 ---
 
 ## Batch Submit (Optional)
@@ -143,6 +151,8 @@ Response:
 ---
 
 ## Webhooks (Recommended)
+
+Configure webhooks to avoid polling. EIS Bridge notifies your system when BIR acknowledges a transaction.
 
 ### Configure webhook
 
@@ -183,7 +193,7 @@ Response:
 
 ## Duplicate Protection
 
-If the same `transaction_id` is sent twice:
+If the same `transaction_id` is sent twice with identical data:
 
 ```json
 {
@@ -192,25 +202,35 @@ If the same `transaction_id` is sent twice:
 }
 ```
 
+Treat `duplicate` as success — the original transaction was already accepted.
+
 ---
 
 ## Developer Checklist
 
-- [ ] Add API key
-- [ ] Map POS sale → EIS Bridge JSON
-- [ ] Send `/transactions`
+- [ ] Obtain sandbox API key and test merchant/branch/device codes
+- [ ] Map POS sale → Standard Sale Object
+- [ ] Send `POST /transactions` and verify `processing_status: queued`
 - [ ] Store `bridge_transaction_id`
-- [ ] Poll status or use webhooks
-- [ ] Go live
+- [ ] Poll status or configure webhooks
+- [ ] Run [QA Integration Test Cases v1.0](qa/integration-test-cases-v1.md)
+- [ ] Complete [Certification Playbook](certification-playbook.md) for production go-live
 
 ---
 
 ## Next Steps
 
-- **[EIS Bridge Vendor API](vendor-api.md)** — full API reference (endpoints, webhooks, error codes, and integration checklist)
-- **[Standard Sale Object schema](schemas/sale-object.schema.json)** — machine-readable JSON Schema for validation and tooling
-- **[Postman Collection v1.0](postman/EIS-Bridge-API-v1.postman_collection.json)** — ready-to-import requests for all core endpoints. In Postman, choose **Import → Upload Files** and select the collection file. Set collection variables `BASE_URL`, `API_KEY`, and `BRIDGE_TRANSACTION_ID` before sending requests.
-- **[POS Integration Test Cases (QA Suite v1.0)](qa/integration-test-cases-v1.md)** — structured test cases for connectivity, validation, batch, webhooks, compliance, and go-live certification
+- **[EIS Bridge Vendor API](vendor-api.md)** — full API reference (endpoints, webhooks, error codes)
+- **[Standard Sale Object schema](schemas/sale-object.schema.json)** — machine-readable JSON Schema
+- **[Postman Collection v1.0](postman/EIS-Bridge-API-v1.postman_collection.json)** — ready-to-import requests. Set collection variables `BASE_URL`, `API_KEY`, and `BRIDGE_TRANSACTION_ID` before sending.
+- **[Certification Playbook](certification-playbook.md)** — EIS CERT, PTT, and go-live steps
+- **[Partner Program](partner-program.md)** — Vendor Edition and partner economics
+
+---
+
+## Compliance note
+
+EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
 
 ---
 

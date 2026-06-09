@@ -10,6 +10,10 @@
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
+  <div class="ip-notice-bar" role="note">
+    EIS Bridge&trade; &mdash; trademark application pending &middot; IPOPHL Class 42 &middot; Ref EFPH202600003850268
+  </div>
+
   <header class="site-header portal-header">
     <div class="container header-inner">
       <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
@@ -36,9 +40,9 @@
 
   <section class="portal-hero" aria-labelledby="hero-heading">
     <div class="container">
-      <h1 id="hero-heading">One API. Any POS. Instant EIS compliance.</h1>
+      <h1 id="hero-heading">One Vendor API. Any POS. Async EIS transmission.</h1>
       <p class="lead">
-        Send standardized sales JSON from your POS or ERP to EIS Bridge. We handle BIR EIS mapping, signing, transmission, queueing, retries, and acknowledgment tracking — so you ship compliance without rewriting your software.
+        Map POS sales to the Standard Sale Object and POST to EIS Bridge. Immediate <code>accepted</code> / <code>queued</code> response — BIR mapping, signing, transmission, retries, and webhooks run in the background. Merchants still complete EIS CERT and PTT per BIR.
       </p>
       <div class="cta-row">
         <a class="btn btn-primary" href="support.html#get-api-key">Get API Key</a>
@@ -54,9 +58,13 @@
   <main id="main" class="portal-main">
     <div class="container">
       <section class="content-section" aria-labelledby="value-heading">
-        <h2 id="value-heading">Built for production integrations</h2>
+        <h2 id="value-heading">Built for POS vendor integrations</h2>
         <p>
-          In ten seconds: map your POS sale to one JSON object, POST it to EIS Bridge, and store the returned <code>bridge_transaction_id</code>. Poll status or receive webhooks when BIR acknowledges the invoice. One integration path for every merchant on your platform.
+          In ten seconds: map your POS sale to the Standard Sale Object, POST it to EIS Bridge, and store the returned <code>bridge_transaction_id</code>. Checkout never blocks — transmission is async. Poll status or receive webhooks when BIR acknowledges the invoice. One integration path for every merchant on your platform.
+        </p>
+        <p>
+          <a href="../docs/partner-program.md">Vendor Partner Program</a> ·
+          <a href="../docs/certification-playbook.md">Certification Playbook</a>
         </p>
       </section>
 
@@ -78,8 +86,13 @@
         </article>
         <article class="portal-card">
           <h3>Tools &amp; Testing</h3>
-          <p>Postman collection, code samples, and QA certification suite.</p>
+          <p>Postman collection, code samples, QA certification suite, and go-live playbook.</p>
           <a class="btn btn-secondary" href="tools.html">Developer tools</a>
+        </article>
+        <article class="portal-card">
+          <h3>Partner Program</h3>
+          <p>Vendor Edition, white-label options, and per-merchant activation economics.</p>
+          <a class="btn btn-secondary" href="../docs/partner-program.md">For POS vendors</a>
         </article>
       </div>
     </div>
@@ -88,8 +101,12 @@
   <footer class="site-footer portal-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+        EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
+      <p class="footer-disclaimer">
+        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+      </p>
+      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
       <p class="footer-copy">&copy; 2026 EIS Bridge</p>
     </div>
   </footer>

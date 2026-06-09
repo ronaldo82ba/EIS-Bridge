@@ -5,6 +5,8 @@
 
 This module is separate from EIS **`invoices`** (POS transaction records). All billing records use the **`billing_invoices`** table.
 
+For external Vendor Edition pricing (core license and per-merchant activation), see [Partner Program](partner-program.md).
+
 ---
 
 ## Plan types

@@ -10,6 +10,10 @@
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
+  <div class="ip-notice-bar" role="note">
+    EIS Bridge&trade; &mdash; trademark application pending &middot; IPOPHL Class 42 &middot; Ref EFPH202600003850268
+  </div>
+
   <header class="site-header portal-header">
     <div class="container header-inner">
       <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
@@ -88,6 +92,20 @@
         <h2 id="faq-heading">FAQ</h2>
 
         <article class="faq-item">
+          <h3>Does EIS Bridge replace merchant EIS CERT and PTT?</h3>
+          <p>
+            No. BIR certifies <strong>taxpayer systems</strong>, not software providers. Each merchant must complete EIS registration, EIS CERT, and Permit to Transmit (PTT) on <a href="https://eis-cert.bir.gov.ph/" rel="noopener">eis-cert.bir.gov.ph</a>. EIS Bridge handles technical mapping, signing, and transmission once the merchant is onboarded. See the <a href="../docs/certification-playbook.md">Certification Playbook</a>.
+          </p>
+        </article>
+
+        <article class="faq-item">
+          <h3>Is EIS Bridge accredited by the BIR?</h3>
+          <p>
+            No. EIS Bridge is independent software and is not affiliated with, endorsed by, or accredited by the BIR. EIS Bridge assists with technical transmission workflows only and does not provide tax, legal, or accounting advice.
+          </p>
+        </article>
+
+        <article class="faq-item">
           <h3>Why am I getting validation_error?</h3>
           <p>
             A <code>validation_error</code> (HTTP 400) means one or more fields failed schema validation. Check the <code>fields</code> array in the response for the specific paths — common causes include missing <code>totals.net</code>, invalid ISO 8601 datetime, negative <code>qty</code>, or unknown properties. Validate your payload against the <a href="data-model.html">Standard Sale Object</a> and <a href="../docs/schemas/sale-object.schema.json">JSON schema</a>.
@@ -114,8 +132,12 @@
   <footer class="site-footer portal-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+        EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
+      <p class="footer-disclaimer">
+        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+      </p>
+      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
       <p class="footer-copy">&copy; 2026 EIS Bridge</p>
     </div>
   </footer>

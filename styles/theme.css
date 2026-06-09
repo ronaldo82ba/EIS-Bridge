@@ -348,10 +348,63 @@ section {
   line-height: 1.65;
 }
 
+.footer-disclaimer {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  max-width: 40rem;
+  margin-inline: auto;
+  line-height: 1.6;
+  color: rgba(247, 249, 250, 0.65);
+}
+
+.footer-ip {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: rgba(0, 168, 168, 0.85);
+  letter-spacing: 0.01em;
+}
+
 .footer-copy {
   margin: 0;
   font-size: 0.8125rem;
   color: rgba(247, 249, 250, 0.55);
+}
+
+.ip-notice-bar {
+  background: rgba(0, 87, 217, 0.08);
+  border-bottom: 1px solid rgba(0, 87, 217, 0.12);
+  color: var(--slate-gray);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.45rem 1rem;
+  letter-spacing: 0.01em;
+}
+
+.section-lead {
+  text-align: center;
+  max-width: 42rem;
+  margin: -0.5rem auto 2rem;
+  color: var(--slate-gray);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--eis-blue);
+  background: #fff;
+  border: 2px solid var(--eis-blue);
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 87, 217, 0.06);
 }
 
 /* Responsive tweaks */

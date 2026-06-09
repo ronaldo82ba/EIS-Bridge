@@ -2,12 +2,14 @@
 
 > **Quick start:** See the [POS Developer Integration Guide](pos-developer-integration-guide.md) for a minimal walkthrough before using this full reference.
 
+The **EIS Bridge Vendor API** is the primary integration surface for POS and ERP vendors. Send standardized sales data via the **Standard Sale Object**; EIS Bridge returns immediate async acceptance (`processing_status: queued`), then handles BIR EIS mapping, JWS signing, queued transmission, retries, and acknowledgment tracking.
+
 ### Tools
 
 - **[Postman Collection v1.0](postman/EIS-Bridge-API-v1.postman_collection.json)** — importable collection with sample requests for transaction submit, batch, status, and webhook configuration.
 - **[POS Integration Test Cases (QA Suite v1.0)](qa/integration-test-cases-v1.md)** — QA test suite covering functional, validation, error, batch, webhook, and compliance scenarios for go-live certification.
-
-The **EIS Bridge Vendor API** lets any POS/ERP vendor send standardized sales data to EIS Bridge, which then handles BIR EIS mapping, signing, and transmission.
+- **[Certification Playbook](certification-playbook.md)** — EIS CERT, PTT, sandbox testing, and production go-live guidance.
+- **[Partner Program](partner-program.md)** — Vendor Edition onboarding and partner economics.
 
 ---
 
@@ -15,10 +17,12 @@ The **EIS Bridge Vendor API** lets any POS/ERP vendor send standardized sales da
 
 ### Base URLs
 
-| Environment | Base URL |
-|-------------|----------|
-| Production | `https://api.eisbridge.ph/v1` |
-| Sandbox | `https://sandbox.eisbridge.ph/v1` |
+| Environment | Base URL | Status |
+|-------------|----------|--------|
+| Production | `https://api.eisbridge.ph/v1` | Available after vendor certification |
+| Sandbox | `https://sandbox.eisbridge.ph/v1` | Provisioned on request during vendor onboarding |
+
+Sandbox credentials are issued when you register as a POS/ERP vendor. For local development, run the Laravel API in `api/` with `EIS_SANDBOX_MODE=true` (see root README).
 
 ### Data format
 
@@ -426,16 +430,25 @@ To avoid double-sending:
 
 Before going live, a vendor should:
 
-1. Obtain API key from EIS Bridge.
+1. Obtain API key from EIS Bridge (Vendor Edition onboarding).
 2. Receive merchant/branch/device codes for test accounts.
 3. Implement Standard Sale Object mapping in POS/ERP.
 4. Test:
-   - Single transaction submit
+   - Single transaction submit (async `queued` acceptance)
    - Batch submit
    - Status retrieval
    - Webhook handling (if used)
 5. Run UAT with sample merchants.
-6. Move to production credentials.
+6. Complete [Certification Playbook](certification-playbook.md) — vendor QA sign-off and merchant EIS CERT/PTT.
+7. Move to production credentials.
+
+---
+
+## 10. Compliance disclaimer
+
+EIS Bridge is independent software and is not affiliated with, endorsed by, or accredited by the Bureau of Internal Revenue (BIR). BIR certifies **taxpayer systems** (middleware plus invoicing system), not software providers. Each merchant taxpayer remains responsible for EIS registration, EIS CERT, Permit to Transmit (PTT), and compliance with applicable Revenue Regulations.
+
+EIS Bridge reduces POS source-code changes — it does not replace merchant-side BIR registration. EIS Bridge assists with technical transmission workflows only and does not provide tax, legal, or accounting advice.
 
 ---
 

@@ -2,12 +2,12 @@
 
 **Covers functional, validation, error, batch, webhook, and compliance scenarios.**
 
-Use this suite to validate your POS integration against EIS Bridge before go-live. Run tests against the **Sandbox** environment first. For endpoint details, request/response shapes, and error codes, see the [POS Developer Integration Guide](../pos-developer-integration-guide.md) and [EIS Bridge Vendor API](../vendor-api.md).
+Use this suite to validate your POS integration against EIS Bridge before go-live. Run tests against the **Sandbox** environment first. Sandbox credentials are provisioned on request during vendor onboarding. For endpoint details, request/response shapes, and error codes, see the [POS Developer Integration Guide](../pos-developer-integration-guide.md) and [EIS Bridge Vendor API](../vendor-api.md). Go-live steps: [Certification Playbook](../certification-playbook.md).
 
-| Environment | Base URL |
-|-------------|----------|
-| Sandbox | `https://sandbox.eisbridge.ph/v1` |
-| Production | `https://api.eisbridge.ph/v1` |
+| Environment | Base URL | Status |
+|-------------|----------|--------|
+| Sandbox | `https://sandbox.eisbridge.ph/v1` | Provisioned on request |
+| Production | `https://api.eisbridge.ph/v1` | After vendor certification |
 
 All requests require:
 

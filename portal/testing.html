@@ -10,6 +10,10 @@
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
+  <div class="ip-notice-bar" role="note">
+    EIS Bridge&trade; &mdash; trademark application pending &middot; IPOPHL Class 42 &middot; Ref EFPH202600003850268
+  </div>
+
   <header class="site-header portal-header">
     <div class="container header-inner">
       <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
@@ -38,7 +42,7 @@
     <div class="container">
       <h1 class="page-title">Integration Testing</h1>
       <p class="page-intro">
-        Validate your POS integration against the QA Suite v1.0 before production certification. Run all tests against Sandbox first.
+        Validate your POS integration against the QA Suite v1.0 before production certification. Run all tests against Sandbox first. See the <a href="../docs/certification-playbook.md">Certification Playbook</a> for EIS CERT, PTT, and go-live steps.
       </p>
 
       <section class="content-section" aria-labelledby="tc-heading">
@@ -181,7 +185,7 @@
         <div class="checklist-section">
           <h3>Sandbox</h3>
           <ul class="checklist">
-            <li>Base URL: <code>https://sandbox.eisbridge.ph/v1</code></li>
+            <li>Base URL: <code>https://sandbox.eisbridge.ph/v1</code> (provisioned on request)</li>
             <li>Sandbox API key from vendor onboarding</li>
             <li>Test merchant/branch/device codes assigned</li>
             <li>All QA test cases executed and documented</li>
@@ -210,8 +214,12 @@
   <footer class="site-footer portal-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+        EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
+      <p class="footer-disclaimer">
+        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+      </p>
+      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
       <p class="footer-copy">&copy; 2026 EIS Bridge</p>
     </div>
   </footer>

@@ -10,6 +10,10 @@
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
+  <div class="ip-notice-bar" role="note">
+    EIS Bridge&trade; &mdash; trademark application pending &middot; IPOPHL Class 42 &middot; Ref EFPH202600003850268
+  </div>
+
   <header class="site-header portal-header">
     <div class="container header-inner">
       <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
@@ -52,6 +56,7 @@
             <tr><td>Production</td><td><code>https://api.eisbridge.ph/v1</code></td></tr>
           </tbody>
         </table>
+        <p class="callout">Sandbox access is provisioned on request during vendor onboarding. For local development, run the Laravel API with <code>EIS_SANDBOX_MODE=true</code>.</p>
         <p>Content-Type: <code>application/json</code> · Encoding: UTF-8</p>
       </section>
 
@@ -488,8 +493,12 @@ Authorization: Bearer VENDOR_API_KEY_123</code></pre>
   <footer class="site-footer portal-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+        EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
+      <p class="footer-disclaimer">
+        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+      </p>
+      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
       <p class="footer-copy">&copy; 2026 EIS Bridge</p>
     </div>
   </footer>

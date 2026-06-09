@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://eisbridge.ph/schemas/sale-object.schema.json",
   "title": "EIS Bridge Standard Sale Object",
-  "description": "Standard POS to EIS Bridge sale/invoice payload.",
+  "description": "Vendor-neutral POS sale payload for the EIS Bridge Vendor API. Map any POS receipt to this object and POST via /v1/transactions; EIS Bridge handles BIR JSON mapping, signing, and queued transmission. Open integration spec v1.0.",
   "type": "object",
   "required": [
     "transaction_id",

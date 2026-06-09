@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.">
+  <meta name="description" content="EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Vendor API, Standard Sale Object, async queued transmission.">
   <title>EIS Bridge — Universal E-Invoicing Compliance</title>
   <link rel="stylesheet" href="styles/theme.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="ip-notice-bar" role="note">
+    EIS Bridge&trade; &mdash; trademark application pending &middot; IPOPHL Class 42 &middot; Ref EFPH202600003850268
+  </div>
 
   <header class="site-header">
     <div class="container header-inner">
@@ -24,11 +28,12 @@
   <main id="main">
     <section class="hero" aria-labelledby="hero-heading">
       <div class="container hero-inner">
-        <h1 id="hero-heading">One Bridge. Any POS. Instant EIS Compliance.</h1>
+        <h1 id="hero-heading">One Bridge. Any POS. BIR EIS Transmission.</h1>
         <p class="hero-subheader">
-          One system, one API. The universal, vendor-agnostic BIR EIS compliance platform — connect any POS, any ERP, and any merchant securely, automatically, and without code rewrites.
+          One Vendor API. One Standard Sale Object. Async queued acceptance — checkout never waits on BIR. POS vendors integrate once; merchants complete EIS CERT and PTT per BIR while EIS Bridge handles mapping, signing, and transmission.
         </p>
-        <a class="btn btn-primary" href="#contact">Make your POS EIS-ready today.</a>
+        <a class="btn btn-primary" href="docs/partner-program.md">Partner with EIS Bridge</a>
+        <a class="btn btn-secondary" href="portal/quickstart.html" style="margin-left: 0.75rem;">Developer Quickstart</a>
       </div>
     </section>
 
@@ -39,13 +44,14 @@
           <article class="audience-card">
             <h3>POS Vendors</h3>
             <p>
-              Ship BIR EIS compliance as a native capability — not a retrofit. EIS Bridge integrates once and scales across your entire install base, so every merchant on your platform meets national e-invoicing requirements from day one.
+              Ship BIR EIS compliance as a native capability — not a retrofit. Integrate the Vendor API once, map sales to the Standard Sale Object, and scale across your entire install base. Async submission keeps checkout fast while transmission runs in the background.
             </p>
+            <p><a href="docs/partner-program.md"><strong>Vendor Partner Program</strong></a></p>
           </article>
           <article class="audience-card">
             <h3>Merchants</h3>
             <p>
-              Stay compliant without changing how you sell. Your existing POS keeps working; EIS Bridge handles submission, validation, and audit readiness behind the scenes — automatically and reliably.
+              Stay compliant without changing how you sell. Your existing POS keeps working; EIS Bridge handles submission, validation, and audit readiness. You still complete EIS CERT and Permit to Transmit (PTT) per BIR — we guide the technical side.
             </p>
           </article>
           <article class="audience-card">
@@ -57,7 +63,7 @@
           <article class="audience-card">
             <h3>Developers</h3>
             <p>
-              Clear integration paths, predictable behavior, and documentation designed for production. Build on a platform purpose-built for e-invoicing compliance — so you ship faster and maintain with confidence.
+              Clear integration paths, predictable async behavior, and documentation designed for production. Build on a platform purpose-built for POS-vendor e-invoicing compliance.
             </p>
             <p>
               <a href="portal/index.html"><strong>Developer Portal</strong></a>
@@ -76,20 +82,49 @@
         <h2 id="editions-heading" class="section-title">Product Editions</h2>
         <div class="editions-grid">
           <article class="edition-card edition-card--featured">
-            <h3>EIS Bridge</h3>
-            <p>The main platform — universal, vendor-agnostic BIR EIS compliance. One connection layer between any POS, any ERP, and the BIR EIS.</p>
+            <h3>EIS Bridge Core</h3>
+            <p>Full platform — Vendor API, Standard Sale Object, async queue, admin console, and BIR transmission engine.</p>
           </article>
           <article class="edition-card">
             <h3>EIS Bridge Vendor Edition</h3>
-            <p><strong>Vendor License</strong> (white-label for POS companies) — certify and deploy EIS readiness across your full product portfolio.</p>
+            <p><strong>Vendor license</strong> (white-label for POS companies) — per-vendor API keys, merchant tenancy, and partner economics for rolling out across your product portfolio.</p>
           </article>
           <article class="edition-card">
             <h3>EIS Bridge Merchant Edition</h3>
-            <p><strong>Merchant License</strong> (enterprise retailers) — turnkey compliance at scale with minimal setup and continuous assurance.</p>
+            <p><strong>Merchant license</strong> (enterprise retailers) — turnkey compliance at scale with minimal setup and continuous assurance.</p>
           </article>
           <article class="edition-card">
             <h3>EIS Bridge SaaS</h3>
             <p><strong>Subscription SaaS</strong> (small merchants) — cloud-hosted compliance with managed operations, updates, and monitoring.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="pillars" aria-labelledby="differentiation-heading">
+      <div class="container">
+        <h2 id="differentiation-heading" class="section-title">POS-native middleware, not ERP retrofit</h2>
+        <p class="section-lead">Enterprise middleware vendors focus on SAP connectors, scheduled ETL, and large-taxpayer CAS platforms. EIS Bridge occupies a different lane — thin POS adapters on a shared transmission core.</p>
+        <div class="pillars-grid">
+          <article class="pillar-card">
+            <h3>Vendor API first</h3>
+            <p>Productized REST API with Postman collection, JSON schema, and QA certification suite — built for POS integrators, not SI project teams.</p>
+          </article>
+          <article class="pillar-card">
+            <h3>Async by design</h3>
+            <p><code>POST /transactions</code> returns <code>processing_status: queued</code> immediately. BIR transmission, retries, and webhooks run in the background.</p>
+          </article>
+          <article class="pillar-card">
+            <h3>Standard Sale Object</h3>
+            <p>One vendor-neutral JSON contract for every POS. Map once per platform; EIS Bridge handles BIR JSON mapping and JWS signing.</p>
+          </article>
+          <article class="pillar-card">
+            <h3>White-label ready</h3>
+            <p>Vendor Edition with per-vendor API keys and merchant activation pricing — POS companies resell compliance without building a BIR stack.</p>
+          </article>
+          <article class="pillar-card">
+            <h3>Certification playbook</h3>
+            <p>Structured EIS CERT and PTT guidance, sandbox testing flow, and readiness checks — productized go-live, not open-ended consulting.</p>
           </article>
         </div>
       </div>
@@ -123,11 +158,36 @@
       </div>
     </section>
 
+    <section class="audiences" aria-labelledby="partner-heading">
+      <div class="container">
+        <h2 id="partner-heading" class="section-title">POS vendor partner program</h2>
+        <p class="section-lead">Priority integration segments include Condor, KaHero, Mosaic, and regional POS platforms — integration targets, not claimed partnerships. Each needs only a thin adapter to the Standard Sale Object.</p>
+        <div class="audience-grid">
+          <article class="audience-card">
+            <h3>Vendor core license</h3>
+            <p>₱180,000 – ₱350,000 one-time platform license for Vendor Edition — API access, white-label options, and onboarding.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Per-merchant activation</h3>
+            <p>₱25,000 – ₱35,000 when each merchant goes live with EIS CERT, PTT, and production transmission enabled.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Sandbox on request</h3>
+            <p>Planned endpoints: <code>sandbox.eisbridge.ph</code> and <code>api.eisbridge.ph</code>. Sandbox credentials are provisioned during vendor onboarding.</p>
+          </article>
+        </div>
+        <p style="text-align: center; margin-top: 1.5rem;">
+          <a class="btn btn-primary" href="docs/partner-program.md">Read the partner program</a>
+          <a class="btn btn-secondary" href="docs/certification-playbook.md" style="margin-left: 0.75rem;">Certification playbook</a>
+        </p>
+      </div>
+    </section>
+
     <section class="cta-band" id="contact" aria-labelledby="cta-heading">
       <div class="container cta-inner">
         <h2 id="cta-heading">Ready to connect your POS to the BIR EIS?</h2>
         <p>Make compliance your competitive advantage — not your bottleneck.</p>
-        <a class="btn btn-primary" href="mailto:hello@eisbridge.com">Make your POS EIS-ready today.</a>
+        <a class="btn btn-primary" href="mailto:support@eisbridge.ph">Contact vendor onboarding</a>
       </div>
     </section>
   </main>
@@ -135,8 +195,12 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+        EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
+      <p class="footer-disclaimer">
+        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+      </p>
+      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
       <p class="footer-copy">&copy; 2026 EIS Bridge</p>
     </div>
   </footer>
