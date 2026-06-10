@@ -3,16 +3,22 @@
 namespace App\Services;
 
 use App\Jobs\MapInvoiceJob;
-use App\Support\InvoiceBroadcaster;
 use App\Models\Branch;
 use App\Models\Device;
 use App\Models\Invoice;
 use App\Models\Merchant;
 use App\Models\TransmissionLog;
+use App\Models\Vendor;
+use App\Support\InvoiceBroadcaster;
+use App\Services\Billing\LicenseEnforcement;
 
 class TransactionProcessor
 {
-    public function processSingle(array $data, $vendor)
+    public function __construct(
+        private readonly LicenseEnforcement $licenseEnforcement,
+    ) {}
+
+    public function processSingle(array $data, Vendor $vendor)
     {
         $missingFields = [];
 
@@ -36,7 +42,30 @@ class TransactionProcessor
             ];
         }
 
-        $deviceLockResult = $this->rejectIfDeviceLocked($data);
+        $merchantCode = (string) ($data['merchant_code'] ?? '');
+        $merchant = Merchant::where('merchant_code', $merchantCode)
+            ->where('vendor_id', $vendor->id)
+            ->first();
+
+        if (! $merchant) {
+            return [
+                'http_status' => 403,
+                'status'      => 'rejected',
+                'error'       => 'merchant_not_owned',
+                'message'     => 'Merchant is not registered for this vendor.',
+            ];
+        }
+
+        if (! $this->licenseEnforcement->canMerchantOperate($merchant)) {
+            return [
+                'http_status' => 403,
+                'status'      => 'rejected',
+                'error'       => 'license_suspended',
+                'message'     => 'Merchant license is not active.',
+            ];
+        }
+
+        $deviceLockResult = $this->rejectIfDeviceLocked($data, $vendor);
 
         if ($deviceLockResult !== null) {
             return $deviceLockResult;
@@ -94,7 +123,7 @@ class TransactionProcessor
         ];
     }
 
-    public function processBatch(string $batchId, array $transactions, $vendor)
+    public function processBatch(string $batchId, array $transactions, Vendor $vendor)
     {
         $results = [];
         $accepted = 0;
@@ -125,7 +154,7 @@ class TransactionProcessor
         ];
     }
 
-    private function rejectIfDeviceLocked(array $data): ?array
+    private function rejectIfDeviceLocked(array $data, Vendor $vendor): ?array
     {
         $merchantCode = (string) ($data['merchant_code'] ?? '');
         $branchCode = (string) ($data['branch_code'] ?? '');
@@ -135,7 +164,9 @@ class TransactionProcessor
             return null;
         }
 
-        $merchant = Merchant::where('merchant_code', $merchantCode)->first();
+        $merchant = Merchant::where('merchant_code', $merchantCode)
+            ->where('vendor_id', $vendor->id)
+            ->first();
 
         if (! $merchant) {
             return null;

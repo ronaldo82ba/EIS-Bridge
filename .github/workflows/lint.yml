@@ -2,13 +2,14 @@ name: Lint
 
 on:
   pull_request:
+    branches: [main, master, 'release/**']
     paths:
       - 'api/resources/js/**'
       - 'api/.eslintrc.cjs'
       - 'api/package.json'
       - 'api/package-lock.json'
   push:
-    branches: [main, master]
+    branches: [main, master, 'release/**']
     paths:
       - 'api/resources/js/**'
       - 'api/.eslintrc.cjs'

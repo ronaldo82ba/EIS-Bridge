@@ -267,6 +267,7 @@ Admin console: `https://api.eisbridge.com/admin` (requires seeded admin user —
 
 ## Related documentation
 
+- [risk-report-2026-06-10.md](risk-report-2026-06-10.md) — RC1 risk analysis and open deployment items
 - [production-eis-setup.md](production-eis-setup.md) — BIR endpoints, certificates, sandbox mode
 - [production-ops.md](production-ops.md) — cron, monitoring endpoints
 - [queue-workers.md](queue-workers.md) — Horizon and Supervisor

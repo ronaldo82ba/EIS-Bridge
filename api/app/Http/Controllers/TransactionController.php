@@ -30,9 +30,14 @@ class TransactionController extends Controller
         return response()->json($result, 201);
     }
 
-    public function show($bridgeTransactionId)
+    public function show(Request $request, $bridgeTransactionId)
     {
-        $invoice = Invoice::where('bridge_transaction_id', $bridgeTransactionId)->first();
+        $vendor = $request->attributes->get('vendor');
+        $merchantCodes = $vendor->merchants()->pluck('merchant_code');
+
+        $invoice = Invoice::where('bridge_transaction_id', $bridgeTransactionId)
+            ->whereIn('merchant_code', $merchantCodes)
+            ->first();
 
         if (!$invoice) {
             return response()->json([
@@ -65,7 +70,10 @@ class TransactionController extends Controller
 
     public function index(Request $request)
     {
-        $query = Invoice::query();
+        $vendor = $request->attributes->get('vendor');
+        $merchantCodes = $vendor->merchants()->pluck('merchant_code');
+
+        $query = Invoice::query()->whereIn('merchant_code', $merchantCodes);
 
         if ($mc = $request->query('merchant_code')) {
             $query->where('merchant_code', $mc);
