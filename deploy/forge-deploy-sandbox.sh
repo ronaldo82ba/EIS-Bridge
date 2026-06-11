@@ -42,7 +42,7 @@ assert_cached_app_env() {
 }
 
 cd "${FORGE_RELEASE_DIRECTORY:-.}"
-REPO_ROOT="$FORGE_RELEASE_DIRECTORY"
+REPO_ROOT="${FORGE_RELEASE_DIRECTORY:-$(pwd)}"
 
 # Monorepo: composer.json in api/ — or root directory already set to api/
 if [ -f "${REPO_ROOT}/composer.json" ]; then
@@ -59,14 +59,28 @@ fi
 # Forge shared .env lives at site root; Laravel reads api/.env — always refresh symlink each release.
 ENV_LINK_TARGET="${API_DIR}/.env"
 SHARED_ENV=""
-SITE_ROOT="$(cd "${REPO_ROOT}/../.." 2>/dev/null && pwd || true)"
-for CANDIDATE in \
-  "${REPO_ROOT}/.env" \
-  "${FORGE_RELEASE_DIRECTORY:-}/.env" \
-  "${FORGE_SITE_PATH:-}/.env" \
-  "${SITE_ROOT}/.env" \
-  "${FORGE_SITE_PATH:-}/shared/.env"; do
-  if [ -n "${CANDIDATE}" ] && [ -f "${CANDIDATE}" ]; then
+SITE_ROOT=""
+if [ -n "${FORGE_SITE_PATH:-}" ] && [ -d "${FORGE_SITE_PATH}" ]; then
+  SITE_ROOT="${FORGE_SITE_PATH}"
+else
+  SITE_ROOT="$(cd "${REPO_ROOT}/../.." 2>/dev/null && pwd || true)"
+fi
+
+ENV_CANDIDATES=()
+ENV_CANDIDATES+=("${FORGE_RELEASE_DIRECTORY:-${REPO_ROOT}}/.env")
+ENV_CANDIDATES+=("${REPO_ROOT}/.env")
+ENV_CANDIDATES+=("${SITE_ROOT}/.env")
+if [ -n "${FORGE_SITE_PATH:-}" ]; then
+  ENV_CANDIDATES+=("${FORGE_SITE_PATH}/.env")
+  ENV_CANDIDATES+=("${FORGE_SITE_PATH}/shared/.env")
+  ENV_CANDIDATES+=("$(dirname "${FORGE_SITE_PATH}")/.env")
+fi
+
+CHECKED_PATHS=()
+for CANDIDATE in "${ENV_CANDIDATES[@]}"; do
+  [ -z "${CANDIDATE}" ] || [ "${CANDIDATE}" = "/.env" ] && continue
+  CHECKED_PATHS+=("${CANDIDATE}")
+  if [ -f "${CANDIDATE}" ]; then
     SHARED_ENV="${CANDIDATE}"
     break
   fi
@@ -75,7 +89,10 @@ done
 if [ -z "${SHARED_ENV}" ]; then
   echo "ERROR: Forge shared .env not found."
   echo "Forge -> Site -> Environment: paste env, click Save, then redeploy."
-  echo "Checked: ${REPO_ROOT}/.env, ${FORGE_SITE_PATH:-<unset>}/.env, ${SITE_ROOT}/.env"
+  echo "Paths checked:"
+  for P in "${CHECKED_PATHS[@]}"; do
+    echo "  - ${P}"
+  done
   exit 1
 fi
 
