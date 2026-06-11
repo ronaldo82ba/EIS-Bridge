@@ -41,7 +41,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->guardProductionSandboxConfig();
+        // Enforce on HTTP boots and /up health checks only. Artisan must keep booting
+        // during deploy (config:cache, route:cache, post-cache smoke tests) while
+        // bootstrap/cache/config.php may still reflect a prior APP_ENV until recached.
+        if (! $this->app->runningInConsole()) {
+            $this->guardProductionSandboxConfig();
+        }
 
         Event::listen(DiagnosingHealth::class, function () {
             $this->guardProductionSandboxConfig();
