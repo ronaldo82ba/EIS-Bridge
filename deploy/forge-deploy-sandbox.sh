@@ -59,17 +59,23 @@ fi
 # Forge shared .env lives at site root; Laravel reads api/.env — always refresh symlink each release.
 ENV_LINK_TARGET="${API_DIR}/.env"
 SHARED_ENV=""
-SITE_ROOT=""
-if [ -n "${FORGE_SITE_PATH:-}" ] && [ -d "${FORGE_SITE_PATH}" ]; then
-  SITE_ROOT="${FORGE_SITE_PATH}"
-else
-  SITE_ROOT="$(cd "${REPO_ROOT}/../.." 2>/dev/null && pwd || true)"
+FORGE_SITE_ROOT=""
+if [ -n "${FORGE_SITE_PATH:-}" ]; then
+  if [[ "${FORGE_SITE_PATH}" == *"/current"* ]]; then
+    FORGE_SITE_ROOT="${FORGE_SITE_PATH%%/current*}"
+  else
+    FORGE_SITE_ROOT="${FORGE_SITE_PATH}"
+  fi
+fi
+if [ -z "${FORGE_SITE_ROOT}" ] || [ ! -d "${FORGE_SITE_ROOT}" ]; then
+  FORGE_SITE_ROOT="$(cd "${REPO_ROOT}/../.." 2>/dev/null && pwd || true)"
 fi
 
 ENV_CANDIDATES=()
 ENV_CANDIDATES+=("${FORGE_RELEASE_DIRECTORY:-${REPO_ROOT}}/.env")
 ENV_CANDIDATES+=("${REPO_ROOT}/.env")
-ENV_CANDIDATES+=("${SITE_ROOT}/.env")
+ENV_CANDIDATES+=("${FORGE_SITE_ROOT}/.env")
+ENV_CANDIDATES+=("${FORGE_SITE_ROOT}/shared/.env")
 if [ -n "${FORGE_SITE_PATH:-}" ]; then
   ENV_CANDIDATES+=("${FORGE_SITE_PATH}/.env")
   ENV_CANDIDATES+=("${FORGE_SITE_PATH}/shared/.env")
