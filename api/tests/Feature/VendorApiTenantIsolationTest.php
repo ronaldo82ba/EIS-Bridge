@@ -164,10 +164,19 @@ class VendorApiTenantIsolationTest extends TestCase
         $this->postJson('/v1/transactions', [
             'transaction' => [
                 'transaction_id' => 'TX-NOT-OWNED-001',
+                'transaction_datetime' => '2026-06-12T01:00:00+08:00',
                 'merchant_code' => 'MRC-OTHER',
                 'branch_code' => 'BR001',
                 'pos_device_id' => 'POS01',
-                'totals' => ['net' => 100],
+                'invoice_type' => 'OR',
+                'items' => [[
+                    'sku' => 'SKU-1',
+                    'description' => 'Item 1',
+                    'qty' => 1,
+                    'unit_price' => 100,
+                ]],
+                'totals' => ['net' => 100, 'gross' => 100],
+                'payment' => ['method' => 'CASH', 'amount' => 100],
             ],
         ], $this->authHeaders($plainKey))
             ->assertForbidden()
@@ -187,6 +196,10 @@ class VendorApiTenantIsolationTest extends TestCase
                 'merchant_code' => 'MRC-UNKNOWN',
                 'branch_code' => 'BR001',
                 'pos_device_id' => 'POS01',
+                'transaction_datetime' => '2026-06-12T01:00:00+08:00',
+                'invoice_type' => 'OR',
+                'items' => [],
+                'payment' => ['method' => 'CASH', 'amount' => 100],
                 'totals' => [],
             ],
         ], $this->authHeaders($plainKey))
@@ -196,7 +209,7 @@ class VendorApiTenantIsolationTest extends TestCase
             ])
             ->assertJsonStructure([
                 'message',
-                'fields' => [
+                'details' => [
                     'transaction.transaction_id',
                     'transaction.totals.net',
                 ],
@@ -248,20 +261,38 @@ class VendorApiTenantIsolationTest extends TestCase
 
         $result = $processor->processSingle([
             'transaction_id' => 'TX-DL-A-001',
+            'transaction_datetime' => '2026-06-12T01:00:00+08:00',
             'merchant_code' => 'MRC-DL-A',
             'branch_code' => 'BR001',
             'pos_device_id' => 'POS-A',
-            'totals' => ['net' => 100],
+            'invoice_type' => 'OR',
+            'items' => [[
+                'sku' => 'SKU-1',
+                'description' => 'Item 1',
+                'qty' => 1,
+                'unit_price' => 100,
+            ]],
+            'totals' => ['net' => 100, 'gross' => 100],
+            'payment' => ['method' => 'CASH', 'amount' => 100],
         ], $vendorA);
 
         $this->assertSame('accepted', $result['status']);
 
         $crossVendorResult = $processor->processSingle([
             'transaction_id' => 'TX-DL-B-001',
+            'transaction_datetime' => '2026-06-12T01:00:00+08:00',
             'merchant_code' => 'MRC-DL-B',
             'branch_code' => 'BR001',
             'pos_device_id' => 'POS-LOCKED',
-            'totals' => ['net' => 100],
+            'invoice_type' => 'OR',
+            'items' => [[
+                'sku' => 'SKU-1',
+                'description' => 'Item 1',
+                'qty' => 1,
+                'unit_price' => 100,
+            ]],
+            'totals' => ['net' => 100, 'gross' => 100],
+            'payment' => ['method' => 'CASH', 'amount' => 100],
         ], $vendorA);
 
         $this->assertSame(403, $crossVendorResult['http_status']);
@@ -343,10 +374,19 @@ class VendorApiTenantIsolationTest extends TestCase
         $this->postJson('/v1/transactions', [
             'transaction' => [
                 'transaction_id' => 'TX-ML-001',
+                'transaction_datetime' => '2026-06-12T01:00:00+08:00',
                 'merchant_code' => 'MRC-ML',
                 'branch_code' => 'BR001',
                 'pos_device_id' => 'POS01',
-                'totals' => ['net' => 100],
+                'invoice_type' => 'OR',
+                'items' => [[
+                    'sku' => 'SKU-1',
+                    'description' => 'Item 1',
+                    'qty' => 1,
+                    'unit_price' => 100,
+                ]],
+                'totals' => ['net' => 100, 'gross' => 100],
+                'payment' => ['method' => 'CASH', 'amount' => 100],
             ],
         ], $this->authHeaders($plainKey))
             ->assertForbidden()

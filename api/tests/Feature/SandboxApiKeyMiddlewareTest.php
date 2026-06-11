@@ -109,6 +109,8 @@ class SandboxApiKeyMiddlewareTest extends TestCase
         ], [
             'Authorization' => 'Bearer '.$plainKey,
             'X-SANDBOX-API-KEY' => $this->sandboxKey,
-        ])->assertStatus(422)->assertJsonValidationErrors(['webhook_url']);
+        ])->assertStatus(422)
+            ->assertJsonPath('error', 'validation_error')
+            ->assertJsonStructure(['details' => ['webhook_url']]);
     }
 }

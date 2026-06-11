@@ -52,10 +52,19 @@ class RateLimitingTest extends TestCase
         $payload = [
             'transaction' => [
                 'transaction_id' => 'TX-RL-1',
+                'transaction_datetime' => '2026-06-12T01:00:00+08:00',
                 'merchant_code' => 'NOT-OWNED',
                 'branch_code' => 'BR001',
                 'pos_device_id' => 'POS01',
-                'totals' => ['net' => 100],
+                'invoice_type' => 'OR',
+                'items' => [[
+                    'sku' => 'SKU-RL',
+                    'description' => 'Rate limit item',
+                    'qty' => 1,
+                    'unit_price' => 100,
+                ]],
+                'totals' => ['net' => 100, 'gross' => 100],
+                'payment' => ['method' => 'CASH', 'amount' => 100],
             ],
         ];
 
