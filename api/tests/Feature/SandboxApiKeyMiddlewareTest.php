@@ -16,7 +16,7 @@ class SandboxApiKeyMiddlewareTest extends TestCase
 
         Config::set([
             'eis.sandbox_mode' => true,
-            'security.sandbox_api_key' => $this->sandboxKey,
+            'sandbox.api_key' => $this->sandboxKey,
         ]);
     }
 
@@ -70,7 +70,7 @@ class SandboxApiKeyMiddlewareTest extends TestCase
 
     public function test_middleware_returns_503_when_sandbox_key_unconfigured(): void
     {
-        Config::set('security.sandbox_api_key', '');
+        Config::set('sandbox.api_key', '');
 
         $this->getJson('/v1/health', ['X-SANDBOX-API-KEY' => 'anything'])
             ->assertStatus(503)

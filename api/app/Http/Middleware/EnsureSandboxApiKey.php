@@ -15,7 +15,7 @@ class EnsureSandboxApiKey
             return $next($request);
         }
 
-        $expected = (string) config('security.sandbox_api_key');
+        $expected = (string) config('sandbox.api_key');
 
         if ($expected === '') {
             Log::error('SANDBOX_API_KEY is not configured while EIS_SANDBOX_MODE=true.');
