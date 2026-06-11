@@ -41,7 +41,9 @@ assert_cached_app_env() {
   fi
 }
 
-cd "${FORGE_RELEASE_DIRECTORY:-.}"
+if [ -n "${FORGE_RELEASE_DIRECTORY:-}" ]; then
+  cd "${FORGE_RELEASE_DIRECTORY}"
+fi
 REPO_ROOT="${FORGE_RELEASE_DIRECTORY:-$(pwd)}"
 
 # Monorepo: composer.json in api/ — or root directory already set to api/
@@ -56,53 +58,81 @@ else
   exit 1
 fi
 
-# Forge shared .env lives at site root; Laravel reads api/.env — always refresh symlink each release.
+# Forge links .env into the release before this script runs; Laravel reads api/.env.
 ENV_LINK_TARGET="${API_DIR}/.env"
+
+env_is_usable() {
+  [ -n "${1:-}" ] && [ -e "${1}" ] && [ -r "${1}" ]
+}
+
+resolve_forge_site_root() {
+  local root=""
+  if [ -n "${FORGE_SITE_PATH:-}" ]; then
+    if [[ "${FORGE_SITE_PATH}" == *"/current"* ]]; then
+      root="${FORGE_SITE_PATH%%/current*}"
+    else
+      root="${FORGE_SITE_PATH}"
+    fi
+  fi
+  if [ -z "${root}" ] || [ ! -d "${root}" ]; then
+    root="$(cd "${REPO_ROOT}/../.." 2>/dev/null && pwd || true)"
+  fi
+  printf '%s' "${root}"
+}
+
+FORGE_SITE_ROOT="$(resolve_forge_site_root)"
 SHARED_ENV=""
-FORGE_SITE_ROOT=""
-if [ -n "${FORGE_SITE_PATH:-}" ]; then
-  if [[ "${FORGE_SITE_PATH}" == *"/current"* ]]; then
-    FORGE_SITE_ROOT="${FORGE_SITE_PATH%%/current*}"
-  else
-    FORGE_SITE_ROOT="${FORGE_SITE_PATH}"
+
+if env_is_usable "${ENV_LINK_TARGET}"; then
+  SHARED_ENV="${ENV_LINK_TARGET}"
+elif env_is_usable "${REPO_ROOT}/.env"; then
+  SHARED_ENV="${REPO_ROOT}/.env"
+else
+  ENV_CANDIDATES=()
+  ENV_CANDIDATES+=("${FORGE_RELEASE_DIRECTORY:-${REPO_ROOT}}/.env")
+  ENV_CANDIDATES+=("${REPO_ROOT}/.env")
+  ENV_CANDIDATES+=("${FORGE_SITE_ROOT}/.env")
+  ENV_CANDIDATES+=("${FORGE_SITE_ROOT}/shared/.env")
+  if [ -n "${FORGE_SITE_PATH:-}" ]; then
+    ENV_CANDIDATES+=("${FORGE_SITE_PATH}/.env")
+    ENV_CANDIDATES+=("${FORGE_SITE_PATH}/shared/.env")
+  fi
+
+  CHECKED_PATHS=()
+  for CANDIDATE in "${ENV_CANDIDATES[@]}"; do
+    [ -z "${CANDIDATE}" ] || [ "${CANDIDATE}" = "/.env" ] && continue
+    CHECKED_PATHS+=("${CANDIDATE}")
+    if env_is_usable "${CANDIDATE}"; then
+      SHARED_ENV="${CANDIDATE}"
+      break
+    fi
+  done
+
+  if [ -z "${SHARED_ENV}" ] && [ -n "${FORGE_SITE_ROOT}" ] && command -v find >/dev/null 2>&1; then
+    FOUND_ENV="$(find "${FORGE_SITE_ROOT}" -maxdepth 3 -name '.env' ! -path '*/vendor/*' -readable 2>/dev/null | head -n 1 || true)"
+    if env_is_usable "${FOUND_ENV}"; then
+      SHARED_ENV="${FOUND_ENV}"
+      CHECKED_PATHS+=("${FOUND_ENV} (find)")
+    fi
   fi
 fi
-if [ -z "${FORGE_SITE_ROOT}" ] || [ ! -d "${FORGE_SITE_ROOT}" ]; then
-  FORGE_SITE_ROOT="$(cd "${REPO_ROOT}/../.." 2>/dev/null && pwd || true)"
-fi
-
-ENV_CANDIDATES=()
-ENV_CANDIDATES+=("${FORGE_RELEASE_DIRECTORY:-${REPO_ROOT}}/.env")
-ENV_CANDIDATES+=("${REPO_ROOT}/.env")
-ENV_CANDIDATES+=("${FORGE_SITE_ROOT}/.env")
-ENV_CANDIDATES+=("${FORGE_SITE_ROOT}/shared/.env")
-if [ -n "${FORGE_SITE_PATH:-}" ]; then
-  ENV_CANDIDATES+=("${FORGE_SITE_PATH}/.env")
-  ENV_CANDIDATES+=("${FORGE_SITE_PATH}/shared/.env")
-  ENV_CANDIDATES+=("$(dirname "${FORGE_SITE_PATH}")/.env")
-fi
-
-CHECKED_PATHS=()
-for CANDIDATE in "${ENV_CANDIDATES[@]}"; do
-  [ -z "${CANDIDATE}" ] || [ "${CANDIDATE}" = "/.env" ] && continue
-  CHECKED_PATHS+=("${CANDIDATE}")
-  if [ -f "${CANDIDATE}" ]; then
-    SHARED_ENV="${CANDIDATE}"
-    break
-  fi
-done
 
 if [ -z "${SHARED_ENV}" ]; then
-  echo "ERROR: Forge shared .env not found."
-  echo "Forge -> Site -> Environment: paste env, click Save, then redeploy."
+  echo "ERROR: Could not locate a readable Forge .env on disk (UI Environment may still be saved)."
   echo "Paths checked:"
-  for P in "${CHECKED_PATHS[@]}"; do
+  for P in "${CHECKED_PATHS[@]:-}"; do
     echo "  - ${P}"
   done
+  echo "Diagnostics:"
+  ls -la "${REPO_ROOT}" 2>/dev/null | head -20 || true
+  ls -la "${API_DIR}" 2>/dev/null | head -20 || true
+  ls -la "${FORGE_SITE_ROOT}" 2>/dev/null | head -20 || true
   exit 1
 fi
 
-ln -sf "${SHARED_ENV}" "${ENV_LINK_TARGET}"
+if [ "${SHARED_ENV}" != "${ENV_LINK_TARGET}" ]; then
+  ln -sf "${SHARED_ENV}" "${ENV_LINK_TARGET}"
+fi
 
 if grep -qE '(^|[[:space:]])APP_ENV[[:space:]]*=[[:space:]]*["'\'']?production["'\'']?' "${ENV_LINK_TARGET}" \
   && grep -qE '(^|[[:space:]])EIS_SANDBOX_MODE[[:space:]]*=[[:space:]]*["'\'']?true["'\'']?' "${ENV_LINK_TARGET}"; then
