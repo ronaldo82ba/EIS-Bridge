@@ -18,10 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/admin')
                 ->group(base_path('routes/admin.php'));
 
-            Route::middleware(['api', 'security.headers'])
-                ->prefix('v1')
-                ->group(base_path('routes/fleet.php'));
-
             Route::get('/horizon-health', \App\Http\Controllers\HorizonHealthController::class)
                 ->middleware(['security.headers']);
         },
@@ -39,7 +35,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'support.write' => \App\Http\Middleware\EnsureSupportWriteAction::class,
             'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
             'sandbox.api_key' => \App\Http\Middleware\EnsureSandboxApiKey::class,
-            'fleet.auth' => \App\Http\Middleware\EnsureFleetAuth::class,
         ]);
 
         $middleware->api(prepend: [

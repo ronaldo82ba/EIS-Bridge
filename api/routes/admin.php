@@ -27,8 +27,6 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\VendorIpWhitelistController;
 use App\Http\Controllers\Admin\WebhookController;
-use App\Http\Controllers\Fleet\FleetAgentController;
-use App\Http\Controllers\Fleet\FleetTaskController;
 use App\Models\MerchantCertificate;
 use Illuminate\Support\Facades\Route;
 
@@ -145,11 +143,4 @@ Route::middleware(['auth:sanctum', 'admin', 'throttle:admin-api'])->group(functi
     Route::post('/vendors/{vendor}/licenses', [VendorLicenseController::class, 'store']);
     Route::get('/merchants/{merchant}/licenses', [MerchantLicenseController::class, 'index']);
     Route::post('/merchants/{merchant}/licenses', [MerchantLicenseController::class, 'store']);
-
-    Route::prefix('fleet')->middleware('fleet.auth:dashboard')->group(function () {
-        Route::get('/agents', [FleetAgentController::class, 'index']);
-        Route::get('/tasks', [FleetTaskController::class, 'index']);
-        Route::get('/tasks/{taskId}', [FleetTaskController::class, 'show']);
-        Route::post('/tasks', [FleetTaskController::class, 'store']);
-    });
 });
