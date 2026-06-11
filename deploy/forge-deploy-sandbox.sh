@@ -117,9 +117,6 @@ ${FORGE_PHP_BIN} artisan route:cache
 ${FORGE_PHP_BIN} artisan view:cache
 # Boot validated above: route:cache and view:cache boot the full kernel with cached config.
 # assert_cached_app_env confirms APP_ENV in bootstrap/cache/config.php.
-
-$ACTIVATE_RELEASE()
-
-$RESTART_QUEUES()
+# $ACTIVATE_RELEASE and $RESTART_QUEUES run in deploy/forge-forge-ui-sandbox.sh (Forge macros).
 
 echo "EIS Bridge sandbox deploy complete ($(git -C "${REPO_ROOT}" rev-parse --short HEAD 2>/dev/null || echo unknown))"

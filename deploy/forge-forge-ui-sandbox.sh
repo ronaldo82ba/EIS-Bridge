@@ -20,3 +20,7 @@ else
   echo "Forge root should be / (repo root) with web api/public, or / with web public if root is api."
   exit 1
 fi
+
+$ACTIVATE_RELEASE()
+
+$RESTART_QUEUES()
