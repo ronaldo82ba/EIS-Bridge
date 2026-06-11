@@ -45,10 +45,8 @@ class PosJsonValidator
             }
         }
 
-        foreach (['gross', 'net'] as $field) {
-            if (! isset($pos['totals'][$field])) {
-                $missing[] = "totals.{$field}";
-            }
+        if (! isset($pos['totals']['net'])) {
+            $missing[] = 'totals.net';
         }
 
         foreach (['method', 'amount'] as $field) {
