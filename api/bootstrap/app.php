@@ -40,7 +40,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('v1/*')
+            fn (Request $request) => $request->is('up')
+                || $request->is('v1/*')
                 || $request->is('api/*')
                 || $request->is('admin/*'),
         );

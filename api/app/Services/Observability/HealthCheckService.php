@@ -43,7 +43,11 @@ class HealthCheckService
 
     private function checkRedis(): array
     {
-        if (config('cache.default') !== 'redis' && config('queue.default') !== 'redis') {
+        $requiresRedis = config('cache.default') === 'redis'
+            || config('queue.default') === 'redis'
+            || config('session.driver') === 'redis';
+
+        if (! $requiresRedis) {
             return ['status' => 'healthy', 'message' => 'Redis not required'];
         }
 

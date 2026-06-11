@@ -53,4 +53,29 @@ class ProductionSandboxGuardTest extends TestCase
 
         Event::dispatch(new DiagnosingHealth);
     }
+
+    public function test_guard_trusts_live_env_file_when_config_cache_still_says_production(): void
+    {
+        config([
+            'eis.sandbox_mode' => true,
+            'app.debug' => false,
+        ]);
+
+        $envPath = $this->app->environmentFilePath();
+        $original = file_get_contents($envPath);
+
+        try {
+            file_put_contents($envPath, "APP_ENV=production\nEIS_SANDBOX_MODE=true\n");
+            $this->artisan('config:cache');
+
+            // Forge corrected .env to staging but deploy has not re-cached config yet.
+            file_put_contents($envPath, "APP_ENV=staging\nEIS_SANDBOX_MODE=true\n");
+
+            $response = $this->getJson('/up');
+            $response->assertOk()->assertJson(['status' => 'up']);
+        } finally {
+            file_put_contents($envPath, $original);
+            $this->artisan('config:clear');
+        }
+    }
 }

@@ -1,25 +1,56 @@
 #!/usr/bin/env bash
-# EIS Bridge — Laravel API deploy script for Laravel Forge.
-# Paste into Forge → Site → Deployment → Deploy Script (api.eisbridge.com).
+# EIS Bridge - production API deploy script for Laravel Forge (zero-downtime + monorepo).
+# Paste into Forge -> Site -> Deployment -> Deploy Script (api.eisbridge.com).
 #
-# Forge injects: FORGE_SITE_PATH, FORGE_SITE_BRANCH, FORGE_COMPOSER
-# Web directory in Forge must be: api/public (relative to repo root)
+# Requires: web directory api/public, zero-downtime ON.
 
 set -euo pipefail
 
-REPO_ROOT="${FORGE_SITE_PATH:-/home/forge/api.eisbridge.com}"
+FORGE_PHP_BIN="${FORGE_PHP:-php}"
+
+require_php_redis() {
+  if ! "${FORGE_PHP_BIN}" -m 2>/dev/null | grep -qi '^redis$'; then
+    echo "ERROR: PHP redis extension (phpredis) is not enabled for ${FORGE_PHP_BIN}."
+    echo "Forge -> Server -> PHP 8.3 -> Extensions -> enable redis, then redeploy."
+    exit 1
+  fi
+}
+
+require_redis_server() {
+  if ! command -v redis-cli >/dev/null 2>&1; then
+    echo "ERROR: redis-cli not found. Install/start Redis on the Forge server."
+    exit 1
+  fi
+  if ! redis-cli ping 2>/dev/null | grep -qE '^PONG'; then
+    echo "ERROR: Redis is not responding (redis-cli ping failed)."
+    exit 1
+  fi
+}
+
+$CREATE_RELEASE()
+
+cd "$FORGE_RELEASE_DIRECTORY"
+REPO_ROOT="$FORGE_RELEASE_DIRECTORY"
 API_DIR="${REPO_ROOT}/api"
 
-cd "${REPO_ROOT}"
+if [ -f "${REPO_ROOT}/.env" ] && [ ! -e "${API_DIR}/.env" ]; then
+  ln -sf ../.env "${API_DIR}/.env"
+fi
 
 if [ ! -f "${API_DIR}/.env" ]; then
-  echo "ERROR: ${API_DIR}/.env not found. Create it in Forge → Site → Environment first."
+  echo "ERROR: ${API_DIR}/.env not found. Create Environment in Forge first."
   exit 1
 fi
 
-git pull origin "${FORGE_SITE_BRANCH:-main}"
+if [ ! -f "${API_DIR}/composer.json" ]; then
+  echo "ERROR: ${API_DIR}/composer.json not found. Web directory must be api/public (monorepo)."
+  exit 1
+fi
 
 cd "${API_DIR}"
+
+require_php_redis
+require_redis_server
 
 ${FORGE_COMPOSER:-composer} install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
@@ -28,14 +59,22 @@ if [ -f package-lock.json ]; then
   npm run build
 fi
 
-php artisan migrate --force
+${FORGE_PHP_BIN} artisan migrate --force
 
-php artisan storage:link --force 2>/dev/null || true
+${FORGE_PHP_BIN} artisan storage:link --force 2>/dev/null || true
 
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+${FORGE_PHP_BIN} artisan config:clear
+${FORGE_PHP_BIN} artisan config:cache
+${FORGE_PHP_BIN} artisan route:cache
+${FORGE_PHP_BIN} artisan view:cache
 
-php artisan horizon:terminate 2>/dev/null || php artisan queue:restart 2>/dev/null || true
+if ! ${FORGE_PHP_BIN} artisan route:list --path=up --no-ansi >/dev/null 2>&1; then
+  echo "ERROR: Laravel failed to boot after config:cache (see storage/logs/laravel.log)."
+  exit 1
+fi
+
+$ACTIVATE_RELEASE()
+
+$RESTART_QUEUES()
 
 echo "EIS Bridge API deploy complete ($(git -C "${REPO_ROOT}" rev-parse --short HEAD))"

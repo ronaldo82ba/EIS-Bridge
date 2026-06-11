@@ -110,10 +110,46 @@ class AppServiceProvider extends ServiceProvider
 
     private function guardProductionSandboxConfig(): void
     {
-        if ($this->app->environment('production') && config('eis.sandbox_mode')) {
-            throw new RuntimeException(
-                'EIS sandbox mode (EIS_SANDBOX_MODE=true) cannot be enabled when APP_ENV=production.'
-            );
+        if (! config('eis.sandbox_mode')) {
+            return;
         }
+
+        if (! $this->app->environment('production')) {
+            return;
+        }
+
+        // After Forge env fixes, bootstrap/cache/config.php may still say production until
+        // config:clear && config:cache runs. Trust the live .env only when config is cached.
+        if ($this->app->configurationIsCached()) {
+            $liveEnv = $this->readAppEnvFromEnvironmentFile();
+            if ($liveEnv !== null && $liveEnv !== 'production') {
+                return;
+            }
+        }
+
+        throw new RuntimeException(
+            'EIS sandbox mode (EIS_SANDBOX_MODE=true) cannot be enabled when APP_ENV=production.'
+        );
+    }
+
+    private function readAppEnvFromEnvironmentFile(): ?string
+    {
+        $path = $this->app->environmentFilePath();
+
+        if (! is_readable($path)) {
+            return null;
+        }
+
+        $contents = file_get_contents($path);
+
+        if ($contents === false) {
+            return null;
+        }
+
+        if (preg_match('/^\s*APP_ENV\s*=\s*(["\']?)([\w-]+)\1\s*$/m', $contents, $matches) !== 1) {
+            return null;
+        }
+
+        return $matches[2];
     }
 }
