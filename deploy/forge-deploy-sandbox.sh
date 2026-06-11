@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# EIS Bridge - sandbox API deploy script for Laravel Forge (zero-downtime + monorepo).
-# Paste into Forge -> Site -> Deployment -> Deploy Script (sandbox.eisbridge.com).
+# EIS Bridge - sandbox API deploy body (run from git via deploy/forge-forge-ui-sandbox.sh).
+# Do NOT paste this file into Forge — paste deploy/forge-forge-ui-sandbox.sh instead.
 #
 # Works whether Forge root directory is "/" (full monorepo) or "api" (Laravel subfolder).
 # Web directory in Forge: api/public OR public (if root is api).
@@ -41,9 +41,7 @@ assert_cached_app_env() {
   fi
 }
 
-$CREATE_RELEASE()
-
-cd "$FORGE_RELEASE_DIRECTORY"
+cd "${FORGE_RELEASE_DIRECTORY:-.}"
 REPO_ROOT="$FORGE_RELEASE_DIRECTORY"
 
 # Monorepo: composer.json in api/ — or root directory already set to api/
