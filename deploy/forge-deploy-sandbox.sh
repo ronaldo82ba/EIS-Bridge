@@ -117,6 +117,8 @@ ${FORGE_PHP_BIN} artisan config:cache
 assert_cached_app_env staging
 ${FORGE_PHP_BIN} artisan route:cache
 ${FORGE_PHP_BIN} artisan view:cache
+# Boot validated above: route:cache and view:cache boot the full kernel with cached config.
+# assert_cached_app_env confirms APP_ENV in bootstrap/cache/config.php.
 
 $ACTIVATE_RELEASE()
 

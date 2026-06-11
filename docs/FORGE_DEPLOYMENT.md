@@ -177,7 +177,7 @@ Add a Forge **Daemon** on **each** Laravel site **after the first successful dep
 | **User** | `forge` |
 | **Processes** | `1` |
 
-Use **`php8.3`** (not bare `php`) so the daemon matches the site PHP version. Directory must be the Laravel root (`api/`), **without** a trailing slash. Do not point the daemon at the repo root or `api/public`.
+Use the **site PHP binary** (e.g. **`php8.5`** on RonaldoServer06102026001a — check **Site → Meta → PHP Version**; not bare `php`) so the daemon matches FPM. Directory must be the Laravel root (`api/`), **without** a trailing slash. Do not point the daemon at the repo root or `api/public`.
 
 #### Supervisor block (sandbox reference)
 
@@ -377,7 +377,8 @@ Admin console: `https://api.eisbridge.com/admin` (requires seeded admin user —
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | Deploy OK, `/up` returns **500** with empty body | Stale `bootstrap/cache/config.php` still has `APP_ENV=production` while Forge `.env` was corrected to `staging` | Redeploy with latest [`deploy/forge-deploy-sandbox.sh`](../deploy/forge-deploy-sandbox.sh) (runs `config:clear` then `config:cache`). Or SSH: `cd api && php artisan config:clear && php artisan config:cache` |
-| Deploy fails: **PHP redis extension not enabled** | `SESSION_DRIVER=redis` + `REDIS_CLIENT=phpredis` but phpredis missing | **Forge → Server → PHP 8.3 → Extensions → enable `redis`** → redeploy |
+| Deploy fails: **Laravel failed to boot after config:cache** | Stale Forge deploy script still runs a post-cache `artisan about` smoke test (removed in `release/rc1`) | Re-paste latest [`deploy/forge-deploy-sandbox.sh`](../deploy/forge-deploy-sandbox.sh) from `release/rc1` and redeploy. If `route:cache` and `view:cache` succeeded, boot is already OK. |
+| Deploy fails: **PHP redis extension not enabled** | `SESSION_DRIVER=redis` + `REDIS_CLIENT=phpredis` but phpredis missing | **Forge → Server → PHP → Extensions** (same version as site, e.g. **PHP 8.5**) **→ enable `redis`** → **Restart PHP** → redeploy |
 | Deploy fails: **redis-cli ping failed** | Redis service not running | **Forge → Server → Network** (install Redis) or `sudo systemctl start redis-server` |
 | `/up` returns **500** JSON `{"status":"down"}` | `APP_ENV=production` with `EIS_SANDBOX_MODE=true` (intentional guard) | Set `APP_ENV=staging` in Forge Environment for sandbox; save and redeploy |
 | `/` returns 500 but `/up` is 200 | Admin Vite build missing or session/redis error on web routes | Confirm `npm run build` in deploy log; check `storage/logs/laravel.log` |

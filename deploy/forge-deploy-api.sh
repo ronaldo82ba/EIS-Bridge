@@ -67,6 +67,7 @@ ${FORGE_PHP_BIN} artisan config:clear
 ${FORGE_PHP_BIN} artisan config:cache
 ${FORGE_PHP_BIN} artisan route:cache
 ${FORGE_PHP_BIN} artisan view:cache
+# Boot validated above: route:cache and view:cache boot the full kernel with cached config.
 
 $ACTIVATE_RELEASE()
 
