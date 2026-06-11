@@ -1,0 +1,55 @@
+---
+description: EIS Bridge must only be pushed to GitHub as ronaldo82ba, never gebstechnologies0109a
+alwaysApply: true
+---
+
+# GitHub Account — ronaldo82ba Only
+
+EIS Bridge **must** be published to GitHub under **ronaldo82ba** only. Never push, fork, or create this project under **gebstechnologies0109a**.
+
+## Required remote
+
+`origin` must point to one of:
+
+- `git@github.com:ronaldo82ba/EIS-Bridge.git`
+- `https://github.com/ronaldo82ba/EIS-Bridge.git`
+
+## Forbidden
+
+- Pushing to `ronaldo82ba/EIS-Bridge` while authenticated as **gebstechnologies0109a**
+- Adding remotes that reference **gebstechnologies0109a** for this repo
+- Creating or syncing EIS Bridge repos under **gebstechnologies0109a**
+
+## Pre-push check
+
+Before `git push`, verify the active GitHub identity is **ronaldo82ba**:
+
+```powershell
+gh auth status
+```
+
+Active account must be `ronaldo82ba`. If not:
+
+```powershell
+gh auth switch --user ronaldo82ba
+```
+
+Also confirm remote:
+
+```powershell
+git remote -v
+```
+
+Every push URL must contain `ronaldo82ba/EIS-Bridge`.
+
+## Fix HTTP 403 on push
+
+403 usually means the wrong GitHub account is active.
+
+1. Switch CLI auth: `gh auth switch --user ronaldo82ba` (or `gh auth login` and choose **ronaldo82ba**)
+2. Or use SSH for **ronaldo82ba**: add that account's SSH key, then `git remote set-url origin git@github.com:ronaldo82ba/EIS-Bridge.git`
+3. Re-run pre-push checks above before retrying
+
+## Do not change global git identity
+
+Use `gh auth switch` or SSH keys — do **not** run `git config --global user.name` or `user.email` to work around account mismatches.
