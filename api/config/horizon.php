@@ -46,7 +46,7 @@ return [
 
     'fast_termination' => false,
 
-    'memory_limit' => 64,
+    'memory_limit' => 128,
 
     'defaults' => [
         'supervisor-1' => [
@@ -57,9 +57,9 @@ return [
             'maxProcesses' => 10,
             'maxTime' => 0,
             'maxJobs' => 0,
-            'memory' => 128,
+                'memory' => 256,
             'tries' => 3,
-            'timeout' => 120,
+                'timeout' => 180,
             'nice' => 0,
         ],
     ],

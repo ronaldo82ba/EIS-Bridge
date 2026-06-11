@@ -43,6 +43,51 @@ class ProductionSandboxGuardTest extends TestCase
             ->assertJson(['status' => 'up']);
     }
 
+    public function test_health_check_fails_when_production_endpoint_is_empty_and_sandbox_is_disabled(): void
+    {
+        config([
+            'eis.sandbox_mode' => false,
+            'eis.endpoint' => '',
+            'app.debug' => false,
+        ]);
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $response = $this->getJson('/up');
+
+        $response->assertStatus(500)
+            ->assertJson(['status' => 'down']);
+    }
+
+    public function test_health_check_fails_when_production_endpoint_uses_private_host(): void
+    {
+        config([
+            'eis.sandbox_mode' => false,
+            'eis.endpoint' => 'https://127.0.0.1/eis',
+            'app.debug' => false,
+        ]);
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $response = $this->getJson('/up');
+
+        $response->assertStatus(500)
+            ->assertJson(['status' => 'down']);
+    }
+
+    public function test_health_check_allows_empty_endpoint_in_non_production_when_sandbox_disabled(): void
+    {
+        config([
+            'eis.sandbox_mode' => false,
+            'eis.endpoint' => '',
+            'app.debug' => false,
+        ]);
+        $this->app->detectEnvironment(fn () => 'staging');
+
+        $response = $this->getJson('/up');
+
+        $response->assertOk()
+            ->assertJson(['status' => 'up']);
+    }
+
     public function test_diagnosing_health_event_triggers_sandbox_guard(): void
     {
         config(['eis.sandbox_mode' => true]);

@@ -17,6 +17,7 @@ use App\Policies\DevicePolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\VendorPolicy;
+use App\Support\UrlSecurity;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Events\DiagnosingHealth;
 use Illuminate\Http\Request;
@@ -110,22 +111,33 @@ class AppServiceProvider extends ServiceProvider
 
     private function guardProductionSandboxConfig(): void
     {
-        if (! config('eis.sandbox_mode')) {
-            return;
-        }
-
-        $liveEnv = $this->readAppEnvFromEnvironmentFile();
-        if ($liveEnv === 'staging') {
-            return;
-        }
-
         if (! $this->app->environment('production')) {
             return;
         }
 
-        throw new RuntimeException(
-            'EIS sandbox mode (EIS_SANDBOX_MODE=true) cannot be enabled when APP_ENV=production.'
-        );
+        if (config('eis.sandbox_mode')) {
+            $liveEnv = $this->readAppEnvFromEnvironmentFile();
+            if ($liveEnv === 'staging') {
+                return;
+            }
+
+            throw new RuntimeException(
+                'EIS sandbox mode (EIS_SANDBOX_MODE=true) cannot be enabled when APP_ENV=production.'
+            );
+        }
+
+        $endpoint = trim((string) config('eis.endpoint', ''));
+        if ($endpoint === '') {
+            throw new RuntimeException(
+                'EIS endpoint must be configured when APP_ENV=production and EIS_SANDBOX_MODE=false.'
+            );
+        }
+
+        if (! UrlSecurity::isAllowedPublicHttpsUrl($endpoint)) {
+            throw new RuntimeException(
+                'EIS endpoint must be an HTTPS URL with a public host when APP_ENV=production and EIS_SANDBOX_MODE=false.'
+            );
+        }
     }
 
     private function readAppEnvFromEnvironmentFile(): ?string

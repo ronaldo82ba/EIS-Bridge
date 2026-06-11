@@ -20,29 +20,21 @@ class TransactionProcessor
 
     public function processSingle(array $data, Vendor $vendor)
     {
-        $missingFields = [];
+        $transactionId = (string) ($data['transaction_id'] ?? '');
+        $merchantCode = (string) ($data['merchant_code'] ?? '');
+        $branchCode = (string) ($data['branch_code'] ?? '');
+        $posDeviceId = (string) ($data['pos_device_id'] ?? '');
+        $netTotal = $data['totals']['net'] ?? null;
 
-        if (empty($data['transaction_id'])) {
-            $missingFields[] = 'transaction_id';
-        }
-
-        if (empty($data['totals']['net'])) {
-            $missingFields[] = 'totals.net';
-        }
-
-        if (!empty($missingFields)) {
-            $fieldList = implode(', ', $missingFields);
-
+        if ($transactionId === '' || $merchantCode === '' || $branchCode === '' || $posDeviceId === '' || ! is_numeric($netTotal)) {
             return [
-                'http_status' => 400,
-                'status'      => 'rejected',
-                'error'       => 'validation_error',
-                'message'     => 'Missing required field: ' . $fieldList,
-                'fields'      => $missingFields,
+                'http_status' => 422,
+                'status' => 'rejected',
+                'error' => 'validation_error',
+                'message' => 'The transaction payload is invalid.',
             ];
         }
 
-        $merchantCode = (string) ($data['merchant_code'] ?? '');
         $merchant = Merchant::where('merchant_code', $merchantCode)
             ->where('vendor_id', $vendor->id)
             ->first();
@@ -71,10 +63,10 @@ class TransactionProcessor
             return $deviceLockResult;
         }
 
-        $existing = Invoice::where('transaction_id', $data['transaction_id'])
-            ->where('merchant_code', $data['merchant_code'] ?? '')
-            ->where('branch_code', $data['branch_code'] ?? '')
-            ->where('pos_device_id', $data['pos_device_id'] ?? '')
+        $existing = Invoice::where('transaction_id', $transactionId)
+            ->where('merchant_code', $merchantCode)
+            ->where('branch_code', $branchCode)
+            ->where('pos_device_id', $posDeviceId)
             ->first();
 
         if ($existing) {
@@ -91,10 +83,10 @@ class TransactionProcessor
 
         $invoice = Invoice::create([
             'bridge_transaction_id' => $bridgeId,
-            'transaction_id'        => $data['transaction_id'],
-            'merchant_code'         => $data['merchant_code'] ?? '',
-            'branch_code'           => $data['branch_code'] ?? '',
-            'pos_device_id'         => $data['pos_device_id'] ?? '',
+            'transaction_id'        => $transactionId,
+            'merchant_code'         => $merchantCode,
+            'branch_code'           => $branchCode,
+            'pos_device_id'         => $posDeviceId,
             'raw_pos_json'          => $data,
             'processing_status'     => 'queued',
         ]);

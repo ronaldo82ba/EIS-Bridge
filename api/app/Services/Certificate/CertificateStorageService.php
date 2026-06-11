@@ -153,6 +153,8 @@ class CertificateStorageService
 
     protected function scanForVirus(UploadedFile $file): void
     {
-        // Stub: integrate ClamAV or a cloud scanner in production.
+        // No-op by default: environments without an AV engine must still enforce
+        // strict cert parsing in validateStructureAndExtractExpiry(). Wire a scanner
+        // here when the deployment provides ClamAV or an equivalent service.
     }
 }

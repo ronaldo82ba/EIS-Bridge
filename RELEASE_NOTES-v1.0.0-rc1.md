@@ -19,7 +19,7 @@ Release candidate 1 for the Tier 1–3 reliability and admin upgrade.
 ## Validation (local RC1)
 | Check | Result |
 |-------|--------|
-| PHPUnit | **142** tests, **142** passed, **710** assertions |
+| PHPUnit | **150** tests, **150** passed |
 | ESLint | Pass |
 | Vite build | Pass |
 

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Vendor;
+use App\Services\Security\VendorApiKeyService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
@@ -88,5 +90,25 @@ class SandboxApiKeyMiddlewareTest extends TestCase
 
         $this->getJson('/v1/health', ['X-SANDBOX-API-KEY' => 'bad-key'])
             ->assertUnauthorized();
+    }
+
+    public function test_vendor_webhook_config_rejects_private_destination(): void
+    {
+        $plainKey = 'vb_sandbox_webhook_private_key_abcdefghijklmnop';
+        $service = app(VendorApiKeyService::class);
+
+        Vendor::create([
+            'name' => 'Sandbox Webhook Vendor',
+            'api_key' => $service->hashKey($plainKey),
+            'status' => 'active',
+        ]);
+
+        $this->postJson('/v1/vendors/webhook', [
+            'webhook_url' => 'https://127.0.0.1/webhook',
+            'secret' => 'supersecret123',
+        ], [
+            'Authorization' => 'Bearer '.$plainKey,
+            'X-SANDBOX-API-KEY' => $this->sandboxKey,
+        ])->assertStatus(422)->assertJsonValidationErrors(['webhook_url']);
     }
 }

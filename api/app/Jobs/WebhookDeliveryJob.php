@@ -9,9 +9,12 @@ use App\Services\Alerts\AlertEmitter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WebhookDeliveryJob implements ShouldQueue
 {
@@ -48,16 +51,39 @@ class WebhookDeliveryJob implements ShouldQueue
         }
 
         $payload = $this->resolvePayload($vendor);
+        $timestamp = now()->toIso8601String();
         $body = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $signature = hash_hmac('sha256', $body, (string) $vendor->webhook_secret);
+        $replayKey = 'webhook:delivery:'.sha1($vendor->id.'|'.$this->event.'|'.$body);
 
-        $response = Http::timeout(15)
-            ->withHeaders([
-                'Content-Type' => 'application/json',
-                'X-EISBridge-Signature' => $signature,
-            ])
-            ->withBody($body, 'application/json')
-            ->post($vendor->webhook_url);
+        if (! Cache::add($replayKey, $timestamp, now()->addMinutes(15))) {
+            Log::warning('Skipping replayed webhook payload dispatch.', [
+                'vendor_id' => $vendor->id,
+                'event' => $this->event,
+            ]);
+
+            return;
+        }
+
+        try {
+            $response = Http::timeout(15)
+                ->withHeaders([
+                    'Content-Type' => 'application/json',
+                    'X-EISBridge-Signature' => $signature,
+                    'X-EISBridge-Timestamp' => $timestamp,
+                ])
+                ->withBody($body, 'application/json')
+                ->post($vendor->webhook_url);
+        } catch (ConnectionException $e) {
+            Log::warning('Webhook delivery connection failure; retrying.', [
+                'vendor_id' => $vendor->id,
+                'event' => $this->event,
+                'attempt' => $this->attempts(),
+                'message' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
 
         WebhookDelivery::create([
             'vendor_id' => $vendor->id,
@@ -84,6 +110,13 @@ class WebhookDeliveryJob implements ShouldQueue
                 );
             }
 
+            Log::warning('Webhook delivery received non-success response.', [
+                'vendor_id' => $vendor->id,
+                'event' => $this->event,
+                'status_code' => $response->status(),
+                'attempt' => $this->attempts(),
+            ]);
+
             $this->fail(new \RuntimeException("Webhook delivery failed with status {$response->status()}."));
         }
     }
@@ -94,7 +127,10 @@ class WebhookDeliveryJob implements ShouldQueue
     private function resolvePayload(Vendor $vendor): array
     {
         if ($this->payload !== []) {
-            return $this->payload;
+            return array_merge(
+                ['timestamp' => now()->toIso8601String()],
+                $this->payload
+            );
         }
 
         if ($this->event === 'webhook.test') {
@@ -111,6 +147,7 @@ class WebhookDeliveryJob implements ShouldQueue
 
         return [
             'event' => $this->event,
+            'timestamp' => now()->toIso8601String(),
             'data' => [
                 'bridge_transaction_id' => $invoice?->bridge_transaction_id,
                 'transaction_id' => $invoice?->transaction_id,
@@ -118,5 +155,15 @@ class WebhookDeliveryJob implements ShouldQueue
                 'eis_reference_no' => $invoice?->eis_reference_no,
             ],
         ];
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        Log::error('WebhookDeliveryJob exhausted retries.', [
+            'vendor_id' => $this->vendorId,
+            'invoice_id' => $this->invoiceId,
+            'event' => $this->event,
+            'message' => $exception->getMessage(),
+        ]);
     }
 }

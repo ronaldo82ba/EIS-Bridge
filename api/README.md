@@ -20,7 +20,7 @@ php artisan storage:link
 php artisan serve
 ```
 
-Default sandbox API key: `VENDOR_API_KEY_123` (see `SANDBOX_API_KEY` in `.env`).
+Default sandbox API key in examples is for local development only; always set a unique `SANDBOX_API_KEY` per environment.
 
 ## Documentation
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\LicenseStatus;
+use App\Jobs\MapInvoiceJob;
 use App\Models\Branch;
 use App\Models\Device;
 use App\Models\Invoice;
@@ -14,6 +15,7 @@ use App\Models\VendorLicense;
 use App\Services\Security\VendorApiKeyService;
 use App\Services\TransactionProcessor;
 use Database\Seeders\LicensePlanSeeder;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class VendorApiTenantIsolationTest extends TestCase
@@ -172,6 +174,35 @@ class VendorApiTenantIsolationTest extends TestCase
             ->assertJson([
                 'error' => 'merchant_not_owned',
             ]);
+    }
+
+    public function test_post_returns_structured_validation_error_for_invalid_payload(): void
+    {
+        $plainKey = 'vb_post_validation_key_abcdefghijklmnop';
+        $this->createVendorWithKey('Validation Vendor', $plainKey);
+        Queue::fake();
+
+        $this->postJson('/v1/transactions', [
+            'transaction' => [
+                'merchant_code' => 'MRC-UNKNOWN',
+                'branch_code' => 'BR001',
+                'pos_device_id' => 'POS01',
+                'totals' => [],
+            ],
+        ], $this->authHeaders($plainKey))
+            ->assertStatus(422)
+            ->assertJson([
+                'error' => 'validation_error',
+            ])
+            ->assertJsonStructure([
+                'message',
+                'fields' => [
+                    'transaction.transaction_id',
+                    'transaction.totals.net',
+                ],
+            ]);
+
+        Queue::assertNotPushed(MapInvoiceJob::class);
     }
 
     public function test_device_lock_only_applies_to_owned_merchants(): void

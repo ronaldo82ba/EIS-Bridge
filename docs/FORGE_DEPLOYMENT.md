@@ -139,6 +139,7 @@ Templates:
 | `APP_ENV` | `production` | `staging` |
 | `APP_URL` | `https://api.eisbridge.com` | `https://sandbox.eisbridge.com` |
 | `EIS_SANDBOX_MODE` | **`false`** | **`true`** |
+| `EIS_ENDPOINT` | **required**, HTTPS public endpoint only | sandbox endpoint |
 | `SANDBOX_API_KEY` | empty (unused) | **required** — shared gate; send as `X-SANDBOX-API-KEY` on `/v1/*` |
 | `QUEUE_CONNECTION` | `redis` | `redis` |
 | `DB_DATABASE` | `eis_bridge_production` | `eis_bridge_sandbox` |
@@ -146,7 +147,7 @@ Templates:
 Generate `APP_KEY` once per site:
 
 ```bash
-cd /home/forge/api.eisbridge.com/api
+cd /home/forge/api.eisbridge.com/current/api
 php artisan key:generate --show
 ```
 
@@ -172,8 +173,8 @@ Add a Forge **Daemon** on **each** Laravel site **after the first successful dep
 
 | Field | Value |
 |-------|-------|
-| **Command** | `php8.3 artisan horizon` |
-| **Directory** | `/home/forge/sandbox.eisbridge.com/api` |
+| **Command** | `php8.5 artisan horizon` |
+| **Directory** | `/home/forge/sandbox.eisbridge.com/current/api` |
 | **User** | `forge` |
 | **Processes** | `1` |
 
@@ -181,8 +182,8 @@ Add a Forge **Daemon** on **each** Laravel site **after the first successful dep
 
 | Field | Value |
 |-------|-------|
-| **Command** | `php8.3 artisan horizon` |
-| **Directory** | `/home/forge/api.eisbridge.com/api` |
+| **Command** | `php8.5 artisan horizon` |
+| **Directory** | `/home/forge/api.eisbridge.com/current/api` |
 | **User** | `forge` |
 | **Processes** | `1` |
 
@@ -202,8 +203,8 @@ Corrected sandbox block (replace `876317` with your Forge daemon ID):
 
 ```ini
 [program:daemon-876317]
-directory=/home/forge/sandbox.eisbridge.com/api
-command=php8.3 artisan horizon
+directory=/home/forge/sandbox.eisbridge.com/current/api
+command=php8.5 artisan horizon
 process_name=%(program_name)s_%(process_num)02d
 autostart=true
 autorestart=true
@@ -232,7 +233,7 @@ Horizon supervises queues: `mapping`, `signing`, `transmission`, `retry`, `webho
 2. **`api/.env` must exist** — Forge → Site → Environment writes the file. For this monorepo the deploy scripts expect it at `{site}/api/.env`. If Forge wrote `.env` only at the site root, symlink before starting Horizon:
 
    ```bash
-   ln -sf /home/forge/sandbox.eisbridge.com/.env /home/forge/sandbox.eisbridge.com/api/.env
+   ln -sf /home/forge/sandbox.eisbridge.com/.env /home/forge/sandbox.eisbridge.com/current/api/.env
    ```
 
 3. **`APP_KEY` set** — generate with `php artisan key:generate --show` in `api/`.
@@ -240,9 +241,9 @@ Horizon supervises queues: `mapping`, `signing`, `transmission`, `retry`, `webho
 5. **Manual smoke test** before enabling the daemon:
 
    ```bash
-   cd /home/forge/sandbox.eisbridge.com/api
-   php8.3 artisan horizon:status
-   php8.3 artisan horizon   # Ctrl+C after "Horizon started successfully"
+   cd /home/forge/sandbox.eisbridge.com/current/api
+   php8.5 artisan horizon:status
+   php8.5 artisan horizon   # Ctrl+C after "Horizon started successfully"
    ```
 
    Check Forge daemon log on failure: `/home/forge/.forge/daemon-*.log`.
@@ -263,7 +264,7 @@ All scheduled commands append output to `storage/logs/scheduler.log` on the serv
 Verify after deploy:
 
 ```bash
-cd /home/forge/sandbox.eisbridge.com/api && php artisan schedule:list
+cd /home/forge/sandbox.eisbridge.com/current/api && php8.5 artisan schedule:list
 tail -20 storage/logs/scheduler.log
 ```
 
@@ -328,7 +329,7 @@ Repeat for each of the three sites. Order: **marketing → sandbox API → produ
 4. **Database:** link `eis_bridge_sandbox` (Forge → Site → Database).
 5. **Environment:** paste from `api/.env.sandbox.example`, set `DB_*`, generate `APP_KEY`.
 6. **Deploy script:** paste [`deploy/forge-forge-ui-sandbox.sh`](../deploy/forge-forge-ui-sandbox.sh) (not `forge-deploy-sandbox.sh` — the UI wrapper runs zero-downtime macros and `$RESTART_QUEUES()`).
-7. **Deploy Now** first, then **Daemon:** `php8.3 artisan horizon`, directory `/home/forge/sandbox.eisbridge.com/api` (see [Horizon](#horizon-api--sandbox-sites) for `stopwaitsecs` and prerequisites).
+7. **Deploy Now** first, then **Daemon:** `php8.5 artisan horizon`, directory `/home/forge/sandbox.eisbridge.com/current/api` (see [Horizon](#horizon-api--sandbox-sites) for `stopwaitsecs` and prerequisites).
 8. **Scheduler:** **Site → Scheduler → Enable**.
 9. **Environment:** set `SANDBOX_API_KEY` (generate with `openssl rand -hex 32`), **Save**, then redeploy.
 10. **SSL** → Deploy Now.
@@ -375,14 +376,14 @@ curl -sS https://api.eisbridge.com/up
 curl -sS https://sandbox.eisbridge.com/up
 
 # Migrations applied
-cd /home/forge/api.eisbridge.com/api && php artisan migrate:status
+cd /home/forge/api.eisbridge.com/current/api && php artisan migrate:status
 
 # Horizon running (repeat for sandbox path)
-cd /home/forge/sandbox.eisbridge.com/api && php8.3 artisan horizon:status
-cd /home/forge/api.eisbridge.com/api && php8.3 artisan horizon:status
+cd /home/forge/sandbox.eisbridge.com/current/api && php8.5 artisan horizon:status
+cd /home/forge/api.eisbridge.com/current/api && php8.5 artisan horizon:status
 
 # Schedule registered
-php artisan schedule:list
+php8.5 artisan schedule:list
 ```
 
 Admin console: `https://api.eisbridge.com/admin` (requires seeded admin user — run seeders on first deploy if needed).
@@ -417,8 +418,8 @@ curl -sS https://sandbox.eisbridge.com/horizon-health
 On the server:
 
 ```bash
-cd /home/forge/sandbox.eisbridge.com/api
-php8.3 artisan horizon:status
+cd /home/forge/sandbox.eisbridge.com/current/api
+php8.5 artisan horizon:status
 tail -20 storage/logs/scheduler.log
 grep SANDBOX_API_KEY .env   # confirm key is set (do not paste value in tickets)
 ```
@@ -434,9 +435,9 @@ Complete these in the Forge UI for **sandbox.eisbridge.com** after the first dep
 | 1. Deploy script | **Site → Deployment → Deploy Script** | Paste entire [`deploy/forge-forge-ui-sandbox.sh`](../deploy/forge-forge-ui-sandbox.sh), **Save** |
 | 2. Environment | **Site → Environment** | Paste from [`api/.env.sandbox.example`](../api/.env.sandbox.example); set `APP_KEY`, `DB_*`, `SANDBOX_API_KEY` (`openssl rand -hex 32`), **Save** |
 | 3. Redeploy | **Site → Deployment → Deploy Now** | Wait for green; confirm log shows `assert_valid_app_key` pass and `horizon:terminate` |
-| 4. Horizon daemon | **Site → Daemons → Create Daemon** | Command: `php8.3 artisan horizon` (match site PHP version); Directory: `/home/forge/sandbox.eisbridge.com/api`; User: `forge`; Processes: `1` |
+| 4. Horizon daemon | **Site → Daemons → Create Daemon** | Command: `php8.5 artisan horizon` (match site PHP version); Directory: `/home/forge/sandbox.eisbridge.com/current/api`; User: `forge`; Processes: `1` |
 | 5. Supervisor tuning | SSH (see [Horizon](#horizon-api--sandbox-sites)) | Set `stopwaitsecs=3600` in `/etc/supervisor/conf.d/daemon-*.conf`, then `sudo supervisorctl reread && sudo supervisorctl update` |
-| 6. Scheduler | **Site → Scheduler → Enable** | Toggle on; verify with `php artisan schedule:list` over SSH |
+| 6. Scheduler | **Site → Scheduler → Enable** | Toggle on; verify with `php8.5 artisan schedule:list` over SSH |
 | 7. SSL | **Site → SSL → Lets Encrypt** | Obtain certificate, force HTTPS |
 | 8. Verify | Workstation | Run [Post-deploy smoke tests (sandbox)](#post-deploy-smoke-tests-sandbox) |
 
@@ -462,11 +463,11 @@ To rotate `SANDBOX_API_KEY`: update **Site → Environment**, **Save**, **Deploy
 **Quick checks on the server** (after SSH):
 
 ```bash
-cd /home/forge/sandbox.eisbridge.com/api   # or current release path
-php8.3 -m | grep -i redis                  # must print "redis"
+cd /home/forge/sandbox.eisbridge.com/current/api   # or current release path
+php8.5 -m | grep -i redis                  # must print "redis"
 redis-cli ping                             # must print PONG
 grep APP_ENV .env                          # sandbox: staging
-php8.3 artisan about --only=environment    # Environment -> staging
+php8.5 artisan about --only=environment    # Environment -> staging
 curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1/up   # via site nginx if needed
 tail -50 storage/logs/laravel.log
 ```
@@ -483,10 +484,10 @@ tail -50 storage/logs/laravel.log
 4. **BIR** — configure production `EIS_ENDPOINT` and merchant mTLS paths per [production-eis-setup.md](production-eis-setup.md) before accepting live traffic.
 5. **Deploy** — paste [`deploy/forge-deploy-api.sh`](../deploy/forge-deploy-api.sh); uncheck Forge “Install Composer dependencies”; add shared path `api/storage`.
 6. **Deploy Now** — confirm migrations and `npm run build` succeed.
-7. **Horizon daemon** — command `php8.3 artisan horizon`, directory `/home/forge/api.eisbridge.com/api`, user `forge`, processes `1`; set `stopwaitsecs=3600` in Supervisor after create.
+7. **Horizon daemon** — command `php8.5 artisan horizon`, directory `/home/forge/api.eisbridge.com/current/api`, user `forge`, processes `1`; set `stopwaitsecs=3600` in Supervisor after create.
 8. **Scheduler** — enable on the site.
 9. **SSL** — Lets Encrypt for `api.eisbridge.com`, force HTTPS.
-10. **Verify** — `curl -sS https://api.eisbridge.com/up` → 200; `php8.3 artisan horizon:status`; restrict `/horizon` (IP allowlist or Forge auth).
+10. **Verify** — `curl -sS https://api.eisbridge.com/up` → 200; `php8.5 artisan horizon:status`; restrict `/horizon` (IP allowlist or Forge auth).
 
 ---
 

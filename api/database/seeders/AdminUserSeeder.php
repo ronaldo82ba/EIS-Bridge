@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
@@ -18,11 +19,25 @@ class AdminUserSeeder extends Seeder
                 ['email' => $admin['email']],
                 [
                     'name' => $admin['name'],
-                    'password' => Hash::make('password'),
+                    'password' => Hash::make($this->resolveSeedPassword()),
                     'role' => 'super_admin',
                     'vendor_id' => null,
                 ]
             );
         }
+    }
+
+    private function resolveSeedPassword(): string
+    {
+        $configured = (string) env('ADMIN_SEED_PASSWORD', '');
+        if ($configured !== '') {
+            return $configured;
+        }
+
+        if (app()->environment('production')) {
+            throw new \RuntimeException('ADMIN_SEED_PASSWORD must be configured in production.');
+        }
+
+        return Str::password(24);
     }
 }

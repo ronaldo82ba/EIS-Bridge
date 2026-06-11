@@ -20,6 +20,10 @@ class TransmitInvoiceJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $tries = 3;
+
+    public array $backoff = [30, 120, 300];
+
     public function __construct(
         public int $invoiceId,
         public int $attempt = 1,
@@ -32,6 +36,10 @@ class TransmitInvoiceJob implements ShouldQueue
         $invoice = Invoice::find($this->invoiceId);
 
         if (! $invoice || empty($invoice->signed_json)) {
+            return;
+        }
+
+        if (in_array($invoice->processing_status, ['sent', 'retry_failed'], true)) {
             return;
         }
 
@@ -116,6 +124,10 @@ class TransmitInvoiceJob implements ShouldQueue
 
     private function markTransmissionFailed(Invoice $invoice, string $eisStatus): void
     {
+        if ($invoice->processing_status === 'retry_failed') {
+            return;
+        }
+
         $invoice->update([
             'processing_status' => 'transmission_failed',
             'eis_status' => $eisStatus === 'failed' ? 'failed' : $eisStatus,
@@ -134,5 +146,14 @@ class TransmitInvoiceJob implements ShouldQueue
         WebhookDispatcher::dispatchEvent($invoice->fresh(), 'transaction.eis_failed');
 
         RetryFailedTransmissionJob::dispatch($invoice->id, 1)->onQueue('retry');
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        Log::error('TransmitInvoiceJob exhausted retries.', [
+            'invoice_id' => $this->invoiceId,
+            'attempt' => $this->attempt,
+            'message' => $exception->getMessage(),
+        ]);
     }
 }

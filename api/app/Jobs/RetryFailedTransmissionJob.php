@@ -21,6 +21,10 @@ class RetryFailedTransmissionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $tries = 3;
+
+    public array $backoff = [60, 300, 900];
+
     public function __construct(
         public int $invoiceId,
         public int $attempt = 1,
@@ -33,6 +37,10 @@ class RetryFailedTransmissionJob implements ShouldQueue
         $invoice = Invoice::find($this->invoiceId);
 
         if (! $invoice || empty($invoice->signed_json)) {
+            return;
+        }
+
+        if (in_array($invoice->processing_status, ['sent', 'retry_failed'], true)) {
             return;
         }
 
@@ -194,5 +202,14 @@ class RetryFailedTransmissionJob implements ShouldQueue
         }
 
         return (int) config('eis.retry_max_attempts', 5);
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        Log::error('RetryFailedTransmissionJob exhausted retries.', [
+            'invoice_id' => $this->invoiceId,
+            'attempt' => $this->attempt,
+            'message' => $exception->getMessage(),
+        ]);
     }
 }
