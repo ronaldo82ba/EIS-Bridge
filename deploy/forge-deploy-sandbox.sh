@@ -12,7 +12,7 @@ FORGE_PHP_BIN="${FORGE_PHP:-php}"
 require_php_redis() {
   if ! "${FORGE_PHP_BIN}" -m 2>/dev/null | grep -qi '^redis$'; then
     echo "ERROR: PHP redis extension (phpredis) is not enabled for ${FORGE_PHP_BIN}."
-    echo "Forge -> Server -> PHP 8.3 -> Extensions -> enable redis, then redeploy."
+    echo "Forge -> Server -> PHP -> Extensions (match site PHP version, e.g. 8.5) -> enable redis, then redeploy."
     echo "Sandbox uses SESSION_DRIVER=redis, CACHE_STORE=redis, QUEUE_CONNECTION=redis (see api/.env.sandbox.example)."
     exit 1
   fi
@@ -118,8 +118,10 @@ assert_cached_app_env staging
 ${FORGE_PHP_BIN} artisan route:cache
 ${FORGE_PHP_BIN} artisan view:cache
 
-if ! ${FORGE_PHP_BIN} artisan route:list --path=up --no-ansi >/dev/null 2>&1; then
-  echo "ERROR: Laravel failed to boot after config:cache (see storage/logs/laravel.log)."
+if ! BOOT_OUTPUT=$(${FORGE_PHP_BIN} artisan about --only=environment --no-ansi 2>&1); then
+  echo "ERROR: Laravel failed to boot after config:cache."
+  echo "${BOOT_OUTPUT}"
+  echo "See storage/logs/laravel.log in this release for details."
   exit 1
 fi
 

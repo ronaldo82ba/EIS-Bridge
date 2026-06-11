@@ -118,11 +118,11 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        // After Forge env fixes, bootstrap/cache/config.php may still say production until
-        // config:clear && config:cache runs. Trust the live .env only when config is cached.
+        // Forge sandbox: .env may already say staging while bootstrap/cache/config.php
+        // still says production until config:clear && config:cache runs after an env fix.
         if ($this->app->configurationIsCached()) {
             $liveEnv = $this->readAppEnvFromEnvironmentFile();
-            if ($liveEnv !== null && $liveEnv !== 'production') {
+            if ($liveEnv === 'staging') {
                 return;
             }
         }
@@ -146,10 +146,14 @@ class AppServiceProvider extends ServiceProvider
             return null;
         }
 
-        if (preg_match('/^\s*APP_ENV\s*=\s*(["\']?)([\w-]+)\1\s*$/m', $contents, $matches) !== 1) {
-            return null;
+        if (preg_match('/^\s*APP_ENV\s*=\s*(["\']?)([\w-]+)\1\s*$/m', $contents, $matches) === 1) {
+            return $matches[2];
         }
 
-        return $matches[2];
+        if (preg_match('/^\s*APP_ENV\s*=\s*["\']?([\w-]+)/m', $contents, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return null;
     }
 }
