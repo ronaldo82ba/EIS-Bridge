@@ -59,19 +59,23 @@ fi
 # Forge shared .env lives at site root; Laravel reads api/.env — always refresh symlink each release.
 ENV_LINK_TARGET="${API_DIR}/.env"
 SHARED_ENV=""
+SITE_ROOT="$(cd "${REPO_ROOT}/../.." 2>/dev/null && pwd || true)"
 for CANDIDATE in \
-  "${FORGE_SITE_PATH:-}/.env" \
   "${REPO_ROOT}/.env" \
-  "${FORGE_SITE_PATH:-}/shared/.env" \
-  "$(dirname "${FORGE_SITE_PATH:-/nonexistent}")/.env"; do
-  if [ -f "${CANDIDATE}" ]; then
+  "${FORGE_RELEASE_DIRECTORY:-}/.env" \
+  "${FORGE_SITE_PATH:-}/.env" \
+  "${SITE_ROOT}/.env" \
+  "${FORGE_SITE_PATH:-}/shared/.env"; do
+  if [ -n "${CANDIDATE}" ] && [ -f "${CANDIDATE}" ]; then
     SHARED_ENV="${CANDIDATE}"
     break
   fi
 done
 
 if [ -z "${SHARED_ENV}" ]; then
-  echo "ERROR: Forge shared .env not found. Save Environment in Forge first."
+  echo "ERROR: Forge shared .env not found."
+  echo "Forge -> Site -> Environment: paste env, click Save, then redeploy."
+  echo "Checked: ${REPO_ROOT}/.env, ${FORGE_SITE_PATH:-<unset>}/.env, ${SITE_ROOT}/.env"
   exit 1
 fi
 

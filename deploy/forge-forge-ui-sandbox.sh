@@ -11,6 +11,11 @@ $CREATE_RELEASE()
 
 cd "$FORGE_RELEASE_DIRECTORY"
 
+export FORGE_SITE_PATH="${FORGE_SITE_PATH:-}"
+export FORGE_RELEASE_DIRECTORY="${FORGE_RELEASE_DIRECTORY:-}"
+export FORGE_PHP="${FORGE_PHP:-php}"
+export FORGE_COMPOSER="${FORGE_COMPOSER:-composer}"
+
 if [ -f deploy/forge-deploy-sandbox.sh ]; then
   bash deploy/forge-deploy-sandbox.sh
 elif [ -f ../deploy/forge-deploy-sandbox.sh ]; then
