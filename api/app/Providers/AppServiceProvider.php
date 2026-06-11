@@ -41,13 +41,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Enforce on HTTP boots and /up health checks only. Artisan must keep booting
-        // during deploy (config:cache, route:cache, post-cache smoke tests) while
-        // bootstrap/cache/config.php may still reflect a prior APP_ENV until recached.
-        if (! $this->app->runningInConsole()) {
-            $this->guardProductionSandboxConfig();
-        }
-
+        // Enforce only on /up (DiagnosingHealth). Do not throw during HTTP kernel boot —
+        // a mis-cached APP_ENV would otherwise blank-500 every route before JSON handlers run.
         Event::listen(DiagnosingHealth::class, function () {
             $this->guardProductionSandboxConfig();
         });
@@ -119,17 +114,13 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        if (! $this->app->environment('production')) {
+        $liveEnv = $this->readAppEnvFromEnvironmentFile();
+        if ($liveEnv === 'staging') {
             return;
         }
 
-        // Forge sandbox: .env may already say staging while bootstrap/cache/config.php
-        // still says production until config:clear && config:cache runs after an env fix.
-        if ($this->app->configurationIsCached()) {
-            $liveEnv = $this->readAppEnvFromEnvironmentFile();
-            if ($liveEnv === 'staging') {
-                return;
-            }
+        if (! $this->app->environment('production')) {
+            return;
         }
 
         throw new RuntimeException(
