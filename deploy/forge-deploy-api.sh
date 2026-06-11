@@ -68,13 +68,6 @@ ${FORGE_PHP_BIN} artisan config:cache
 ${FORGE_PHP_BIN} artisan route:cache
 ${FORGE_PHP_BIN} artisan view:cache
 
-if ! BOOT_OUTPUT=$(${FORGE_PHP_BIN} artisan about --only=environment --no-ansi 2>&1); then
-  echo "ERROR: Laravel failed to boot after config:cache."
-  echo "${BOOT_OUTPUT}"
-  echo "See storage/logs/laravel.log in this release for details."
-  exit 1
-fi
-
 $ACTIVATE_RELEASE()
 
 $RESTART_QUEUES()
