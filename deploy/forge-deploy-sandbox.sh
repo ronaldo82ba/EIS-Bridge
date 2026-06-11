@@ -41,6 +41,51 @@ assert_cached_app_env() {
   fi
 }
 
+assert_valid_app_key() {
+  local ENV_FILE="$1"
+  local RESULT
+  RESULT=$("${FORGE_PHP_BIN}" -r "
+    \$lines = @file('${ENV_FILE}', FILE_IGNORE_NEW_LINES);
+    if (\$lines === false) { echo 'read_fail'; exit(0); }
+    \$raw = '';
+    foreach (\$lines as \$line) {
+      if (preg_match('/^\\s*APP_KEY\\s*=\\s*(.*)\$/', \$line, \$m)) {
+        \$raw = trim(\$m[1], \" \\\"'\");
+      }
+    }
+    if (\$raw === '') { echo 'missing'; exit(0); }
+    if (!str_starts_with(\$raw, 'base64:')) { echo 'no_prefix'; exit(0); }
+    \$decoded = base64_decode(substr(\$raw, 7), true);
+    if (\$decoded === false) { echo 'bad_b64'; exit(0); }
+    echo strlen(\$decoded);
+  " 2>/dev/null || echo error)
+
+  case "${RESULT}" in
+    missing)
+      echo "ERROR: APP_KEY is not set in ${ENV_FILE}."
+      ;;
+    no_prefix)
+      echo "ERROR: APP_KEY must start with base64: (Laravel AES-256-CBC format)."
+      ;;
+    bad_b64)
+      echo "ERROR: APP_KEY base64 payload is invalid."
+      ;;
+    read_fail|error)
+      echo "ERROR: Could not read or validate APP_KEY in ${ENV_FILE}."
+      ;;
+    32)
+      return 0
+      ;;
+    *)
+      echo "ERROR: APP_KEY decodes to ${RESULT} bytes, expected 32 for AES-256-CBC."
+      echo "A wrong-length key causes /up to fail with: Unsupported cipher or incorrect key length."
+      ;;
+  esac
+  echo "Generate a valid key locally: cd api && php artisan key:generate --show"
+  echo "Paste the full line (base64:...) into Forge -> Site -> Environment, Save, then redeploy."
+  exit 1
+}
+
 if [ -z "${FORGE_RELEASE_DIRECTORY:-}" ]; then
   echo "ERROR: FORGE_RELEASE_DIRECTORY is not set. Run via deploy/forge-forge-ui-sandbox.sh (Forge CREATE_RELEASE)."
   exit 1
@@ -181,6 +226,8 @@ ${FORGE_PHP_BIN} artisan migrate --force
 
 ${FORGE_PHP_BIN} artisan storage:link --force 2>/dev/null || true
 
+assert_valid_app_key "${ENV_LINK_TARGET}"
+
 ${FORGE_PHP_BIN} artisan config:clear
 ${FORGE_PHP_BIN} artisan config:cache
 assert_cached_app_env staging
@@ -189,5 +236,7 @@ ${FORGE_PHP_BIN} artisan view:cache
 # Boot validated above: route:cache and view:cache boot the full kernel with cached config.
 # assert_cached_app_env confirms APP_ENV in bootstrap/cache/config.php.
 # $ACTIVATE_RELEASE and $RESTART_QUEUES run in deploy/forge-forge-ui-sandbox.sh (Forge macros).
+# horizon:terminate here stops the previous release's workers before activation/restart.
+${FORGE_PHP_BIN} artisan horizon:terminate 2>/dev/null || true
 
 echo "EIS Bridge sandbox deploy complete ($(git -C "${REPO_ROOT}" rev-parse --short HEAD 2>/dev/null || echo unknown))"

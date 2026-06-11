@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'sandbox_api_key' => env('SANDBOX_API_KEY', ''),
     'api_key_grace_hours' => (int) env('API_KEY_GRACE_HOURS', 24),
     'vendor_api_rate_limit' => (int) env('VENDOR_API_RATE_LIMIT', 120),
     'vendor_transaction_rate_limit' => (int) env('VENDOR_TRANSACTION_RATE_LIMIT', 60),

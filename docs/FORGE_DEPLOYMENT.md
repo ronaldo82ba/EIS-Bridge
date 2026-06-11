@@ -96,7 +96,7 @@ Paste the contents of these files into **Forge → Site → Deployment → Deplo
 |------|-------------|
 | `eisbridge.com` | [`deploy/forge-deploy-marketing.sh`](../deploy/forge-deploy-marketing.sh) |
 | `api.eisbridge.com` | [`deploy/forge-deploy-api.sh`](../deploy/forge-deploy-api.sh) |
-| `sandbox.eisbridge.com` | [`deploy/forge-deploy-sandbox.sh`](../deploy/forge-deploy-sandbox.sh) |
+| `sandbox.eisbridge.com` | [`deploy/forge-forge-ui-sandbox.sh`](../deploy/forge-forge-ui-sandbox.sh) |
 
 Forge injects `$FORGE_RELEASE_DIRECTORY`, `$FORGE_COMPOSER`, and `$FORGE_PHP` at runtime on new sites (zero-downtime enabled by default).
 
@@ -139,6 +139,7 @@ Templates:
 | `APP_ENV` | `production` | `staging` |
 | `APP_URL` | `https://api.eisbridge.com` | `https://sandbox.eisbridge.com` |
 | `EIS_SANDBOX_MODE` | **`false`** | **`true`** |
+| `SANDBOX_API_KEY` | empty (unused) | **required** — shared gate; send as `X-SANDBOX-API-KEY` on `/v1/*` |
 | `QUEUE_CONNECTION` | `redis` | `redis` |
 | `DB_DATABASE` | `eis_bridge_production` | `eis_bridge_sandbox` |
 
@@ -150,6 +151,14 @@ php artisan key:generate --show
 ```
 
 Paste the output into Forge → Site → Environment.
+
+Generate a sandbox gate key (once per sandbox site):
+
+```bash
+openssl rand -hex 32
+```
+
+Set `SANDBOX_API_KEY` to that value in Forge → Site → Environment. Vendor API clients must send `X-SANDBOX-API-KEY: <value>` on every `/v1/*` request (in addition to `Authorization: Bearer` for vendor routes).
 
 ---
 
@@ -213,6 +222,10 @@ Reference copy in repo: [`deploy/supervisor/horizon.conf`](../deploy/supervisor/
 
 Horizon supervises queues: `mapping`, `signing`, `transmission`, `retry`, `webhooks`, `default`. Sandbox uses `APP_ENV=staging`; see `staging` in [`api/config/horizon.php`](../api/config/horizon.php).
 
+**Deploy restarts:** [`deploy/forge-forge-ui-sandbox.sh`](../deploy/forge-forge-ui-sandbox.sh) calls Forge `$RESTART_QUEUES()` after `$ACTIVATE_RELEASE()`. The deploy body also runs `php artisan horizon:terminate` before activation so in-flight jobs can finish gracefully.
+
+**Health check:** `GET https://sandbox.eisbridge.com/horizon-health` returns JSON `{"status":"running"|"stopped",...}` (HTTP 200 when running, 503 when stopped). Does not require `X-SANDBOX-API-KEY`. (Avoid `/horizon/health` — Horizon's dashboard SPA registers a catch-all at `/horizon/{view?}`.)
+
 #### Prerequisites (avoid Horizon FATAL on start)
 
 1. **Deploy first** — run **Deploy Now** so `composer install` creates `vendor/` and migrations run.
@@ -236,17 +249,22 @@ Horizon supervises queues: `mapping`, `signing`, `transmission`, `retry`, `webho
 
 ### Scheduler
 
-Forge enables `* * * * * php artisan schedule:run` when you toggle **Scheduler** on the site. Required scheduled tasks:
+Enable the Forge **Scheduler** toggle on each Laravel API site (**Site → Scheduler → Enable**). Forge adds a cron entry that runs `php artisan schedule:run` every minute.
+
+Scheduled tasks (see [`api/routes/console.php`](../api/routes/console.php)):
 
 - `observability:check` — every 10 minutes
 - `licenses:check-renewals` — daily
 - `certificates:scan-expiry` — daily at 01:00
 - `queues:broadcast` — every 30 seconds
 
+All scheduled commands append output to `storage/logs/scheduler.log` on the server.
+
 Verify after deploy:
 
 ```bash
-cd api && php artisan schedule:list
+cd /home/forge/sandbox.eisbridge.com/api && php artisan schedule:list
+tail -20 storage/logs/scheduler.log
 ```
 
 See also [production-ops.md](production-ops.md) and [queue-workers.md](queue-workers.md).
@@ -309,11 +327,12 @@ Repeat for each of the three sites. Order: **marketing → sandbox API → produ
 3. **PHP:** 8.3.
 4. **Database:** link `eis_bridge_sandbox` (Forge → Site → Database).
 5. **Environment:** paste from `api/.env.sandbox.example`, set `DB_*`, generate `APP_KEY`.
-6. **Deploy script:** paste `deploy/forge-deploy-sandbox.sh`.
+6. **Deploy script:** paste [`deploy/forge-forge-ui-sandbox.sh`](../deploy/forge-forge-ui-sandbox.sh) (not `forge-deploy-sandbox.sh` — the UI wrapper runs zero-downtime macros and `$RESTART_QUEUES()`).
 7. **Deploy Now** first, then **Daemon:** `php8.3 artisan horizon`, directory `/home/forge/sandbox.eisbridge.com/api` (see [Horizon](#horizon-api--sandbox-sites) for `stopwaitsecs` and prerequisites).
-8. **Scheduler:** enable.
-9. **SSL** → Deploy Now.
-10. Smoke test: `GET https://sandbox.eisbridge.com/up` → 200.
+8. **Scheduler:** **Site → Scheduler → Enable**.
+9. **Environment:** set `SANDBOX_API_KEY` (generate with `openssl rand -hex 32`), **Save**, then redeploy.
+10. **SSL** → Deploy Now.
+11. Smoke test — see [Post-deploy smoke tests (sandbox)](#post-deploy-smoke-tests-sandbox) below.
 
 ### D. Production API — `api.eisbridge.com`
 
@@ -370,6 +389,61 @@ Admin console: `https://api.eisbridge.com/admin` (requires seeded admin user —
 
 ---
 
+## Post-deploy smoke tests (sandbox)
+
+Run from your workstation after DNS, SSL, deploy, Horizon daemon, Scheduler, and `SANDBOX_API_KEY` are configured on **sandbox.eisbridge.com**.
+
+Replace `YOUR_SANDBOX_API_KEY` with the value from Forge → Site → Environment.
+
+```bash
+# 1. Laravel health (no sandbox gate)
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" https://sandbox.eisbridge.com/up
+# Expected: HTTP 200
+
+# 2. Vendor API health — requires X-SANDBOX-API-KEY (routes are /v1/*, not /api/v1/*)
+curl -sS -H "X-SANDBOX-API-KEY: YOUR_SANDBOX_API_KEY" \
+  https://sandbox.eisbridge.com/v1/health
+# Expected: JSON with "status":"healthy" (or warning if Redis/queue not ready)
+
+# 3. Sandbox gate rejects missing header
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" https://sandbox.eisbridge.com/v1/health
+# Expected: HTTP 401
+
+# 4. Horizon worker health (no sandbox gate)
+curl -sS https://sandbox.eisbridge.com/horizon-health
+# Expected: HTTP 200 with "status":"running" when daemon is up; HTTP 503 if Horizon stopped
+```
+
+On the server:
+
+```bash
+cd /home/forge/sandbox.eisbridge.com/api
+php8.3 artisan horizon:status
+tail -20 storage/logs/scheduler.log
+grep SANDBOX_API_KEY .env   # confirm key is set (do not paste value in tickets)
+```
+
+---
+
+## Sandbox Forge UI activation (exact steps)
+
+Complete these in the Forge UI for **sandbox.eisbridge.com** after the first deploy succeeds:
+
+| Step | Forge path | Action |
+|------|------------|--------|
+| 1. Deploy script | **Site → Deployment → Deploy Script** | Paste entire [`deploy/forge-forge-ui-sandbox.sh`](../deploy/forge-forge-ui-sandbox.sh), **Save** |
+| 2. Environment | **Site → Environment** | Paste from [`api/.env.sandbox.example`](../api/.env.sandbox.example); set `APP_KEY`, `DB_*`, `SANDBOX_API_KEY` (`openssl rand -hex 32`), **Save** |
+| 3. Redeploy | **Site → Deployment → Deploy Now** | Wait for green; confirm log shows `assert_valid_app_key` pass and `horizon:terminate` |
+| 4. Horizon daemon | **Site → Daemons → Create Daemon** | Command: `php8.3 artisan horizon` (match site PHP version); Directory: `/home/forge/sandbox.eisbridge.com/api`; User: `forge`; Processes: `1` |
+| 5. Supervisor tuning | SSH (see [Horizon](#horizon-api--sandbox-sites)) | Set `stopwaitsecs=3600` in `/etc/supervisor/conf.d/daemon-*.conf`, then `sudo supervisorctl reread && sudo supervisorctl update` |
+| 6. Scheduler | **Site → Scheduler → Enable** | Toggle on; verify with `php artisan schedule:list` over SSH |
+| 7. SSL | **Site → SSL → Lets Encrypt** | Obtain certificate, force HTTPS |
+| 8. Verify | Workstation | Run [Post-deploy smoke tests (sandbox)](#post-deploy-smoke-tests-sandbox) |
+
+To rotate `SANDBOX_API_KEY`: update **Site → Environment**, **Save**, **Deploy Now**. Distribute the new value to sandbox vendors.
+
+---
+
 ## Troubleshooting
 
 ### HTTP 500 on `/up` or `/` (empty body)
@@ -382,6 +456,8 @@ Admin console: `https://api.eisbridge.com/admin` (requires seeded admin user —
 | Deploy fails: **redis-cli ping failed** | Redis service not running | **Forge → Server → Network** (install Redis) or `sudo systemctl start redis-server` |
 | `/up` returns **500** JSON `{"status":"down"}` | `APP_ENV=production` with `EIS_SANDBOX_MODE=true` (intentional guard) | Set `APP_ENV=staging` in Forge Environment for sandbox; save and redeploy |
 | `/` returns 500 but `/up` is 200 | Admin Vite build missing or session/redis error on web routes | Confirm `npm run build` in deploy log; check `storage/logs/laravel.log` |
+| `/up` returns **500** with `Unsupported cipher or incorrect key length` | `APP_KEY` in Forge Environment is wrong length (e.g. truncated, extra characters, or not `base64:` format) — must decode to **32 bytes** for AES-256-CBC | Locally: `cd api && php artisan key:generate --show`. Copy the full `base64:...` value into **Forge → Site → Environment**, **Save**, redeploy. Latest [`deploy/forge-deploy-sandbox.sh`](../deploy/forge-deploy-sandbox.sh) fails deploy early with byte count if `APP_KEY` is invalid |
+| Deploy fails: **APP_KEY decodes to N bytes, expected 32** | Same as above — caught before `config:cache` | Regenerate with `php artisan key:generate --show`; replace entire `APP_KEY` line in Forge Environment (do not hand-edit the base64 payload) |
 
 **Quick checks on the server** (after SSH):
 
