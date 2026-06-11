@@ -160,6 +160,12 @@ openssl rand -hex 32
 
 Set `SANDBOX_API_KEY` to that value in Forge → Site → Environment. Vendor API clients must send `X-SANDBOX-API-KEY: <value>` on every `/v1/*` request (in addition to `Authorization: Bearer` for vendor routes).
 
+### Fleet Command (sandbox)
+
+Sandbox fleet control uses the same env vars as production API sites. Add `FLEET_COMMANDER_TOKEN` and `FLEET_OPERATOR_KEY` to Forge → Site → Environment (see [`api/.env.sandbox.example`](../api/.env.sandbox.example)). Generate each with `openssl rand -hex 32`. Full setup, APK builds, and route checks: [fleet-command-deploy.md](fleet-command-deploy.md).
+
+After updating env vars, **redeploy** the sandbox site so migrations create `fleet_agents`, `fleet_tasks`, and `fleet_task_results`.
+
 ---
 
 ## Queue workers and scheduler
