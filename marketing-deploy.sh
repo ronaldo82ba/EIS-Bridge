@@ -83,6 +83,18 @@ do
     fi
 done
 
+# Insights pages linked from marketing nav must be live after deploy.
+for public_insight_url in \
+    "https://eisbridge.com/insights/index.html" \
+    "https://eisbridge.com/insights/philippine-convenience-store-business-june-2026.html"
+do
+    status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$public_insight_url" || true)"
+    if [ "$status_code" -ne 200 ]; then
+        echo "Public insights check failed ($status_code): $public_insight_url"
+        exit 1
+    fi
+done
+
 # Defense in depth: fail if internal docs leaked into the web root.
 for forbidden_path in \
     docs/FORGE_DEPLOYMENT.md \
