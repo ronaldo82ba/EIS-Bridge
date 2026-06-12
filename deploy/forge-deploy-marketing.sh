@@ -6,8 +6,20 @@
 
 set -euo pipefail
 
-cd "${FORGE_SITE_PATH:-/home/forge/eisbridge.com}"
+SITE_PATH="${FORGE_SITE_PATH:-/home/forge/eisbridge.com}"
+SITE_BRANCH="${FORGE_SITE_BRANCH:-release/rc1}"
 
-git pull origin "${FORGE_SITE_BRANCH:-main}"
+cd "$SITE_PATH"
 
-echo "EIS Bridge marketing deploy complete ($(git rev-parse --short HEAD))"
+git fetch --prune origin
+git checkout "$SITE_BRANCH"
+git pull --ff-only origin "$SITE_BRANCH"
+
+for required_path in index.html portal styles; do
+    if [ ! -e "$required_path" ]; then
+        echo "Missing required marketing asset: $required_path"
+        exit 1
+    fi
+done
+
+echo "EIS Bridge marketing deploy complete ($(git rev-parse --short HEAD)) on $SITE_BRANCH"

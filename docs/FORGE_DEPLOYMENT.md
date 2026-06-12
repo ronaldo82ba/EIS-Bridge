@@ -316,8 +316,8 @@ Repeat for each of the three sites. Order: **marketing → sandbox API → produ
 
 1. **Sites → New Site** → domain `eisbridge.com`, project type **Static HTML** (or PHP if Static is unavailable — no PHP execution needed).
 2. **Web directory:** leave as `/` (site root = repo root).
-3. **Repository:** `ronaldo82ba/EIS-Bridge`, branch `main` or `release/rc1`.
-4. **Deploy script:** paste `deploy/forge-deploy-marketing.sh`.
+3. **Repository:** `ronaldo82ba/EIS-Bridge`, branch `release/rc1`.
+4. **Deploy script:** paste `deploy/forge-deploy-marketing.sh` (defaults to `release/rc1`, verifies `index.html`, `portal/`, and `styles/` before marking deploy successful).
 5. **SSL:** add `eisbridge.com` and `www.eisbridge.com`, obtain Lets Encrypt certificate.
 6. **Deploy Now** — verify `https://eisbridge.com` and `https://eisbridge.com/portal/`.
 
