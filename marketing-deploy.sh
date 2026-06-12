@@ -21,6 +21,7 @@ git sparse-checkout set \
     /privacy.html \
     /terms.html \
     /marketing-deploy.sh \
+    /robots.txt \
     portal \
     styles \
     assets \
@@ -34,7 +35,7 @@ git checkout "$SITE_BRANCH"
 git reset --hard "origin/$SITE_BRANCH"
 git clean -fdx
 
-for required_path in index.html partner.html portal styles privacy.html terms.html marketing-deploy.sh; do
+for required_path in index.html partner.html portal styles privacy.html terms.html marketing-deploy.sh robots.txt; do
     if [ ! -e "$required_path" ]; then
         echo "Missing required marketing asset: $required_path"
         exit 1
