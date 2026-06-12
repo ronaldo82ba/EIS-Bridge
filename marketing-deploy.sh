@@ -126,8 +126,10 @@ if [ -e "connect-forge.ps1" ] || [ -e "scripts/connect-forge.ps1" ]; then
     exit 1
 fi
 
-# Once nginx hardening is applied, this internal file must not be exposed.
+# Once nginx hardening is applied, internal paths must not be exposed.
 for internal_url in \
+    "https://eisbridge.com/marketing-deploy.sh" \
+    "https://eisbridge.com/connect-forge.ps1" \
     "https://eisbridge.com/docs/FORGE_DEPLOYMENT.md"
 do
     status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$internal_url" || true)"

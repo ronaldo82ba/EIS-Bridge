@@ -32,6 +32,19 @@ Adjust to match Forge's generated PHP location pattern.
 
 Static site — no PHP handler required.
 
+### Security hardening (required)
+
+The marketing deploy script lives in the repo root (`marketing-deploy.sh`) and must **not** be downloadable. Paste the full snippet from [`marketing-security.conf`](marketing-security.conf) into **Forge → Sites → eisbridge.com → Nginx Configuration**, inside the `server { ... }` block, then save and reload Nginx.
+
+The snippet blocks operational scripts (`marketing-deploy.sh`, `connect-forge.ps1`, other `*.sh` / `*.ps1`), internal paths (`/.git`, `/.env`, `/api/`, `/deploy/`, `/scripts/`), and non-public docs under `/docs/`. After applying, verify:
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' https://eisbridge.com/marketing-deploy.sh   # expect 404
+curl -sS -o /dev/null -w '%{http_code}\n' https://eisbridge.com/docs/FORGE_DEPLOYMENT.md   # expect 404
+```
+
+`marketing-deploy.sh` runs these checks post-deploy and fails if nginx hardening is missing.
+
 ### Optional: force www
 
 In Forge **Redirects**, add:
