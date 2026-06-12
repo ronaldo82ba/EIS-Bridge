@@ -20,13 +20,7 @@ git sparse-checkout set \
     terms.html \
     portal \
     styles \
-    assets \
-    docs/partner-program.md \
-    docs/certification-playbook.md \
-    docs/vendor-api.md \
-    docs/qa/integration-test-cases-v1.md \
-    docs/postman/EIS-Bridge-API-v1.postman_collection.json \
-    docs/schemas/sale-object.schema.json
+    assets
 git checkout "$SITE_BRANCH"
 git reset --hard "origin/$SITE_BRANCH"
 git clean -fdx
@@ -37,5 +31,9 @@ for required_path in index.html portal styles privacy.html terms.html; do
         exit 1
     fi
 done
+
+# Defense in depth: ensure no internal documentation artifacts
+# are left in the deployed web root, even if prior deploys had them.
+rm -rf docs
 
 echo "EIS Bridge marketing deploy complete ($(git rev-parse --short HEAD)) on $SITE_BRANCH"
