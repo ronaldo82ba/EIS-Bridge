@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Keep internal markdown docs undiscoverable by crawlers.
+Disallow: /docs/FORGE_DEPLOYMENT.md
+Disallow: /docs/risk-report-*.md
+Disallow: /docs/qa/sandbox-results-*.md

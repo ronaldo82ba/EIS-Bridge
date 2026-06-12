@@ -6,8 +6,8 @@ Use this suite to validate your POS integration against EIS Bridge before go-liv
 
 | Environment | Base URL | Status |
 |-------------|----------|--------|
-| Sandbox | `https://sandbox.eisbridge.ph/v1` | Provisioned on request |
-| Production | `https://api.eisbridge.ph/v1` | After vendor certification |
+| Sandbox | `https://sandbox.eisbridge.com/v1` | Provisioned on request |
+| Production | `https://api.eisbridge.com/v1` | After vendor certification |
 
 All requests require:
 

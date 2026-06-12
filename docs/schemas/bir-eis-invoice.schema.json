@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://eisbridge.ph/schemas/bir-eis-invoice.schema.json",
+  "$id": "https://eisbridge.com/schemas/bir-eis-invoice.schema.json",
   "title": "EIS Bridge BIR EIS Invoice Payload",
   "description": "Mapped BIR EIS invoice structure produced by PosToBirMapper. Fields marked with _comment require BIR official spec confirmation.",
   "type": "object",

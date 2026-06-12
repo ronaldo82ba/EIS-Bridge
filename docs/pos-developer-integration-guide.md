@@ -33,8 +33,8 @@ Content-Type: application/json
 
 | Environment | Base URL | Status |
 |-------------|----------|--------|
-| Sandbox | `https://sandbox.eisbridge.ph/v1` | Provisioned on request during vendor onboarding |
-| Production | `https://api.eisbridge.ph/v1` | Available after vendor certification |
+| Sandbox | `https://sandbox.eisbridge.com/v1` | Provisioned on request during vendor onboarding |
+| Production | `https://api.eisbridge.com/v1` | Available after vendor certification |
 
 Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for sandbox credentials, or run the API locally (see root README).
 
@@ -83,7 +83,7 @@ EIS Bridge accepts the transaction immediately and processes BIR transmission in
 
 ```http
 POST /v1/transactions HTTP/1.1
-Host: api.eisbridge.ph
+Host: api.eisbridge.com
 Authorization: Bearer YOUR_API_KEY
 Content-Type: application/json
 ```

@@ -19,8 +19,8 @@ The **EIS Bridge Vendor API** is the primary integration surface for POS and ERP
 
 | Environment | Base URL | Status |
 |-------------|----------|--------|
-| Production | `https://api.eisbridge.ph/v1` | Available after vendor certification |
-| Sandbox | `https://sandbox.eisbridge.ph/v1` | Provisioned on request during vendor onboarding |
+| Production | `https://api.eisbridge.com/v1` | Available after vendor certification |
+| Sandbox | `https://sandbox.eisbridge.com/v1` | Provisioned on request during vendor onboarding |
 
 Sandbox credentials are issued when you register as a POS/ERP vendor. For local development, run the Laravel API in `api/` with `EIS_SANDBOX_MODE=true` (see root README).
 
@@ -174,7 +174,7 @@ A machine-readable JSON Schema is available at [`schemas/sale-object.schema.json
 
 ## 5. Endpoints
 
-All paths are relative to the base URL (e.g. `https://api.eisbridge.ph/v1`).
+All paths are relative to the base URL (e.g. `https://api.eisbridge.com/v1`).
 
 ### 5.1 Submit transaction
 
@@ -186,7 +186,7 @@ Submit a single sale/invoice to EIS Bridge.
 
 ```http
 POST /v1/transactions HTTP/1.1
-Host: api.eisbridge.ph
+Host: api.eisbridge.com
 Authorization: Bearer VENDOR_API_KEY_123
 Content-Type: application/json
 ```

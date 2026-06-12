@@ -278,9 +278,28 @@ Forge generates Nginx configs automatically. Adjust only if needed via **Site �
 
 ### Marketing site (`eisbridge.com`)
 
-Default static site config is sufficient. Optional: redirect apex ↔ www in Forge **Redirects**.
+Use the hardened snippet at [`deploy/nginx/marketing-security.conf`](../deploy/nginx/marketing-security.conf) to prevent source/config exposure on the static site.
 
-Ensure `portal/` and `docs/` are reachable (no PHP blocking). Static `.md` links in `index.html` may 404 unless you add a location block or convert to HTML — verify after deploy.
+**Apply in Forge (required):**
+
+1. Open **Forge → Sites → eisbridge.com → Nginx Configuration**.
+2. Paste the full contents of `deploy/nginx/marketing-security.conf` inside the `server { ... }` block.
+3. Save and reload Nginx when Forge prompts.
+4. Verify blocked paths return `404` (not `500`) and public docs still resolve.
+
+**Key protections in the snippet:**
+
+- Blocks direct access to `/.git`, `/.env`, `*.sh`, `/marketing-deploy.sh`, `/api/`, `/deploy/`, `/scripts/`, `README*`, `RELEASE_NOTES*`, and common sensitive extensions.
+- Limits `/docs/` to the public allowlist only:
+  - `/docs/partner-program.md`
+  - `/docs/certification-playbook.md`
+  - `/docs/vendor-api.md`
+  - `/docs/qa/integration-test-cases-v1.md`
+  - `/docs/postman/EIS-Bridge-API-v1.postman_collection.json`
+  - `/docs/schemas/sale-object.schema.json`
+- Adds baseline security headers (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, CSP) suitable for static pages.
+
+Optional: redirect apex ↔ www in Forge **Redirects** to enforce a canonical host.
 
 ### Laravel API sites
 
