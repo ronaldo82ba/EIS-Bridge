@@ -370,6 +370,20 @@ section {
   color: rgba(247, 249, 250, 0.55);
 }
 
+.footer-links {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+}
+
+.footer-links a {
+  color: rgba(247, 249, 250, 0.9);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
 .ip-notice-bar {
   background: rgba(0, 87, 217, 0.08);
   border-bottom: 1px solid rgba(0, 87, 217, 0.12);
