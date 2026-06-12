@@ -94,7 +94,7 @@ Paste the contents of these files into **Forge → Site → Deployment → Deplo
 
 | Site | Script file |
 |------|-------------|
-| `eisbridge.com` | [`deploy/forge-deploy-marketing.sh`](../deploy/forge-deploy-marketing.sh) |
+| `eisbridge.com` | [`marketing-deploy.sh`](../marketing-deploy.sh) |
 | `api.eisbridge.com` | [`deploy/forge-deploy-api.sh`](../deploy/forge-deploy-api.sh) |
 | `sandbox.eisbridge.com` | [`deploy/forge-forge-ui-sandbox.sh`](../deploy/forge-forge-ui-sandbox.sh) |
 
@@ -317,7 +317,7 @@ Repeat for each of the three sites. Order: **marketing → sandbox API → produ
 1. **Sites → New Site** → domain `eisbridge.com`, project type **Static HTML** (or PHP if Static is unavailable — no PHP execution needed).
 2. **Web directory:** leave as `/` (site root = repo root).
 3. **Repository:** `ronaldo82ba/EIS-Bridge`, branch `release/rc1`.
-4. **Deploy script:** paste `deploy/forge-deploy-marketing.sh` (defaults to `release/rc1`, verifies `index.html`, `portal/`, and `styles/` before marking deploy successful).
+4. **Deploy script:** paste `marketing-deploy.sh` and set Forge to run `bash marketing-deploy.sh` (defaults to `release/rc1`, verifies `index.html`, `portal/`, `styles/`, and `marketing-deploy.sh` before marking deploy successful).
 5. **SSL:** add `eisbridge.com` and `www.eisbridge.com`, obtain Lets Encrypt certificate.
 6. **Deploy Now** — verify `https://eisbridge.com` and `https://eisbridge.com/portal/`.
 
