@@ -459,3 +459,245 @@ section {
     grid-template-columns: repeat(5, 1fr);
   }
 }
+
+/* Site navigation */
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--slate-gray);
+  text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  color: var(--eis-blue);
+}
+
+/* Insights hub */
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1.5rem;
+}
+
+.insight-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  background: var(--cloud-white);
+  border-radius: var(--radius);
+  border-top: 3px solid var(--bridge-teal);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.insight-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.insight-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--eis-blue);
+}
+
+.insight-card .insight-meta {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--bridge-teal);
+}
+
+.insight-card p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--slate-gray);
+  flex-grow: 1;
+}
+
+.insight-card--placeholder {
+  opacity: 0.55;
+  pointer-events: none;
+  border-top-color: rgba(46, 58, 69, 0.25);
+}
+
+/* Article layout */
+
+.article-hero {
+  background: linear-gradient(135deg, #fff 0%, var(--cloud-white) 60%, rgba(0, 168, 168, 0.08) 100%);
+  border-bottom: 1px solid rgba(46, 58, 69, 0.08);
+  padding-block: 3rem 2.5rem;
+}
+
+.article-hero h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--eis-blue);
+  max-width: 48rem;
+}
+
+.article-meta {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--slate-gray);
+}
+
+.breadcrumb {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+}
+
+.breadcrumb a {
+  color: var(--eis-blue);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.article-content {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-block: 3rem 4rem;
+}
+
+.article-content h2 {
+  margin: 2.5rem 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--eis-blue);
+  letter-spacing: -0.02em;
+}
+
+.article-content h3 {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--slate-gray);
+}
+
+.article-content p,
+.article-content li {
+  font-size: 1rem;
+  color: var(--slate-gray);
+  line-height: 1.7;
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.article-content li {
+  margin-bottom: 0.35rem;
+}
+
+.article-summary {
+  padding: 1.5rem 1.75rem;
+  margin: 0 0 2rem;
+  background: rgba(0, 87, 217, 0.06);
+  border-left: 4px solid var(--eis-blue);
+  border-radius: var(--radius);
+}
+
+.article-summary p {
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--graphite-black);
+}
+
+.data-table-wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0 1.75rem;
+  background: #fff;
+  border: 1px solid rgba(46, 58, 69, 0.12);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 36rem;
+  font-size: 0.9375rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 0.85rem;
+  border-bottom: 1px solid rgba(46, 58, 69, 0.12);
+  color: var(--eis-blue);
+  font-weight: 700;
+  background: var(--cloud-white);
+}
+
+.data-table td {
+  padding: 0.85rem;
+  border-bottom: 1px solid rgba(46, 58, 69, 0.08);
+  color: var(--slate-gray);
+  vertical-align: top;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.article-cta-inline {
+  margin: 2.5rem 0;
+  padding: 1.75rem;
+  background: var(--cloud-white);
+  border-radius: var(--radius);
+  border: 1px solid rgba(0, 87, 217, 0.2);
+  text-align: center;
+}
+
+.article-cta-inline h3 {
+  margin: 0 0 0.5rem;
+  color: var(--eis-blue);
+}
+
+.article-cta-inline p {
+  margin: 0 0 1.25rem;
+}
+
+.cta-band .btn-secondary {
+  margin-left: 0.75rem;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+}
+
+.cta-band .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .site-nav {
+    width: 100%;
+    order: 3;
+  }
+
+  .cta-band .btn-secondary {
+    display: block;
+    margin: 0.75rem 0 0;
+  }
+}

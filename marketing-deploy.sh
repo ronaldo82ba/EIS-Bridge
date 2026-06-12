@@ -22,6 +22,7 @@ git sparse-checkout set \
     /terms.html \
     /marketing-deploy.sh \
     /robots.txt \
+    insights \
     portal \
     styles \
     assets \
@@ -38,6 +39,16 @@ git clean -fdx
 for required_path in index.html partner.html portal styles privacy.html terms.html marketing-deploy.sh robots.txt; do
     if [ ! -e "$required_path" ]; then
         echo "Missing required marketing asset: $required_path"
+        exit 1
+    fi
+done
+
+for required_insight in \
+    insights/index.html \
+    insights/philippine-convenience-store-business-june-2026.html
+do
+    if [ ! -e "$required_insight" ]; then
+        echo "Missing required insights asset: $required_insight"
         exit 1
     fi
 done
