@@ -45,7 +45,9 @@ done
 
 for required_insight in \
     insights/index.html \
-    insights/philippine-convenience-store-business-june-2026.html
+    insights/philippine-convenience-store-business-june-2026.html \
+    insights/bir-eis-readiness-retail-chains.html \
+    insights/sari-sari-to-modern-retail-upgrade.html
 do
     if [ ! -e "$required_insight" ]; then
         echo "Missing required insights asset: $required_insight"
@@ -86,7 +88,9 @@ done
 # Insights pages linked from marketing nav must be live after deploy.
 for public_insight_url in \
     "https://eisbridge.com/insights/index.html" \
-    "https://eisbridge.com/insights/philippine-convenience-store-business-june-2026.html"
+    "https://eisbridge.com/insights/philippine-convenience-store-business-june-2026.html" \
+    "https://eisbridge.com/insights/bir-eis-readiness-retail-chains.html" \
+    "https://eisbridge.com/insights/sari-sari-to-modern-retail-upgrade.html"
 do
     status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$public_insight_url" || true)"
     if [ "$status_code" -ne 200 ]; then
