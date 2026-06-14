@@ -14,6 +14,8 @@ SITE_BRANCH="${FORGE_SITE_BRANCH:-release/rc1}"
 cd "$SITE_PATH"
 
 git fetch --prune origin
+git checkout "$SITE_BRANCH"
+git reset --hard "origin/$SITE_BRANCH"
 git sparse-checkout init --no-cone
 git sparse-checkout set \
     /index.html \
@@ -33,8 +35,7 @@ git sparse-checkout set \
     /docs/qa/integration-test-cases-v1.md \
     docs/postman \
     /docs/schemas/sale-object.schema.json
-git checkout "$SITE_BRANCH"
-git reset --hard "origin/$SITE_BRANCH"
+git checkout -f "$SITE_BRANCH"
 git clean -fdx
 
 for required_path in index.html partner.html certification-playbook.html portal styles privacy.html terms.html marketing-deploy.sh robots.txt; do
