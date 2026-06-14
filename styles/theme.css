@@ -91,6 +91,35 @@ a:focus-visible,
   flex-wrap: wrap;
 }
 
+.nav-check {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-toggle {
+  display: none;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--slate-gray);
+  background: var(--cloud-white);
+  border: 1px solid rgba(46, 58, 69, 0.14);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.btn-header {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .logo {
   display: flex;
   align-items: baseline;
@@ -423,12 +452,32 @@ section {
 
 /* Responsive tweaks */
 
-@media (max-width: 480px) {
-  .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+    margin-left: auto;
   }
 
+  .site-nav {
+    display: none;
+    width: 100%;
+    order: 4;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding-top: 0.5rem;
+  }
+
+  .nav-check:checked ~ .site-nav {
+    display: flex;
+  }
+
+  .btn-header {
+    order: 3;
+  }
+}
+
+@media (max-width: 480px) {
   .hero-inner {
     padding-block: 2.5rem 3.5rem;
   }
@@ -437,8 +486,10 @@ section {
     padding-block: 3rem;
   }
 
-  .btn {
+  .hero-actions .btn,
+  .cta-row .btn {
     display: block;
+    width: 100%;
     text-align: center;
   }
 }
@@ -691,13 +742,61 @@ section {
 }
 
 @media (max-width: 640px) {
-  .site-nav {
-    width: 100%;
-    order: 3;
-  }
-
   .cta-band .btn-secondary {
     display: block;
     margin: 0.75rem 0 0;
   }
+}
+
+.article-content pre {
+  overflow-x: auto;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  background: var(--graphite-black);
+  color: rgba(247, 249, 250, 0.92);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.article-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.article-content p code,
+.article-content li code {
+  padding: 0.1rem 0.35rem;
+  background: rgba(0, 87, 217, 0.08);
+  border-radius: 0.25rem;
+}
+
+.checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.checklist li::before {
+  content: "☐";
+  position: absolute;
+  left: 0;
+  color: var(--eis-blue);
+  font-weight: 700;
+}
+
+.flow-diagram {
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0 1.75rem;
+  background: #fff;
+  border: 1px solid rgba(46, 58, 69, 0.12);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  color: var(--slate-gray);
+  line-height: 1.65;
 }

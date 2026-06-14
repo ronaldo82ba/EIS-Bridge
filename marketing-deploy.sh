@@ -20,6 +20,7 @@ git sparse-checkout set \
     /partner.html \
     /privacy.html \
     /terms.html \
+    /certification-playbook.html \
     /marketing-deploy.sh \
     /robots.txt \
     insights \
@@ -36,7 +37,7 @@ git checkout "$SITE_BRANCH"
 git reset --hard "origin/$SITE_BRANCH"
 git clean -fdx
 
-for required_path in index.html partner.html portal styles privacy.html terms.html marketing-deploy.sh robots.txt; do
+for required_path in index.html partner.html certification-playbook.html portal styles privacy.html terms.html marketing-deploy.sh robots.txt; do
     if [ ! -e "$required_path" ]; then
         echo "Missing required marketing asset: $required_path"
         exit 1
@@ -95,6 +96,33 @@ do
     status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$public_insight_url" || true)"
     if [ "$status_code" -ne 200 ]; then
         echo "Public insights check failed ($status_code): $public_insight_url"
+        exit 1
+    fi
+done
+
+for required_brand_asset in \
+    assets/brand/favicon.svg \
+    assets/brand/favicon-32.png \
+    assets/brand/favicon.ico \
+    assets/brand/apple-touch-icon.png \
+    assets/brand/og-image.png \
+    assets/brand/wordmark.svg
+do
+    if [ ! -e "$required_brand_asset" ]; then
+        echo "Missing required brand asset: $required_brand_asset"
+        exit 1
+    fi
+done
+
+# Brand and certification playbook must be live after deploy.
+for public_brand_url in \
+    "https://eisbridge.com/assets/brand/favicon.svg" \
+    "https://eisbridge.com/assets/brand/og-image.png" \
+    "https://eisbridge.com/certification-playbook.html"
+do
+    status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$public_brand_url" || true)"
+    if [ "$status_code" -ne 200 ]; then
+        echo "Public brand/playbook check failed ($status_code): $public_brand_url"
         exit 1
     fi
 done
