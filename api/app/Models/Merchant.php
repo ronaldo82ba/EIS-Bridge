@@ -13,10 +13,23 @@ class Merchant extends Model
         'vendor_id',
         'merchant_code',
         'name',
+        'trade_name',
         'tin',
+        'vat_registered',
+        'rdo_code',
+        'bir_ack_number',
+        'bir_ack_date',
         'address',
         'status',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'vat_registered' => 'boolean',
+            'bir_ack_date' => 'date',
+        ];
+    }
 
     public function vendor(): BelongsTo
     {

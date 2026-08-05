@@ -110,4 +110,47 @@ class PosToBirMapperTest extends TestCase
         $this->assertSame('EB-20260607-000001', $bir['eis_fields']['bridge_transaction_id']);
         $this->assertSame('CASH', $bir['payment']['method']);
     }
+
+    public function test_maps_merchant_cas_and_company_fields_when_set(): void
+    {
+        $vendor = Vendor::create([
+            'name' => 'CAS Vendor',
+            'api_key' => hash('sha256', 'cas-key'),
+            'status' => 'active',
+        ]);
+
+        $merchant = Merchant::create([
+            'vendor_id' => $vendor->id,
+            'merchant_code' => 'MRC123',
+            'name' => 'Legal Name Inc',
+            'trade_name' => 'Trade Name Store',
+            'tin' => '123-456-789-000',
+            'vat_registered' => true,
+            'rdo_code' => '043',
+            'bir_ack_number' => 'ACCN-2026-0001',
+            'bir_ack_date' => '2026-01-15',
+            'address' => '123 Main St',
+        ]);
+
+        $branch = Branch::create([
+            'merchant_id' => $merchant->id,
+            'branch_code' => 'BR001',
+            'name' => 'Main Branch',
+        ]);
+
+        Device::create([
+            'branch_id' => $branch->id,
+            'pos_device_id' => 'POS01',
+            'name' => 'POS Terminal 01',
+        ]);
+
+        $bir = app(PosToBirMapper::class)->map($this->samplePosPayload());
+        app(BirSchemaValidator::class)->validate($bir);
+
+        $this->assertSame('Trade Name Store', $bir['merchant']['trade_name']);
+        $this->assertTrue($bir['merchant']['vat_registered']);
+        $this->assertSame('043', $bir['merchant']['rdo_code']);
+        $this->assertSame('ACCN-2026-0001', $bir['merchant']['bir_ack_number']);
+        $this->assertSame('2026-01-15', $bir['merchant']['bir_ack_date']);
+    }
 }

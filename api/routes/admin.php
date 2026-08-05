@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Billing\LicensePlanController;
 use App\Http\Controllers\Admin\Billing\MerchantLicenseController;
 use App\Http\Controllers\Admin\Billing\VendorLicenseController;
 use App\Http\Controllers\Admin\BranchController;
+use App\Http\Controllers\Admin\CodeBooksIngestController;
 use App\Http\Controllers\Admin\CertificateAlertController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -54,6 +55,7 @@ Route::middleware(['auth:sanctum', 'admin', 'throttle:admin-api'])->group(functi
     Route::apiResource('merchants', MerchantController::class);
     Route::get('/merchants/{merchant}/readiness', [MerchantReadinessController::class, 'show']);
     Route::get('/merchants/{merchant}/activity', [MerchantController::class, 'activity']);
+    Route::post('/codebooks/ingest', [CodeBooksIngestController::class, 'ingest']);
     Route::post('/merchants/{merchant}/certificate', [CertificateController::class, 'storeForMerchant']);
     Route::apiResource('branches', BranchController::class);
     Route::post('/branches/{branch}/devices', [DeviceController::class, 'storeForBranch']);

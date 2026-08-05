@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://eisbridge.com/schemas/bir-eis-invoice.schema.json",
   "title": "EIS Bridge BIR EIS Invoice Payload",
-  "description": "Mapped BIR EIS invoice structure produced by PosToBirMapper. Fields marked with _comment require BIR official spec confirmation.",
+  "description": "Mapped BIR EIS invoice structure produced by PosToBirMapper (EIS-ready JSON only; RR 7-2024 print face remains CodeBooks). Fields marked with _comment require BIR official spec confirmation.",
   "type": "object",
   "required": [
     "document_type",
@@ -47,11 +47,31 @@
       "properties": {
         "code": { "type": "string", "minLength": 1 },
         "name": { "type": ["string", "null"] },
+        "trade_name": {
+          "type": ["string", "null"],
+          "description": "Seller trade name for EIS-ready JSON only. Print face remains CodeBooks."
+        },
         "tin": {
           "type": ["string", "null"],
           "_comment": "BIR TIN format must match official EIS spec (e.g. XXX-XXX-XXX-XXX)."
         },
-        "address": { "type": ["string", "null"] }
+        "vat_registered": {
+          "type": ["boolean", "null"],
+          "description": "VAT vs Non-VAT registration flag for JSON consumers. Not a print label."
+        },
+        "rdo_code": { "type": ["string", "null"] },
+        "address": { "type": ["string", "null"] },
+        "bir_ack_number": {
+          "type": ["string", "null"],
+          "description": "CAS Acknowledgement Certificate Control No. (ACCN). Not PTT/PTU. Nested under merchant until official BIR EIS nesting is confirmed in-repo.",
+          "_comment": "BIR-spec field path uncertain; carried for export completeness."
+        },
+        "bir_ack_date": {
+          "type": ["string", "null"],
+          "format": "date",
+          "description": "CAS acknowledgement date (YYYY-MM-DD).",
+          "_comment": "BIR-spec field path uncertain; carried for export completeness."
+        }
       }
     },
     "branch": {
