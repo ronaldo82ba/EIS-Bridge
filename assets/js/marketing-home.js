@@ -93,7 +93,18 @@
       'main .article-content > h3',
       'main .article-content > p',
       'main .article-summary',
-      'main .content-section',
+      /* Mark section children — never a whole tall content-section (breaks API docs) */
+      'main .content-section > h1',
+      'main .content-section > h2',
+      'main .content-section > h3',
+      'main .content-section > p',
+      'main .content-section > .callout',
+      'main .content-section > .checklist-section',
+      'main .content-section > .portal-card',
+      'main .content-section > .endpoint-block',
+      'main .content-section > .card-grid > *',
+      'main .page-title',
+      'main .page-intro',
       'main .cta-band .cta-inner > *',
       'main .cta-inner > *',
       'body.has-site-chrome main > section > .container > h1',
@@ -101,14 +112,16 @@
       'body.has-site-chrome main > section > .container > p',
       'body.has-site-chrome main.container > h1',
       'body.has-site-chrome main.container > h2',
-      'body.has-site-chrome main.container > section',
       'body.has-site-chrome main.container > p'
     ];
     var nodes = document.querySelectorAll(selectors.join(','));
     var i = 0;
+    var maxH = Math.max(window.innerHeight * 1.15, 900);
     nodes.forEach(function (el) {
       if (el.classList.contains('reveal') || el.classList.contains('hero-reveal')) return;
       if (el.closest('[data-site-header], .site-footer, .top-ribbon, .portal-subnav')) return;
+      /* Tall blocks stay visible — opacity:0 + high IO threshold caused blank gaps */
+      if (el.scrollHeight > maxH) return;
       el.classList.add('reveal');
       if (!el.getAttribute('data-delay')) {
         el.setAttribute('data-delay', String(Math.min((i % 6) * 45, 200)));
@@ -147,7 +160,8 @@
           io.unobserve(el);
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+      /* threshold 0: any pixel visible — tall docs never hit 0.12 of their height */
+      { threshold: 0, rootMargin: '0px 0px -8% 0px' }
     );
     document.querySelectorAll('.reveal').forEach(function (el) {
       io.observe(el);

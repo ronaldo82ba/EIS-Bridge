@@ -396,23 +396,24 @@ code {
 
 .portal-card {
   padding: 1.5rem;
-  background: #fff;
+  background: var(--paper, #fff);
   border: 1px solid var(--portal-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   border-top: 3px solid var(--bridge-teal);
+  color: var(--slate, var(--slate-gray));
 }
 
 .portal-card h3 {
   margin: 0 0 0.5rem;
   font-size: 1.0625rem;
-  color: var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
 }
 
 .portal-card p {
   margin: 0 0 1rem;
   font-size: 0.9375rem;
-  color: var(--slate-gray);
+  color: var(--slate, var(--slate-gray));
 }
 
 /* Tools tabs (language snippets) */
@@ -489,37 +490,44 @@ code {
   top: 0.35rem;
   width: 1rem;
   height: 1rem;
-  border: 2px solid var(--bridge-teal);
+  border: 2px solid var(--sky, var(--bridge-teal));
   border-radius: 0.2rem;
-  background: #fff;
+  background: var(--paper, #fff);
 }
 
 .checklist-section {
   margin-bottom: 2rem;
   padding: 1.25rem 1.5rem;
-  background: #fff;
-  border: 1px solid var(--portal-border);
+  background: var(--paper, #fff);
+  border: 1px solid var(--portal-border, var(--line));
   border-radius: var(--radius);
+  color: var(--slate, var(--slate-gray));
 }
 
 .checklist-section h3 {
   margin: 0 0 1rem;
-  color: var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
+}
+
+.checklist-section .checklist li,
+.checklist-section p {
+  color: var(--slate, var(--slate-gray));
 }
 
 .callout {
   padding: 1rem 1.25rem;
   margin: 1rem 0;
-  background: rgba(0, 87, 217, 0.06);
-  border-left: 4px solid var(--eis-blue);
-  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--brand, #0057d9) 8%, var(--paper, #fff));
+  border-left: 4px solid var(--brand, var(--eis-blue));
+  border-radius: 0 0.5rem 0.5rem 0;
   font-size: 0.9375rem;
-  color: var(--slate-gray);
+  color: var(--ink, var(--slate-gray));
 }
 
 .callout-warning {
-  background: rgba(255, 195, 0, 0.12);
-  border-left-color: var(--signal-yellow);
+  background: color-mix(in oklab, var(--signal-yellow, #ffc300) 16%, var(--paper));
+  border-left-color: var(--signal-yellow, #ffc300);
+  color: var(--ink);
 }
 
 .changelog-entry {
@@ -633,18 +641,38 @@ body.has-site-chrome .endpoint-card,
 body.has-site-chrome .tool-card,
 body.has-site-chrome .step,
 body.has-site-chrome .support-card,
-body.has-site-chrome .changelog-entry {
+body.has-site-chrome .changelog-entry,
+body.has-site-chrome .portal-card,
+body.has-site-chrome .checklist-section {
   background: var(--paper-2) !important;
   border: 1px solid var(--line) !important;
   border-radius: 1rem !important;
-  color: var(--ink);
+  color: var(--slate);
 }
 
 body.has-site-chrome .endpoint-card h3,
 body.has-site-chrome .tool-card h3,
 body.has-site-chrome .step h3,
-body.has-site-chrome .support-card h3 {
+body.has-site-chrome .support-card h3,
+body.has-site-chrome .portal-card h3,
+body.has-site-chrome .checklist-section h3 {
   color: var(--ink) !important;
+}
+
+body.has-site-chrome .checklist-section .checklist li,
+body.has-site-chrome .portal-card p,
+body.has-site-chrome .callout {
+  color: var(--slate) !important;
+}
+
+body.has-site-chrome .callout {
+  background: color-mix(in oklab, var(--brand) 10%, var(--paper)) !important;
+  border-left-color: var(--brand);
+}
+
+body.has-site-chrome .checklist li::before {
+  background: var(--paper) !important;
+  border-color: var(--sky);
 }
 
 body.has-site-chrome .btn-secondary {
