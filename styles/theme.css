@@ -221,10 +221,10 @@ body.has-site-chrome .site-header:not(.site-top) {
 .hero h1 {
   margin: 0 0 1.25rem;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 2.75rem);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
   color: var(--eis-blue);
 }
 
@@ -655,12 +655,12 @@ section {
 
 .article-hero h1 {
   margin: 0 0 1rem;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
   color: var(--eis-blue);
-  max-width: 48rem;
+  max-width: 40rem;
 }
 
 .article-meta {
@@ -1345,4 +1345,300 @@ section {
     width: 100%;
     text-align: center;
   }
+}
+
+/* ========== SITE-WIDE high-tech dual theme (WebShoppe parity) ========== */
+
+body.has-site-chrome {
+  background:
+    radial-gradient(1100px 520px at 8% -8%, color-mix(in oklab, var(--brand) 10%, transparent), transparent 55%),
+    radial-gradient(900px 480px at 100% 0%, color-mix(in oklab, var(--sky) 8%, transparent), transparent 50%),
+    var(--paper);
+  color: var(--ink);
+}
+
+body.has-site-chrome .btn {
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+
+body.has-site-chrome .btn:hover {
+  transform: translateY(-1px);
+}
+
+body.has-site-chrome .btn-primary {
+  background: var(--brand);
+  color: #fff !important;
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+
+body.has-site-chrome .btn-primary:hover {
+  background: var(--brand-deep);
+  color: #fff !important;
+}
+
+body.has-site-chrome .btn-secondary {
+  background: color-mix(in oklab, var(--paper) 80%, transparent);
+  color: var(--ink);
+  border: 1.5px solid color-mix(in oklab, var(--ink) 28%, transparent);
+}
+
+body.has-site-chrome .btn-secondary:hover {
+  border-color: color-mix(in oklab, var(--ink) 55%, transparent);
+  background: color-mix(in oklab, var(--brand) 8%, var(--paper));
+}
+
+/* Page heroes */
+body.has-site-chrome .hero,
+body.has-site-chrome .hero.hero--page,
+body.has-site-chrome .article-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 420px at 90% 10%, color-mix(in oklab, var(--sky) 14%, transparent), transparent 55%),
+    linear-gradient(160deg, var(--paper-2) 0%, var(--paper) 55%, color-mix(in oklab, var(--brand) 6%, var(--paper)) 100%);
+  border-bottom: 1px solid var(--line);
+}
+
+body.has-site-chrome .hero::after,
+body.has-site-chrome .article-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -40% auto;
+  width: min(42vw, 28rem);
+  height: min(42vw, 28rem);
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in oklab, var(--brand) 18%, transparent), transparent 70%);
+  pointer-events: none;
+  animation: hub-pulse 9s ease-in-out infinite alternate;
+}
+
+body.has-site-chrome .hero-inner,
+body.has-site-chrome .article-hero .container,
+body.has-site-chrome .article-hero {
+  position: relative;
+  z-index: 1;
+}
+
+body.has-site-chrome .hero h1,
+body.has-site-chrome .article-hero h1,
+body.has-site-chrome .hero--page h1 {
+  color: var(--ink) !important;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.8vw, 1.95rem) !important;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  max-width: 40rem;
+}
+
+body.has-site-chrome .hero-subheader,
+body.has-site-chrome .section-lead,
+body.has-site-chrome .article-meta {
+  color: var(--slate) !important;
+}
+
+body.has-site-chrome .section-title {
+  color: var(--ink) !important;
+  font-family: var(--font-display);
+}
+
+body.has-site-chrome .eyebrow {
+  color: var(--sky);
+}
+
+/* Cards — rounded, bordered, hover lift */
+body.has-site-chrome .audience-card,
+body.has-site-chrome .edition-card,
+body.has-site-chrome .insight-card,
+body.has-site-chrome .pillar-card {
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  box-shadow: none;
+  transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
+}
+
+body.has-site-chrome .audience-card,
+body.has-site-chrome .insight-card {
+  background: var(--paper-2);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+body.has-site-chrome .audience-card {
+  border-top: 1px solid var(--line);
+  box-shadow: inset 3px 0 0 var(--sky);
+}
+
+body.has-site-chrome .audience-card:hover,
+body.has-site-chrome .edition-card:hover,
+body.has-site-chrome .insight-card:hover {
+  border-color: color-mix(in oklab, var(--sky) 45%, var(--line));
+  transform: translateY(-3px);
+}
+
+body.has-site-chrome .audience-card h3,
+body.has-site-chrome .edition-card h3,
+body.has-site-chrome .insight-card h3 {
+  color: var(--ink) !important;
+  font-family: var(--font-display);
+}
+
+body.has-site-chrome .audience-card p,
+body.has-site-chrome .edition-card p,
+body.has-site-chrome .insight-card p {
+  color: var(--muted) !important;
+}
+
+body.has-site-chrome .insight-card .insight-meta {
+  color: var(--sky) !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+body.has-site-chrome .edition-card {
+  background: var(--paper);
+}
+
+body.has-site-chrome .edition-card--featured {
+  border-color: color-mix(in oklab, var(--brand) 55%, var(--line));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--brand) 8%, var(--paper)), var(--paper));
+}
+
+body.has-site-chrome .editions,
+body.has-site-chrome .audiences {
+  background: var(--paper);
+}
+
+body.has-site-chrome .editions {
+  background: var(--paper-2);
+}
+
+/* Pillars / dark panels */
+body.has-site-chrome .pillars {
+  background:
+    radial-gradient(800px 400px at 20% 0%, color-mix(in oklab, var(--sky) 18%, transparent), transparent 55%),
+    var(--panel);
+}
+
+body.has-site-chrome .pillar-card {
+  background: color-mix(in oklab, var(--on-panel) 7%, transparent);
+  border-left: 3px solid var(--sky);
+}
+
+body.has-site-chrome .pillar-card h3 {
+  color: var(--gold) !important;
+}
+
+body.has-site-chrome .pillar-card p {
+  color: color-mix(in oklab, var(--on-panel) 85%, transparent) !important;
+}
+
+/* CTA band */
+body.has-site-chrome .cta-band {
+  background:
+    radial-gradient(700px 320px at 80% 20%, color-mix(in oklab, #fff 12%, transparent), transparent 55%),
+    linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 55%, #0b1f3a 100%);
+}
+
+body.has-site-chrome .cta-band h2,
+body.has-site-chrome .cta-band p {
+  color: #fff;
+}
+
+body.has-site-chrome .cta-band .btn-primary {
+  background: #fff;
+  color: var(--brand-deep) !important;
+}
+
+body.has-site-chrome .cta-band .btn-secondary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+}
+
+/* Articles */
+body.has-site-chrome .article-content h2,
+body.has-site-chrome .article-content h3 {
+  color: var(--ink) !important;
+  font-family: var(--font-display);
+}
+
+body.has-site-chrome .article-content p,
+body.has-site-chrome .article-content li {
+  color: var(--slate) !important;
+}
+
+body.has-site-chrome .article-summary {
+  background: color-mix(in oklab, var(--brand) 8%, var(--paper));
+  border-left-color: var(--brand);
+}
+
+body.has-site-chrome .article-summary p {
+  color: var(--ink) !important;
+}
+
+body.has-site-chrome .data-table-wrap,
+body.has-site-chrome .flow-diagram {
+  background: var(--paper);
+  border-color: var(--line);
+}
+
+body.has-site-chrome .data-table th {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+body.has-site-chrome .data-table td {
+  color: var(--slate);
+  border-bottom-color: var(--line);
+}
+
+body.has-site-chrome .ip-notice-bar {
+  background: color-mix(in oklab, var(--brand) 8%, var(--paper));
+  border-bottom-color: var(--line);
+  color: var(--slate);
+}
+
+body.has-site-chrome .site-nav a,
+body.has-site-chrome .footer-links a {
+  color: inherit;
+}
+
+body.has-site-chrome .site-footer {
+  background: var(--panel);
+  color: color-mix(in oklab, var(--on-panel) 85%, transparent);
+}
+
+body.has-site-chrome .footer-links a {
+  color: color-mix(in oklab, var(--on-panel) 90%, transparent);
+}
+
+body.has-site-chrome .footer-disclaimer {
+  color: color-mix(in oklab, var(--on-panel) 60%, transparent);
+}
+
+body.has-site-chrome .footer-ip {
+  color: var(--sky);
+}
+
+/* Legal / plain main.container pages */
+body.has-site-chrome main.container h1.section-title,
+body.has-site-chrome main.container h2 {
+  color: var(--ink) !important;
+  text-align: left;
+}
+
+body.has-site-chrome main.container p,
+body.has-site-chrome main.container li {
+  color: var(--slate);
+}
+
+@keyframes hub-pulse {
+  from { opacity: 0.75; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.06); }
 }

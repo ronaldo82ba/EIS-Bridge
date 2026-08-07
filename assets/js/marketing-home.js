@@ -1,6 +1,5 @@
 /**
- * EIS Bridge marketing home — WebShoppe-parity motion (static)
- * Mirrors: framer-motion fadeUp, whileInView, header compact scroll, theme toggle
+ * EIS Bridge site chrome — WebShoppe-parity motion + dual theme (site-wide)
  */
 (function () {
   'use strict';
@@ -16,7 +15,7 @@
   } catch (e) {}
   if (stored === 'dark' || stored === 'light') {
     root.setAttribute('data-theme', stored);
-  } else {
+  } else if (!root.getAttribute('data-theme')) {
     root.setAttribute('data-theme', 'light');
   }
 
@@ -29,6 +28,10 @@
       var label = btn.querySelector('[data-theme-label]');
       if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
     });
+    try {
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#070b12' : '#0057D9');
+    } catch (e2) {}
   }
 
   syncThemeToggle();
@@ -74,7 +77,49 @@
     });
   }
 
-  /* Scroll / load reveals (Framer Motion equivalent) */
+  /* Auto-mark content for motion (all pages, not only homepage) */
+  function autoMarkReveals() {
+    var selectors = [
+      'main .hero-inner > *',
+      'main .portal-hero .container > *',
+      'main .section-title',
+      'main .section-lead',
+      'main .audience-card',
+      'main .edition-card',
+      'main .pillar-card',
+      'main .insight-card',
+      'main .article-hero > *',
+      'main .article-content > h2',
+      'main .article-content > h3',
+      'main .article-content > p',
+      'main .article-summary',
+      'main .content-section',
+      'main .cta-band .cta-inner > *',
+      'main .cta-inner > *',
+      'body.has-site-chrome main > section > .container > h1',
+      'body.has-site-chrome main > section > .container > h2',
+      'body.has-site-chrome main > section > .container > p',
+      'body.has-site-chrome main.container > h1',
+      'body.has-site-chrome main.container > h2',
+      'body.has-site-chrome main.container > section',
+      'body.has-site-chrome main.container > p'
+    ];
+    var nodes = document.querySelectorAll(selectors.join(','));
+    var i = 0;
+    nodes.forEach(function (el) {
+      if (el.classList.contains('reveal') || el.classList.contains('hero-reveal')) return;
+      if (el.closest('[data-site-header], .site-footer, .top-ribbon, .portal-subnav')) return;
+      el.classList.add('reveal');
+      if (!el.getAttribute('data-delay')) {
+        el.setAttribute('data-delay', String(Math.min((i % 6) * 45, 200)));
+      }
+      i += 1;
+    });
+  }
+
+  autoMarkReveals();
+
+  /* Scroll / load reveals */
   if (prefersReduced) {
     document.querySelectorAll('.reveal, .hero-reveal').forEach(function (el) {
       el.classList.add('is-in');
@@ -102,7 +147,7 @@
           io.unobserve(el);
         });
       },
-      { threshold: 0.18, rootMargin: '0px 0px -8% 0px' }
+      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
     );
     document.querySelectorAll('.reveal').forEach(function (el) {
       io.observe(el);
