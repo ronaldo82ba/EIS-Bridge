@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,221 +20,428 @@
   <meta name="twitter:title" content="EIS Bridge — Universal E-Invoicing Compliance">
   <meta name="twitter:description" content="EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes.">
   <meta name="twitter:image" content="https://eisbridge.com/assets/brand/og-image.png">
-  <link rel="stylesheet" href="styles/theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/marketing-home.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('eis-theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <div class="ip-notice-bar" role="note">
-    EIS Bridge&trade; &mdash; trademark application pending &middot; IPOPHL Class 42 &middot; Ref EFPH202600003850268
-  </div>
-
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="logo" href="index.html" aria-label="EIS Bridge home" style="text-decoration: none;">
-        <span class="logo-mark" aria-hidden="true">EIS</span>
-        <span class="logo-text">Bridge</span>
+  <header class="site-top" data-site-header>
+    <div class="top-ribbon">
+      <p>EIS Bridge&trade; — connect any POS to BIR EIS transmission without source-code changes</p>
+    </div>
+    <div class="wrap header-row">
+      <a class="logo" href="index.html" aria-label="EIS Bridge home">
+        <span class="logo-mark">EIS</span> Bridge
       </a>
-      <input type="checkbox" id="nav-check" class="nav-check" hidden aria-hidden="true">
-      <label for="nav-check" class="nav-toggle">Menu</label>
-      <nav class="site-nav" aria-label="Primary navigation">
+
+      <nav class="nav-desktop" aria-label="Primary">
+        <a href="index.html">Home</a>
         <a href="partner.html">Partner</a>
+        <a href="#editions">Editions</a>
         <a href="insights/index.html">Insights</a>
+        <a href="portal/index.html">Developers</a>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+          <span aria-hidden="true">◐</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <a class="btn btn-primary btn-header" href="partner.html">Partner with us</a>
       </nav>
-      <a class="btn btn-secondary btn-header" href="portal/index.html">Developer Portal</a>
+
+      <div class="header-actions">
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark look">
+          <span aria-hidden="true">◐</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <button type="button" class="nav-burger" data-nav-toggle aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+      </div>
+    </div>
+    <div id="mobile-nav" class="mobile-nav" data-mobile-nav hidden>
+      <a href="index.html">Home</a>
+      <a href="partner.html">Partner</a>
+      <a href="#editions">Editions</a>
+      <a href="insights/index.html">Insights</a>
+      <a href="portal/index.html">Developers</a>
+      <a href="certification-playbook.html">Certification playbook</a>
+      <a class="btn btn-primary" href="partner.html">Partner with us</a>
     </div>
   </header>
 
   <main id="main">
-    <section class="hero" aria-labelledby="hero-heading">
-      <div class="container hero-inner">
-        <h1 id="hero-heading">One Bridge. Any POS. BIR EIS Transmission.</h1>
-        <p class="hero-subheader">
-          One Vendor API. One Standard Sale Object. Async queued acceptance — checkout never waits on BIR. POS vendors integrate once; merchants complete EIS CERT and PTT per BIR while EIS Bridge handles mapping, signing, and transmission.
+    <!-- Hero — WebShoppe pattern: full-bleed photo + paper scrim + staggered fadeUp -->
+    <section class="hero" aria-labelledby="hero-brand">
+      <div
+        class="hero-bg"
+        style="background-image: url('assets/marketing/hero-collaboration.png')"
+        role="img"
+        aria-label="Teams reviewing POS to EIS Bridge transmission status"
+      ></div>
+      <div class="hero-scrim" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <p class="eyebrow hero-reveal" data-delay="0">POS-native e-invoicing middleware</p>
+        <p class="hero-brand hero-reveal" id="hero-brand" data-delay="80">EIS Bridge</p>
+        <h1 class="hero-reveal" data-delay="160">One bridge. Any POS. BIR EIS transmission.</h1>
+        <p class="hero-lead hero-reveal" data-delay="240">
+          Vendor API once. Standard Sale Object. Async queue — checkout never waits on BIR.
         </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="partner.html">Partner with EIS Bridge</a>
+        <p class="tagline-rule hero-reveal" data-delay="320">
+          Connect any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes.
+        </p>
+        <div class="hero-actions hero-reveal" data-delay="400">
+          <a class="btn btn-primary" href="partner.html">Partner with EIS Bridge <span aria-hidden="true">→</span></a>
           <a class="btn btn-secondary" href="portal/quickstart.html">Developer Quickstart</a>
         </div>
       </div>
     </section>
 
-    <section class="audiences" aria-labelledby="audiences-heading">
-      <div class="container">
-        <h2 id="audiences-heading" class="section-title">Built for every stakeholder in the compliance chain</h2>
-        <div class="audience-grid">
-          <article class="audience-card">
-            <h3>POS Vendors</h3>
-            <p>
-              Ship BIR EIS compliance as a native capability — not a retrofit. Integrate the Vendor API once, map sales to the Standard Sale Object, and scale across your entire install base. Async submission keeps checkout fast while transmission runs in the background.
-            </p>
-            <p><a href="partner.html"><strong>Vendor Partner Program</strong></a></p>
-          </article>
-          <article class="audience-card">
-            <h3>Merchants</h3>
-            <p>
-              Stay compliant without changing how you sell. Your existing POS keeps working; EIS Bridge handles submission, validation, and audit readiness. You still complete EIS CERT and Permit to Transmit (PTT) per BIR — we guide the technical side.
-            </p>
-            <p><a href="insights/index.html"><strong>Retail insights &amp; feasibility guides</strong></a></p>
-          </article>
-          <article class="audience-card">
-            <h3>Enterprise</h3>
-            <p>
-              Govern compliance at scale across locations, brands, and systems of record. Centralized visibility, consistent enforcement, and enterprise-grade reliability for organizations that cannot afford invoicing disruption.
-            </p>
-          </article>
-          <article class="audience-card">
-            <h3>Developers</h3>
-            <p>
-              Clear integration paths, predictable async behavior, and documentation designed for production. Build on a platform purpose-built for POS-vendor e-invoicing compliance.
-            </p>
-            <p>
-              <a href="portal/index.html"><strong>Developer Portal</strong></a>
-              ·
-              <a href="portal/quickstart.html">Quickstart</a>
-              ·
-              <a href="portal/api.html">API Reference</a>
-            </p>
-          </article>
+    <!-- Pillars -->
+    <section class="section section-paper" aria-labelledby="pillars-heading">
+      <div class="wrap">
+        <div class="section-head section-head--center reveal">
+          <p class="eyebrow">Platform pillars</p>
+          <h2 id="pillars-heading">Built for how POS companies ship compliance</h2>
+          <p>
+            Thin adapters into a shared transmission core — map sales, sign, queue, and deliver.
+            Merchants still complete EIS CERT and Permit to Transmit (PTT) per BIR.
+          </p>
         </div>
-      </div>
-    </section>
-
-    <section class="editions" aria-labelledby="editions-heading">
-      <div class="container">
-        <h2 id="editions-heading" class="section-title">Product Editions</h2>
-        <div class="editions-grid">
-          <article class="edition-card edition-card--featured">
-            <h3>EIS Bridge Core</h3>
-            <p>Full platform — Vendor API, Standard Sale Object, async queue, admin console, and BIR transmission engine.</p>
-          </article>
-          <article class="edition-card">
-            <h3>EIS Bridge Vendor Edition</h3>
-            <p><strong>Vendor license</strong> (white-label for POS companies) — per-vendor API keys, merchant tenancy, and partner economics for rolling out across your product portfolio.</p>
-          </article>
-          <article class="edition-card">
-            <h3>EIS Bridge Merchant Edition</h3>
-            <p><strong>Merchant license</strong> (enterprise retailers) — turnkey compliance at scale with minimal setup and continuous assurance.</p>
-          </article>
-          <article class="edition-card">
-            <h3>EIS Bridge SaaS</h3>
-            <p><strong>Subscription SaaS</strong> (small merchants) — cloud-hosted compliance with managed operations, updates, and monitoring.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="pillars" aria-labelledby="differentiation-heading">
-      <div class="container">
-        <h2 id="differentiation-heading" class="section-title">POS-native middleware, not ERP retrofit</h2>
-        <p class="section-lead">Enterprise middleware vendors focus on SAP connectors, scheduled ETL, and large-taxpayer CAS platforms. EIS Bridge occupies a different lane — thin POS adapters on a shared transmission core.</p>
-        <div class="pillars-grid">
-          <article class="pillar-card">
+        <div class="card-grid">
+          <article class="card reveal" data-delay="0">
             <h3>Vendor API first</h3>
-            <p>Productized REST API with Postman collection, JSON schema, and QA certification suite — built for POS integrators, not SI project teams.</p>
+            <p>Productized REST API with schema and QA certification — for POS integrators, not open-ended SI projects.</p>
           </article>
-          <article class="pillar-card">
+          <article class="card reveal" data-delay="50">
             <h3>Async by design</h3>
-            <p><code>POST /transactions</code> returns <code>processing_status: queued</code> immediately. BIR transmission, retries, and webhooks run in the background.</p>
+            <p><code>POST /transactions</code> returns <code>processing_status: queued</code>. Retries and webhooks run in the background.</p>
           </article>
-          <article class="pillar-card">
+          <article class="card reveal" data-delay="100">
             <h3>Standard Sale Object</h3>
-            <p>One vendor-neutral JSON contract for every POS. Map once per platform; EIS Bridge handles BIR JSON mapping and JWS signing.</p>
+            <p>One vendor-neutral JSON contract. Map once per platform; EIS Bridge handles BIR JSON mapping and JWS signing.</p>
           </article>
-          <article class="pillar-card">
-            <h3>White-label ready</h3>
-            <p>Vendor Edition with per-vendor API keys and merchant activation pricing — POS companies resell compliance without building a BIR stack.</p>
-          </article>
-          <article class="pillar-card">
+          <article class="card reveal" data-delay="150">
             <h3>Certification playbook</h3>
-            <p>Structured EIS CERT and PTT guidance, sandbox testing flow, and readiness checks — productized go-live, not open-ended consulting.</p>
+            <p>Structured EIS CERT and PTT guidance with sandbox testing — productized go-live, not endless consulting.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="pillars" aria-labelledby="pillars-heading">
-      <div class="container">
-        <h2 id="pillars-heading" class="section-title">Why EIS Bridge</h2>
-        <div class="pillars-grid">
-          <article class="pillar-card">
-            <h3>Universality</h3>
-            <p>One bridge for every POS, every merchant, and every deployment model — no silos, no one-off integrations.</p>
+    <!-- Hub -->
+    <section class="section section-soft hub-section" aria-labelledby="hub-heading">
+      <div class="hub-ring" aria-hidden="true"></div>
+      <div class="wrap">
+        <div class="section-head section-head--center reveal">
+          <h2 id="hub-heading">One connected transmission core</h2>
+          <p>
+            POS adapters, merchant tenancy, signing, queue, and admin — working as one system around BIR EIS transmission.
+          </p>
+        </div>
+        <div class="hub-core">
+          <div class="hub-node reveal">
+            <div>
+              <strong>EIS Bridge</strong>
+              <span>Hub</span>
+            </div>
+          </div>
+          <div class="hub-satellites">
+            <div class="hub-chip reveal-scale reveal" data-delay="0">Any POS</div>
+            <div class="hub-chip reveal-scale reveal" data-delay="40">Vendor API</div>
+            <div class="hub-chip reveal-scale reveal" data-delay="80">Sale Object</div>
+            <div class="hub-chip reveal-scale reveal" data-delay="120">Async queue</div>
+            <div class="hub-chip reveal-scale reveal" data-delay="160">CERT / PTT guide</div>
+            <div class="hub-chip reveal-scale reveal" data-delay="200">Admin &amp; webhooks</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Audiences -->
+    <section class="section section-paper" aria-labelledby="audience-heading">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2 id="audience-heading">Built for every stakeholder in the compliance chain</h2>
+          <p>Practical middleware for the operators you actually sell to and partner with.</p>
+        </div>
+        <div class="card-grid">
+          <article class="card reveal" data-delay="0">
+            <h3>POS vendors</h3>
+            <p>Ship BIR EIS readiness as a native capability. Integrate once, roll out across your install base.</p>
           </article>
-          <article class="pillar-card">
-            <h3>Compliance</h3>
-            <p>Aligned with BIR EIS requirements and built to keep pace as regulations evolve — compliance is the product, not an afterthought.</p>
+          <article class="card reveal" data-delay="50">
+            <h3>Merchants</h3>
+            <p>Keep selling on the POS you already use. EIS Bridge handles mapping, signing, and transmission quietly.</p>
           </article>
-          <article class="pillar-card">
-            <h3>Reliability</h3>
-            <p>Invoicing cannot stop when stores are open. EIS Bridge is engineered for continuous operation and dependable submission.</p>
+          <article class="card reveal" data-delay="100">
+            <h3>Enterprise</h3>
+            <p>Govern compliance across locations and brands with centralized visibility and consistent enforcement.</p>
           </article>
-          <article class="pillar-card">
-            <h3>Security</h3>
-            <p>Financial data demands rigorous protection. Every transaction path is secured, validated, and handled with enterprise discipline.</p>
-          </article>
-          <article class="pillar-card">
-            <h3>Scalability</h3>
-            <p>From a single outlet to national rollouts — the platform grows with your business without re-architecting compliance.</p>
+          <article class="card reveal" data-delay="150">
+            <h3>Developers</h3>
+            <p>Clear async contracts, sandbox endpoints, and documentation built for production integrations.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="audiences" aria-labelledby="partner-heading">
-      <div class="container">
-        <h2 id="partner-heading" class="section-title">POS vendor partner program</h2>
-        <p class="section-lead">Priority integration segments include Condor, KaHero, Mosaic, and regional POS platforms — integration targets, not claimed partnerships. Each needs only a thin adapter to the Standard Sale Object.</p>
-        <div class="audience-grid">
-          <article class="audience-card">
-            <h3>Vendor core license</h3>
-            <p>₱180,000 – ₱350,000 one-time platform license for Vendor Edition — API access, white-label options, and onboarding.</p>
-          </article>
-          <article class="audience-card">
-            <h3>Per-merchant activation</h3>
-            <p>₱25,000 – ₱35,000 when each merchant goes live with EIS CERT, PTT, and production transmission enabled.</p>
-          </article>
-          <article class="audience-card">
-            <h3>Sandbox on request</h3>
-            <p>Live endpoints: <code>sandbox.eisbridge.com</code> and <code>api.eisbridge.com</code>. Sandbox credentials are provisioned during vendor onboarding.</p>
-          </article>
-        </div>
-        <p style="text-align: center; margin-top: 1.5rem;">
-          <span class="hero-actions" style="justify-content: center;">
-            <a class="btn btn-primary" href="partner.html">Read the partner program</a>
-            <a class="btn btn-secondary" href="certification-playbook.html">Certification playbook</a>
-          </span>
+    <!-- Featured editions (WebShoppe featured offers pattern) -->
+    <section class="section section-soft" id="editions" aria-labelledby="editions-heading">
+      <div class="wrap">
+        <p class="eyebrow reveal">Product editions</p>
+        <h2 id="editions-heading" class="font-display reveal" style="margin: 0.75rem 0 0; font-size: clamp(1.75rem, 3.5vw, 2.25rem); font-weight: 700; color: var(--navy);">
+          Featured editions from EIS Bridge
+        </h2>
+        <p class="reveal" style="margin: 1rem 0 0; max-width: 40rem; color: var(--muted);">
+          Vendor-ready licensing, merchant enterprise, and managed SaaS — same transmission core underneath.
         </p>
+
+        <div class="offer-stack">
+          <article class="offer-card reveal">
+            <div
+              class="offer-media"
+              style="background-image: url('assets/marketing/feature-vendor.png')"
+              role="img"
+              aria-label="POS vendor API mapping workshop"
+            ></div>
+            <div class="offer-body">
+              <p class="offer-eyebrow">Vendor license · White-label ready</p>
+              <h3>EIS Bridge Vendor Edition</h3>
+              <p>
+                Per-vendor API keys, merchant tenancy, and partner economics so POS companies resell compliance without building a BIR stack.
+              </p>
+              <ul class="offer-points">
+                <li>Vendor core license ₱180,000 – ₱350,000 one-time</li>
+                <li>Per-merchant activation ₱25,000 – ₱35,000 at go-live</li>
+                <li>Sandbox on request — sandbox.eisbridge.com</li>
+                <li>White-label options across your product portfolio</li>
+              </ul>
+              <a class="btn btn-primary" href="partner.html">Read the partner program <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+
+          <article class="offer-card offer-card--flip reveal">
+            <div
+              class="offer-media"
+              style="background-image: url('assets/marketing/feature-bridge.png')"
+              role="img"
+              aria-label="Merchant POS selling while transmission queues"
+            ></div>
+            <div class="offer-body">
+              <p class="offer-eyebrow">Merchant &amp; SaaS paths</p>
+              <h3>Merchant Edition &amp; SaaS</h3>
+              <p>
+                Enterprise retailers get turnkey compliance at scale. Smaller merchants get cloud-hosted operations with managed monitoring.
+              </p>
+              <ul class="offer-points">
+                <li>Merchant Edition for multi-location retailers</li>
+                <li>SaaS subscription for smaller merchants</li>
+                <li>Core platform: API, queue, admin, transmission engine</li>
+                <li>Continuous assurance without POS rip-and-replace</li>
+              </ul>
+              <a class="btn btn-primary" href="mailto:support@eisbridge.com">Talk to onboarding <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section class="cta-band" id="contact" aria-labelledby="cta-heading">
-      <div class="container cta-inner">
-        <h2 id="cta-heading">Ready to connect your POS to the BIR EIS?</h2>
-        <p>Make compliance your competitive advantage — not your bottleneck.</p>
-        <a class="btn btn-primary" href="mailto:support@eisbridge.com">Contact vendor onboarding</a>
+    <!-- Certification / ops (WebShoppe training split) -->
+    <section class="section section-paper" aria-labelledby="ops-heading">
+      <div class="wrap split-ops">
+        <div class="reveal">
+          <p class="eyebrow">Certification &amp; operations</p>
+          <h2 id="ops-heading" class="font-display" style="margin: 0.75rem 0 0; font-size: clamp(1.75rem, 3vw, 2rem); font-weight: 700; color: var(--navy);">
+            Compliance works when go-live is productized
+          </h2>
+          <p style="margin: 1rem 0 0; color: var(--muted);">
+            Structured EIS CERT and PTT guidance, sandbox testing, and readiness checks — so vendors and merchants ship without open-ended projects.
+          </p>
+          <ul class="dot-list">
+            <li>Sandbox credentials during vendor onboarding</li>
+            <li>Standard Sale Object mapping workshops</li>
+            <li>EIS CERT and Permit to Transmit (PTT) checklists</li>
+            <li>Production queue, retries, and webhook verification</li>
+          </ul>
+          <p style="margin: 1.5rem 0 0;">
+            <a class="btn btn-secondary" href="certification-playbook.html">Certification playbook</a>
+          </p>
+        </div>
+        <div
+          class="split-ops-media reveal"
+          style="background-image: url('assets/marketing/feature-ops.png')"
+          role="img"
+          aria-label="Engineers reviewing sandbox API documentation"
+        ></div>
+      </div>
+    </section>
+
+    <!-- Technology -->
+    <section class="section section-soft" aria-labelledby="tech-heading">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Technology</p>
+          <h2 id="tech-heading">Systems that keep transmission moving</h2>
+          <p>POS-native middleware capabilities with enterprise discipline.</p>
+        </div>
+        <div class="card-grid card-grid--3">
+          <article class="card reveal" data-delay="0">
+            <h3>Universality</h3>
+            <p>One bridge for every POS and deployment model — no silos, no one-off integrations.</p>
+          </article>
+          <article class="card reveal" data-delay="50">
+            <h3>Reliability</h3>
+            <p>Invoicing cannot stop when stores are open. Queues, retries, and continuous operation.</p>
+          </article>
+          <article class="card reveal" data-delay="100">
+            <h3>Security</h3>
+            <p>Financial data paths secured, validated, and handled with enterprise discipline.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why -->
+    <section class="section section-paper" aria-labelledby="why-heading">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2 id="why-heading">Why POS vendors choose EIS Bridge</h2>
+          <p>
+            POS-native middleware — not an ERP retrofit. Compliance is the product, with clear partner economics.
+          </p>
+        </div>
+        <div class="why-grid">
+          <div class="why-item reveal">
+            <h3>Vendor API product</h3>
+            <p>Ship once across your install base instead of per-merchant consulting builds.</p>
+          </div>
+          <div class="why-item reveal" data-delay="40">
+            <h3>Checkout stays fast</h3>
+            <p>Async acceptance means BIR transmission never blocks the counter.</p>
+          </div>
+          <div class="why-item reveal" data-delay="80">
+            <h3>White-label ready</h3>
+            <p>Resell compliance under your brand with per-vendor keys and merchant activation.</p>
+          </div>
+          <div class="why-item reveal" data-delay="120">
+            <h3>Honest positioning</h3>
+            <p>Not BIR-accredited marketing. Taxpayers certify systems; we guide the technical path.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Journey -->
+    <section class="section section-soft" aria-labelledby="journey-heading">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2 id="journey-heading">Your go-live, step by step</h2>
+          <p>From partner onboarding to production transmission and scale.</p>
+        </div>
+        <div class="journey-grid">
+          <article class="journey-card reveal" data-delay="0">
+            <p class="step">01</p>
+            <h3>Partner</h3>
+            <p>Align Vendor Edition scope, commercial terms, and onboarding.</p>
+          </article>
+          <article class="journey-card reveal" data-delay="40">
+            <p class="step">02</p>
+            <h3>Sandbox</h3>
+            <p>Provision keys for sandbox.eisbridge.com and validate the API path.</p>
+          </article>
+          <article class="journey-card reveal" data-delay="80">
+            <p class="step">03</p>
+            <h3>Map</h3>
+            <p>Map your POS sales payload to the Standard Sale Object.</p>
+          </article>
+          <article class="journey-card reveal" data-delay="120">
+            <p class="step">04</p>
+            <h3>Certify</h3>
+            <p>Guide merchants through EIS CERT and Permit to Transmit (PTT).</p>
+          </article>
+          <article class="journey-card reveal" data-delay="160">
+            <p class="step">05</p>
+            <h3>Launch</h3>
+            <p>Go live on api.eisbridge.com with queue, retries, and webhooks.</p>
+          </article>
+          <article class="journey-card reveal" data-delay="200">
+            <p class="step">06</p>
+            <h3>Scale</h3>
+            <p>Activate merchants across your install base with partner economics.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-panel" id="contact" aria-labelledby="cta-heading">
+      <div
+        class="cta-panel-bg"
+        style="background-image: url('assets/marketing/hero-collaboration.png')"
+        aria-hidden="true"
+      ></div>
+      <div class="cta-panel-veil" aria-hidden="true"></div>
+      <div class="wrap">
+        <p class="eyebrow reveal">Get started</p>
+        <h2 id="cta-heading" class="reveal">Ready to connect your POS to BIR EIS?</h2>
+        <p class="lead reveal">
+          Make compliance a product advantage — not a checkout bottleneck. Partner onboarding maps Vendor API, sandbox, and go-live to your roadmap.
+        </p>
+        <p class="tagline-rule reveal">
+          EIS Bridge&trade; — trademark application pending · IPOPHL Class 42 · Ref EFPH202600003850268
+        </p>
+        <div class="cta-actions reveal">
+          <a class="btn btn-on-panel" href="mailto:support@eisbridge.com">Contact vendor onboarding</a>
+          <a class="btn btn-ghost-panel" href="portal/index.html">Open Developer Portal</a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-inner">
-      <p class="footer-positioning">
-        EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
-      </p>
-      <p class="footer-disclaimer">
-        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
-      </p>
-      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
-      <p class="footer-links">
-        <a href="index.html">Home</a> &middot;
-        <a href="partner.html">Partner Program</a> &middot;
-        <a href="insights/index.html">Insights</a> &middot;
-        <a href="privacy.html">Privacy Policy</a> &middot;
-        <a href="terms.html">Terms of Service</a>
-      </p>
-      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    <div class="wrap footer-grid">
+      <div>
+        <p class="footer-brand">EIS Bridge</p>
+        <p>
+          Connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes.
+        </p>
+        <p class="footer-disclaimer">
+          EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+        </p>
+      </div>
+      <div>
+        <p class="footer-label">Quick links</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="partner.html">Partner program</a>
+          <a href="insights/index.html">Insights</a>
+          <a href="portal/index.html">Developer Portal</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-label">Get started</p>
+        <div class="footer-links">
+          <a href="mailto:support@eisbridge.com">Contact onboarding</a>
+          <a href="certification-playbook.html">Certification playbook</a>
+          <a href="portal/quickstart.html">Quickstart</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <p class="wrap">&copy; 2026 EIS Bridge. All rights reserved.</p>
     </div>
   </footer>
+
+  <script src="assets/js/marketing-home.js" defer></script>
 </body>
 </html>
