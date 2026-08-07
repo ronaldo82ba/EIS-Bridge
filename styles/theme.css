@@ -1,14 +1,33 @@
-/* EIS Bridge Branding System v1.1 — photo-led marketing */
+/* EIS Bridge Branding System v1.2 — dual theme (WebShoppe parity) */
 
-:root {
-  --eis-blue: #0057D9;
-  --bridge-teal: #00A8A8;
-  --signal-yellow: #FFC300;
-  --slate-gray: #2E3A45;
-  --cloud-white: #F4F7FA;
-  --graphite-black: #121820;
-  --mist: #E8EEF5;
-  --ink-muted: #5A6A7A;
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --paper: #ffffff;
+  --paper-2: #f4f7fb;
+  --paper-3: #e8eef6;
+  --ink: #0b1f3a;
+  --ink-deep: #071628;
+  --brand: #0057d9;
+  --brand-deep: #0046b0;
+  --on-brand: #ffffff;
+  --panel: #0b1f3a;
+  --on-panel: #ffffff;
+  --sky: #0d8a8a;
+  --sky-soft: #00a8a8;
+  --slate: #3d4d5c;
+  --muted: #5a6a7a;
+  --line: #d5deea;
+  --gold: #b8921f;
+
+  --eis-blue: var(--brand);
+  --bridge-teal: var(--sky-soft);
+  --signal-yellow: #ffc300;
+  --slate-gray: var(--slate);
+  --cloud-white: var(--paper-2);
+  --graphite-black: var(--ink);
+  --mist: var(--paper-3);
+  --ink-muted: var(--muted);
 
   --font-display: "Syne", "Segoe UI", sans-serif;
   --font-sans: "Outfit", "Segoe UI", sans-serif;
@@ -16,6 +35,35 @@
   --radius: 0.35rem;
   --shadow-sm: 0 1px 3px rgba(18, 24, 32, 0.08);
   --shadow-md: 0 8px 28px rgba(18, 24, 32, 0.12);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --paper: #070b12;
+  --paper-2: #0d1420;
+  --paper-3: #151d2e;
+  --ink: #f0f4fa;
+  --ink-deep: #ffffff;
+  --brand: #4d94ff;
+  --brand-deep: #3d8bff;
+  --on-brand: #ffffff;
+  --panel: #05080e;
+  --on-panel: #f0f4fa;
+  --sky: #3dcccc;
+  --sky-soft: #6edede;
+  --slate: #c5ced9;
+  --muted: #a8b4c4;
+  --line: #2a384c;
+  --gold: #e0c35a;
+
+  --eis-blue: var(--brand);
+  --bridge-teal: var(--sky);
+  --signal-yellow: #ffc300;
+  --slate-gray: var(--slate);
+  --cloud-white: var(--paper-2);
+  --graphite-black: var(--ink);
+  --mist: var(--paper-3);
+  --ink-muted: var(--muted);
 }
 
 *,
@@ -33,11 +81,8 @@ body {
   font-family: var(--font-sans);
   font-size: 1.0625rem;
   line-height: 1.65;
-  color: var(--graphite-black);
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(0, 87, 217, 0.07), transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(0, 168, 168, 0.06), transparent 50%),
-    var(--cloud-white);
+  color: var(--ink);
+  background: var(--paper);
 }
 
 img {
@@ -81,11 +126,16 @@ a:focus-visible,
 /* Header */
 
 .site-header {
-  background: #fff;
-  border-bottom: 1px solid rgba(46, 58, 69, 0.12);
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+/* When dual-theme chrome (.site-top) is present, hide legacy sticky header */
+body.has-site-chrome .site-header:not(.site-top) {
+  display: none;
 }
 
 .header-inner {
@@ -228,7 +278,7 @@ section {
 /* Audience cards */
 
 .audiences {
-  background: #fff;
+  background: var(--paper);
 }
 
 .audience-grid {
@@ -239,7 +289,7 @@ section {
 
 .audience-card {
   padding: 1.75rem;
-  background: var(--cloud-white);
+  background: var(--paper-2);
   border-radius: var(--radius);
   border-top: 3px solid var(--bridge-teal);
   box-shadow: var(--shadow-sm);
@@ -272,9 +322,9 @@ section {
 
 .edition-card {
   padding: 1.5rem;
-  background: #fff;
+  background: var(--paper);
   border-radius: var(--radius);
-  border: 1px solid rgba(46, 58, 69, 0.1);
+  border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
 }
 
@@ -300,12 +350,12 @@ section {
 /* Pillars */
 
 .pillars {
-  background: var(--slate-gray);
-  color: #fff;
+  background: var(--panel);
+  color: var(--on-panel);
 }
 
 .pillars .section-title {
-  color: #fff;
+  color: var(--on-panel);
 }
 
 .pillars-grid {
@@ -316,7 +366,7 @@ section {
 
 .pillar-card {
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in oklab, var(--on-panel) 6%, transparent);
   border-radius: var(--radius);
   border-left: 3px solid var(--bridge-teal);
 }
@@ -325,13 +375,13 @@ section {
   margin: 0 0 0.5rem;
   font-size: 1.0625rem;
   font-weight: 700;
-  color: var(--signal-yellow);
+  color: var(--gold);
 }
 
 .pillar-card p {
   margin: 0;
   font-size: 0.9375rem;
-  color: rgba(247, 249, 250, 0.88);
+  color: color-mix(in oklab, var(--on-panel) 88%, transparent);
 }
 
 /* CTA band */
@@ -370,8 +420,8 @@ section {
 /* Footer */
 
 .site-footer {
-  background: var(--graphite-black);
-  color: rgba(247, 249, 250, 0.85);
+  background: var(--panel);
+  color: color-mix(in oklab, var(--on-panel) 85%, transparent);
   padding-block: 2.5rem;
 }
 

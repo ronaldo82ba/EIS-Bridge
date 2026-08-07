@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,25 +21,63 @@
   <meta name="twitter:description" content="Standard Sale Object — JSON schema, field reference, validation, and idempotency rules.">
   <meta name="twitter:image" content="https://eisbridge.com/assets/brand/og-image.png">
   <link rel="stylesheet" href="styles/portal.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/marketing-home.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('eis-theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
 </head>
-<body>
+<body class="has-site-chrome">
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <div class="ip-notice-bar" role="note">
-    EIS Bridge&trade; &mdash; trademark application pending &middot; IPOPHL Class 42 &middot; Ref EFPH202600003850268
-  </div>
-
-  <header class="site-header portal-header">
-    <div class="container header-inner">
-      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
-        <span class="logo-mark" aria-hidden="true">EIS</span>
-        <span class="logo-text">Bridge</span>
-        <span class="portal-badge">Developer Portal</span>
+<header class="site-top" data-site-header>
+    <div class="top-ribbon">
+      <p>EIS Bridge&trade; &mdash; connect any POS to BIR EIS transmission without source-code changes</p>
+    </div>
+    <div class="wrap header-row">
+      <a class="logo" href="../index.html" aria-label="EIS Bridge home">
+        <span class="logo-mark">EIS</span> Bridge
       </a>
-      <input type="checkbox" id="nav-check" class="nav-check" hidden>
-      <label for="nav-check" class="nav-toggle">Menu</label>
-      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
-        <ul>
+      <nav class="nav-desktop" aria-label="Primary">
+        <a href="../index.html">Home</a>
+        <a href="../partner.html">Partner</a>
+        <a href="../index.html#editions">Editions</a>
+        <a href="../insights/index.html">Insights</a>
+        <a href="../portal/index.html" aria-current="page">Developers</a>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+          <span aria-hidden="true">&#9678;</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <a class="btn btn-primary btn-header" href="../partner.html">Partner with us</a>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark look">
+          <span aria-hidden="true">&#9678;</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <button type="button" class="nav-burger" data-nav-toggle aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+      </div>
+    </div>
+    <div id="mobile-nav" class="mobile-nav" data-mobile-nav hidden>
+      <a href="../index.html">Home</a>
+      <a href="../partner.html">Partner</a>
+      <a href="../index.html#editions">Editions</a>
+      <a href="../insights/index.html">Insights</a>
+      <a href="../portal/index.html">Developers</a>
+      <a href="../certification-playbook.html">Certification playbook</a>
+      <a class="btn btn-primary" href="../partner.html">Partner with us</a>
+    </div>
+  </header>
+  <div class="portal-subnav wrap">
+    <nav class="portal-nav" aria-label="Developer portal">
+      <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="quickstart.html">Quickstart</a></li>
           <li><a href="api.html">API Reference</a></li>
@@ -47,11 +85,9 @@
           <li><a href="tools.html">Tools</a></li>
           <li><a href="testing.html">Testing</a></li>
           <li><a href="support.html">Support</a></li>
-        </ul>
-      </nav>
-      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
-    </div>
-  </header>
+      </ul>
+    </nav>
+  </div>
 
   <main id="main" class="portal-main">
     <div class="container">
@@ -378,5 +414,6 @@
       <p class="footer-copy">&copy; 2026 EIS Bridge</p>
     </div>
   </footer>
+  <script src="../assets/js/marketing-home.js" defer></script>
 </body>
 </html>

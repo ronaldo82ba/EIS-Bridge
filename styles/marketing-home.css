@@ -9,28 +9,38 @@
   --paper: #ffffff;
   --paper-2: #f4f7fb;
   --paper-3: #e8eef6;
-  --navy: #0057d9;
-  --navy-deep: #0b1f3a;
+  /* Ink = readable text; brand = EIS blue accents/buttons (do not use brand as body ink) */
+  --ink: #0b1f3a;
+  --ink-deep: #071628;
+  --navy: var(--ink);
+  --navy-deep: var(--ink-deep);
   --brand: #0057d9;
   --brand-deep: #0046b0;
   --on-brand: #ffffff;
   --panel: #0b1f3a;
   --on-panel: #ffffff;
-  --sky: #00a8a8;
-  --sky-soft: #33bcbc;
-  --slate: #4b5c6e;
-  --muted: #6b7c8f;
+  --sky: #0d8a8a;
+  --sky-soft: #00a8a8;
+  --slate: #3d4d5c;
+  --muted: #5a6a7a;
   --line: #d5deea;
-  --gold: #c9a227;
-  --header-bg: rgba(255, 255, 255, 0.72);
-  --header-bg-compact: rgba(255, 255, 255, 0.92);
-  --header-border: rgba(213, 222, 234, 0.5);
+  --gold: #b8921f;
+  --header-bg: rgba(255, 255, 255, 0.86);
+  --header-bg-compact: rgba(255, 255, 255, 0.96);
+  --header-border: rgba(213, 222, 234, 0.7);
   --header-border-compact: rgba(213, 222, 234, 1);
   --hub-glow-sky: rgba(0, 168, 168, 0.16);
   --hub-glow-gold: rgba(201, 162, 39, 0.1);
   --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --max: 72rem;
+  /* Legacy theme.css aliases */
+  --eis-blue: var(--brand);
+  --bridge-teal: var(--sky-soft);
+  --signal-yellow: #ffc300;
+  --slate-gray: var(--slate);
+  --cloud-white: var(--paper-2);
+  --graphite-black: var(--ink);
 }
 
 [data-theme='dark'] {
@@ -38,25 +48,33 @@
   --paper: #070b12;
   --paper-2: #0d1420;
   --paper-3: #151d2e;
-  --navy: #e8eef6;
-  --navy-deep: #f4f7fb;
-  --brand: #3d8bff;
-  --brand-deep: #2f6ec4;
+  --ink: #f0f4fa;
+  --ink-deep: #ffffff;
+  --navy: var(--ink);
+  --navy-deep: var(--ink-deep);
+  --brand: #4d94ff;
+  --brand-deep: #3d8bff;
   --on-brand: #ffffff;
   --panel: #05080e;
-  --on-panel: #e8eef6;
-  --sky: #33bcbc;
-  --sky-soft: #5b9be0;
-  --slate: #a8b4c4;
-  --muted: #8b97a8;
-  --line: #243044;
-  --gold: #d4b84a;
-  --header-bg: rgba(7, 11, 18, 0.78);
-  --header-bg-compact: rgba(7, 11, 18, 0.94);
-  --header-border: rgba(36, 48, 68, 0.7);
-  --header-border-compact: rgba(36, 48, 68, 1);
-  --hub-glow-sky: rgba(51, 188, 188, 0.18);
-  --hub-glow-gold: rgba(212, 184, 74, 0.12);
+  --on-panel: #f0f4fa;
+  --sky: #3dcccc;
+  --sky-soft: #6edede;
+  --slate: #c5ced9;
+  --muted: #a8b4c4;
+  --line: #2a384c;
+  --gold: #e0c35a;
+  --header-bg: rgba(7, 11, 18, 0.88);
+  --header-bg-compact: rgba(7, 11, 18, 0.96);
+  --header-border: rgba(42, 56, 76, 0.85);
+  --header-border-compact: rgba(42, 56, 76, 1);
+  --hub-glow-sky: rgba(61, 204, 204, 0.2);
+  --hub-glow-gold: rgba(224, 195, 90, 0.14);
+  --eis-blue: var(--brand);
+  --bridge-teal: var(--sky);
+  --signal-yellow: #ffc300;
+  --slate-gray: var(--slate);
+  --cloud-white: var(--paper-2);
+  --graphite-black: var(--ink);
 }
 
 *,
@@ -80,7 +98,7 @@ body {
 
 ::selection {
   background: color-mix(in oklab, var(--sky) 35%, transparent);
-  color: var(--navy-deep);
+  color: var(--ink-deep);
 }
 
 img {
@@ -140,8 +158,10 @@ a {
   max-width: 32rem;
   border-left: 2px solid var(--gold);
   padding-left: 0.75rem;
-  font-size: 0.875rem;
-  color: var(--navy);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--ink);
 }
 
 /* —— Header (WebShoppe fixed + compact) —— */
@@ -167,16 +187,17 @@ a {
 
 .top-ribbon {
   border-bottom: 1px solid var(--line);
-  background: color-mix(in oklab, var(--paper-2) 90%, transparent);
+  background: var(--paper-2);
 }
 
 .top-ribbon p {
   margin: 0;
-  padding: 0.4rem 1.25rem;
+  padding: 0.45rem 1.25rem;
   text-align: center;
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--slate);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -201,7 +222,7 @@ a {
   font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--navy);
+  color: var(--ink);
   text-decoration: none;
 }
 
@@ -216,7 +237,7 @@ a {
 }
 
 [data-theme='dark'] .logo-mark {
-  color: var(--sky-soft);
+  color: #7eb6ff;
 }
 
 .nav-desktop {
@@ -233,13 +254,15 @@ a {
 
 .nav-desktop a {
   font-size: 0.875rem;
-  color: var(--muted);
+  font-weight: 500;
+  color: var(--slate);
   text-decoration: none;
   transition: color 0.15s;
 }
 
-.nav-desktop a:hover {
-  color: var(--navy);
+.nav-desktop a:hover,
+.nav-desktop a[aria-current="page"] {
+  color: var(--ink);
 }
 
 .header-actions {
@@ -264,7 +287,7 @@ a {
 }
 
 .theme-toggle:hover {
-  color: var(--navy);
+  color: var(--ink);
   border-color: color-mix(in oklab, var(--navy) 35%, var(--line));
 }
 
@@ -274,7 +297,7 @@ a {
   font-family: inherit;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
   background: transparent;
   border: 1px solid var(--line);
   border-radius: 0.5rem;
@@ -332,21 +355,23 @@ a {
 
 .btn-primary {
   background: var(--brand);
-  color: var(--on-brand);
+  color: #ffffff !important;
 }
 
 .btn-primary:hover {
   background: var(--brand-deep);
+  color: #ffffff !important;
 }
 
 .btn-secondary {
   background: color-mix(in oklab, var(--paper) 80%, transparent);
-  color: var(--navy);
-  border-color: color-mix(in oklab, var(--navy) 25%, transparent);
+  color: var(--ink);
+  border-color: color-mix(in oklab, var(--ink) 28%, transparent);
 }
 
 .btn-secondary:hover {
-  border-color: color-mix(in oklab, var(--navy) 50%, transparent);
+  border-color: color-mix(in oklab, var(--ink) 55%, transparent);
+  color: var(--ink-deep);
 }
 
 .btn-ghost-panel {
@@ -361,7 +386,7 @@ a {
 
 .btn-on-panel {
   background: var(--paper);
-  color: var(--navy-deep);
+  color: var(--ink-deep);
 }
 
 .btn-on-panel:hover {
@@ -438,14 +463,14 @@ a {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 92%, transparent) 42%, color-mix(in oklab, var(--paper) 35%, transparent) 100%),
-    linear-gradient(0deg, var(--paper) 0%, transparent 42%, color-mix(in oklab, var(--paper) 50%, transparent) 100%);
+    linear-gradient(90deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 97%, transparent) 36%, color-mix(in oklab, var(--paper) 72%, transparent) 58%, color-mix(in oklab, var(--paper) 28%, transparent) 82%, transparent 100%),
+    linear-gradient(0deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 70%, transparent) 28%, transparent 55%, color-mix(in oklab, var(--paper) 45%, transparent) 100%);
 }
 
 [data-theme='dark'] .hero-scrim {
   background:
-    linear-gradient(90deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 88%, transparent) 45%, color-mix(in oklab, var(--paper) 25%, transparent) 100%),
-    linear-gradient(0deg, var(--paper) 0%, transparent 45%, color-mix(in oklab, var(--paper) 55%, transparent) 100%);
+    linear-gradient(90deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 94%, transparent) 40%, color-mix(in oklab, var(--paper) 55%, transparent) 68%, color-mix(in oklab, var(--paper) 18%, transparent) 100%),
+    linear-gradient(0deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 75%, transparent) 30%, transparent 58%, color-mix(in oklab, var(--paper) 50%, transparent) 100%);
 }
 
 .hero-inner {
@@ -472,7 +497,11 @@ a {
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 0.95;
-  color: var(--navy);
+  color: var(--brand);
+}
+
+[data-theme='dark'] .hero-brand {
+  color: var(--ink-deep);
 }
 
 .hero h1 {
@@ -483,7 +512,7 @@ a {
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  color: var(--navy-deep);
+  color: var(--ink-deep);
   text-wrap: balance;
 }
 
@@ -491,6 +520,7 @@ a {
   margin: 1rem 0 0;
   max-width: 32rem;
   font-size: clamp(1rem, 2vw, 1.125rem);
+  font-weight: 450;
   color: var(--slate);
 }
 
@@ -546,7 +576,7 @@ a {
   font-size: clamp(1.75rem, 3.5vw, 2.25rem);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--navy);
+  color: var(--ink);
   line-height: 1.15;
 }
 
@@ -591,7 +621,7 @@ a {
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
 }
 
 .card p {
@@ -665,7 +695,7 @@ a {
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--ink);
 }
 
 .hub-node span {
@@ -763,7 +793,7 @@ a {
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 2.5vw, 1.75rem);
   font-weight: 700;
-  color: var(--navy);
+  color: var(--ink);
 }
 
 .offer-body > p {
@@ -871,7 +901,7 @@ a {
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
 }
 
 .why-item p {
@@ -918,7 +948,7 @@ a {
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
 }
 
 .journey-card p {
@@ -1071,7 +1101,83 @@ a {
   color: color-mix(in oklab, var(--on-panel) 50%, transparent);
 }
 
-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.9em;
+.portal-subnav {
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-2);
+  padding-block: 0.65rem;
+}
+
+.portal-subnav .portal-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.35rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.portal-subnav .portal-nav a {
+  display: block;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--slate);
+  text-decoration: none;
+  border-radius: 999px;
+}
+
+.portal-subnav .portal-nav a:hover,
+.portal-subnav .portal-nav a[aria-current="page"] {
+  color: var(--ink);
+  background: color-mix(in oklab, var(--brand) 12%, transparent);
+}
+
+/* Ensure primary buttons stay white-on-brand across themes */
+a.btn.btn-primary,
+button.btn.btn-primary {
+  color: #ffffff !important;
+}
+
+/* Fixed chrome offset for inner pages using site-top */
+body.has-site-chrome {
+  padding-top: 8.25rem;
+}
+
+@media (min-width: 900px) {
+  body.has-site-chrome {
+    padding-top: 7.75rem;
+  }
+}
+
+body.has-site-chrome .hero.hero--page {
+  min-height: auto;
+  padding-top: 0;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--line);
+}
+
+body.has-site-chrome .hero.hero--page .hero-inner,
+body.has-site-chrome .hero.hero--page .container.hero-inner {
+  min-height: auto;
+  padding-block: 2.75rem 3.25rem;
+  justify-content: flex-start;
+}
+
+body.has-site-chrome .hero.hero--page h1 {
+  color: var(--ink);
+  margin-top: 0;
+}
+
+/* Map legacy theme content onto dual-theme tokens */
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: 2rem;
+  }
 }
