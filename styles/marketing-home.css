@@ -25,6 +25,8 @@
   --muted: #5a6a7a;
   --line: #d5deea;
   --gold: #b8921f;
+  --code-bg: #1a2230;
+  --code-text: #e8ecf1;
   --header-bg: rgba(255, 255, 255, 0.86);
   --header-bg-compact: rgba(255, 255, 255, 0.96);
   --header-border: rgba(213, 222, 234, 0.7);
@@ -63,6 +65,8 @@
   --muted: #a8b4c4;
   --line: #2a384c;
   --gold: #e0c35a;
+  --code-bg: #0a1018;
+  --code-text: #e8ecf1;
   --header-bg: rgba(7, 11, 18, 0.88);
   --header-bg-compact: rgba(7, 11, 18, 0.96);
   --header-border: rgba(42, 56, 76, 0.85);
@@ -1067,20 +1071,21 @@ a {
   color: var(--sky-soft);
 }
 
-.footer-links {
+/* Homepage footer columns only — do not affect inline <p class="footer-links"> on other pages */
+.footer-grid .footer-links {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 0.75rem;
 }
 
-.footer-links a {
+.footer-grid .footer-links a {
   font-size: 0.875rem;
   color: color-mix(in oklab, var(--on-panel) 80%, transparent);
   text-decoration: none;
 }
 
-.footer-links a:hover {
+.footer-grid .footer-links a:hover {
   color: var(--on-panel);
 }
 
