@@ -38,9 +38,6 @@ git sparse-checkout set \
 git checkout -f "$SITE_BRANCH"
 git clean -fdx
 
-# Embargo: PH Findings must not ship during the 60-day social window.
-rm -rf insights/ph-findings
-
 for required_path in index.html partner.html certification-playbook.html portal styles privacy.html terms.html marketing-deploy.sh robots.txt; do
     if [ ! -e "$required_path" ]; then
         echo "Missing required marketing asset: $required_path"
@@ -52,7 +49,9 @@ for required_insight in \
     insights/index.html \
     insights/philippine-convenience-store-business-june-2026.html \
     insights/bir-eis-readiness-retail-chains.html \
-    insights/sari-sari-to-modern-retail-upgrade.html
+    insights/sari-sari-to-modern-retail-upgrade.html \
+    insights/ph-findings/index.html \
+    insights/ph-findings/day-01.html
 do
     if [ ! -e "$required_insight" ]; then
         echo "Missing required insights asset: $required_insight"
@@ -60,8 +59,9 @@ do
     fi
 done
 
-if [ -e "insights/ph-findings" ]; then
-    echo "Embargoed path present after deploy: insights/ph-findings"
+# Only Day 01 (and the series hub) should be public during early series days.
+if [ -e "insights/ph-findings/day-02.html" ]; then
+    echo "PH Findings day-02+ must not ship yet: remove unpublished day pages before deploy"
     exit 1
 fi
 
@@ -100,7 +100,9 @@ for public_insight_url in \
     "https://eisbridge.com/insights/index.html" \
     "https://eisbridge.com/insights/philippine-convenience-store-business-june-2026.html" \
     "https://eisbridge.com/insights/bir-eis-readiness-retail-chains.html" \
-    "https://eisbridge.com/insights/sari-sari-to-modern-retail-upgrade.html"
+    "https://eisbridge.com/insights/sari-sari-to-modern-retail-upgrade.html" \
+    "https://eisbridge.com/insights/ph-findings/index.html" \
+    "https://eisbridge.com/insights/ph-findings/day-01.html"
 do
     status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$public_insight_url" || true)"
     if [ "$status_code" -ne 200 ]; then
