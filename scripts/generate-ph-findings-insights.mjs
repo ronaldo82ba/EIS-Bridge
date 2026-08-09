@@ -286,8 +286,8 @@ function hubPage(published, throughDate, totalCount) {
 
   const upcomingNote =
     remaining > 0
-      ? `<p class="section-lead">Published through ${esc(formatDate(throughDate))} (${published.length} of ${totalCount}). One new article posts each day — ${remaining} still scheduled.</p>`
-      : `<p class="section-lead">All ${totalCount} daily readings are published.</p>`;
+      ? `<p class="section-lead">Published through ${esc(formatDate(throughDate))} (${published.length} of ${totalCount}). Later days are not live until released one at a time — ${remaining} remain in the pack.</p>`
+      : `<p class="section-lead">All ${totalCount} readings are published.</p>`;
 
   const breadcrumbHtml = `    <section class="hero hero--page" aria-labelledby="hero-heading">
       <div class="container hero-inner">
