@@ -49,7 +49,9 @@ for required_insight in \
     insights/index.html \
     insights/philippine-convenience-store-business-june-2026.html \
     insights/bir-eis-readiness-retail-chains.html \
-    insights/sari-sari-to-modern-retail-upgrade.html
+    insights/sari-sari-to-modern-retail-upgrade.html \
+    insights/ph-findings/index.html \
+    insights/ph-findings/day-01.html
 do
     if [ ! -e "$required_insight" ]; then
         echo "Missing required insights asset: $required_insight"
@@ -92,7 +94,9 @@ for public_insight_url in \
     "https://eisbridge.com/insights/index.html" \
     "https://eisbridge.com/insights/philippine-convenience-store-business-june-2026.html" \
     "https://eisbridge.com/insights/bir-eis-readiness-retail-chains.html" \
-    "https://eisbridge.com/insights/sari-sari-to-modern-retail-upgrade.html"
+    "https://eisbridge.com/insights/sari-sari-to-modern-retail-upgrade.html" \
+    "https://eisbridge.com/insights/ph-findings/index.html" \
+    "https://eisbridge.com/insights/ph-findings/day-01.html"
 do
     status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$public_insight_url" || true)"
     if [ "$status_code" -ne 200 ]; then
