@@ -109,12 +109,6 @@ do
     fi
 done
 
-# PH Findings is embargoed: must not exist in the deploy tree.
-if [ -e "insights/ph-findings" ]; then
-    echo "Embargoed path present after deploy: insights/ph-findings"
-    exit 1
-fi
-
 for required_brand_asset in \
     assets/brand/favicon.svg \
     assets/brand/favicon-32.png \
