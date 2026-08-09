@@ -22,6 +22,9 @@ echo "Running marketing exposure smoke checks against ${BASE_URL}"
 # Public pages/docs
 assert_status "/" 200
 assert_status "/partner.html" 200
+assert_status "/insights/index.html" 200
+assert_status "/insights/ph-findings/day-01.html" 200
+assert_status "/insights/ph-findings/index.html" 200
 assert_status "/docs/partner-program.md" 200
 assert_status "/docs/certification-playbook.md" 200
 assert_status "/docs/vendor-api.md" 200
