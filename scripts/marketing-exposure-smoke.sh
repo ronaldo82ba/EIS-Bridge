@@ -23,8 +23,9 @@ echo "Running marketing exposure smoke checks against ${BASE_URL}"
 assert_status "/" 200
 assert_status "/partner.html" 200
 assert_status "/insights/index.html" 200
-assert_status "/insights/ph-findings/day-01.html" 200
-assert_status "/insights/ph-findings/index.html" 200
+# PH Findings embargoed until after the 60-day series completes
+assert_status "/insights/ph-findings/index.html" 404
+assert_status "/insights/ph-findings/day-01.html" 404
 assert_status "/docs/partner-program.md" 200
 assert_status "/docs/certification-playbook.md" 200
 assert_status "/docs/vendor-api.md" 200
