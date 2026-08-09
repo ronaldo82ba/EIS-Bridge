@@ -2,14 +2,10 @@
 /**
  * Generate EIS Bridge Insights HTML for PH Findings · 60-Day Series.
  * Source: scripts/data/ph-findings-60.json
- * Output: insights/ph-findings/index.html + day pages through --through=YYYY-MM-DD
+ * Output: insights/ph-findings/index.html + only day pages through --through=YYYY-MM-DD
  *
- * EMBARGO: Do not deploy insights/ph-findings/ to eisbridge.com until AFTER the
- * 60-day social series completes (through 2026-10-07) and publish is approved.
- * See scripts/data/PH-FINDINGS-EMBARGO.md
- *
- * Example (full pack, post-series only):
- *   node scripts/generate-ph-findings-insights.mjs --through=2026-10-07
+ * Public series hub is live; ship one day at a time. Default --through is today (Asia/Manila).
+ * Example (Day 01 only): node scripts/generate-ph-findings-insights.mjs --through=2026-08-09
  */
 import fs from 'node:fs';
 import path from 'node:path';
