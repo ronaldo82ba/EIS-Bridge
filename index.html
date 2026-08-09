@@ -24,12 +24,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/marketing-home.css">
+  <link rel="preload" as="image" href="assets/marketing/hero-collaboration.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/marketing/feature-vendor.webp" type="image/webp">
+  <link rel="preload" as="image" href="assets/marketing/feature-bridge.webp" type="image/webp">
+  <link rel="preload" as="image" href="assets/marketing/feature-ops.webp" type="image/webp">
   <script>
     (function () {
       try {
         var t = localStorage.getItem('eis-theme');
         if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
+      document.documentElement.classList.add('media-pending');
     })();
   </script>
 </head>
@@ -82,7 +87,9 @@
     <section class="hero" aria-labelledby="hero-brand">
       <div
         class="hero-bg"
-        style="background-image: url('assets/marketing/hero-collaboration.png')"
+        data-bg-webp="assets/marketing/hero-collaboration.webp"
+        data-bg-fallback="assets/marketing/hero-collaboration.jpg"
+        style="background-image: url('assets/marketing/hero-collaboration.webp')"
         role="img"
         aria-label="Teams reviewing POS to EIS Bridge transmission status"
       ></div>
@@ -208,7 +215,8 @@
           <article class="offer-card reveal">
             <div
               class="offer-media"
-              style="background-image: url('assets/marketing/feature-vendor.png')"
+              data-bg-webp="assets/marketing/feature-vendor.webp"
+              style="background-image: url('assets/marketing/feature-vendor.webp')"
               role="img"
               aria-label="POS vendor API mapping workshop"
             ></div>
@@ -231,7 +239,8 @@
           <article class="offer-card offer-card--flip reveal">
             <div
               class="offer-media"
-              style="background-image: url('assets/marketing/feature-bridge.png')"
+              data-bg-webp="assets/marketing/feature-bridge.webp"
+              style="background-image: url('assets/marketing/feature-bridge.webp')"
               role="img"
               aria-label="Merchant POS selling while transmission queues"
             ></div>
@@ -277,7 +286,8 @@
         </div>
         <div
           class="split-ops-media reveal"
-          style="background-image: url('assets/marketing/feature-ops.png')"
+          data-bg-webp="assets/marketing/feature-ops.webp"
+          style="background-image: url('assets/marketing/feature-ops.webp')"
           role="img"
           aria-label="Engineers reviewing sandbox API documentation"
         ></div>
@@ -385,7 +395,8 @@
     <section class="cta-panel" id="contact" aria-labelledby="cta-heading">
       <div
         class="cta-panel-bg"
-        style="background-image: url('assets/marketing/hero-collaboration.png')"
+        data-bg-webp="assets/marketing/hero-collaboration.webp"
+        style="background-image: url('assets/marketing/hero-collaboration.webp')"
         aria-hidden="true"
       ></div>
       <div class="cta-panel-veil" aria-hidden="true"></div>

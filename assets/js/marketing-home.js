@@ -132,43 +132,109 @@
 
   autoMarkReveals();
 
-  /* Scroll / load reveals */
-  if (prefersReduced) {
-    document.querySelectorAll('.reveal, .hero-reveal').forEach(function (el) {
-      el.classList.add('is-in');
-    });
-    return;
+  /* Image-first on homepage (hero + feature media): load photos, then reveal copy */
+  var MEDIA_TIMEOUT_MS = 4500;
+  var isHomeHero = !!document.querySelector('.hero-bg');
+
+  function markMediaReady() {
+    root.classList.remove('media-pending');
+    root.classList.add('media-ready');
   }
 
-  document.querySelectorAll('.hero-reveal').forEach(function (el) {
-    var delay = Number(el.getAttribute('data-delay') || 0);
-    window.setTimeout(function () {
-      el.classList.add('is-in');
-    }, 80 + delay);
-  });
-
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var el = entry.target;
-          var delay = Number(el.getAttribute('data-delay') || 0);
-          window.setTimeout(function () {
-            el.classList.add('is-in');
-          }, delay);
-          io.unobserve(el);
-        });
-      },
-      /* threshold 0: any pixel visible — tall docs never hit 0.12 of their height */
-      { threshold: 0, rootMargin: '0px 0px -8% 0px' }
-    );
-    document.querySelectorAll('.reveal').forEach(function (el) {
-      io.observe(el);
+  function collectHomeMediaUrls() {
+    var urls = [];
+    var seen = {};
+    document.querySelectorAll('[data-bg-webp], .hero-bg, .offer-media, .split-ops-media, .cta-panel-bg').forEach(function (el) {
+      var src = el.getAttribute('data-bg-webp');
+      if (!src) {
+        var bg = (el.getAttribute('style') || '').match(/url\(['"]?([^'")]+)['"]?\)/);
+        src = bg ? bg[1] : null;
+      }
+      if (src && !seen[src]) {
+        seen[src] = true;
+        urls.push(src);
+      }
     });
+    return urls;
+  }
+
+  function preloadImages(urls, done) {
+    var left = urls.length;
+    if (!left) {
+      done();
+      return;
+    }
+    var finished = false;
+    function one() {
+      left -= 1;
+      if (left <= 0 && !finished) {
+        finished = true;
+        done();
+      }
+    }
+    urls.forEach(function (src) {
+      var img = new Image();
+      img.decoding = 'async';
+      img.onload = one;
+      img.onerror = one;
+      img.src = src;
+    });
+  }
+
+  function runReveals() {
+    if (prefersReduced) {
+      document.querySelectorAll('.reveal, .hero-reveal').forEach(function (el) {
+        el.classList.add('is-in');
+      });
+      return;
+    }
+
+    document.querySelectorAll('.hero-reveal').forEach(function (el) {
+      var delay = Number(el.getAttribute('data-delay') || 0);
+      window.setTimeout(function () {
+        el.classList.add('is-in');
+      }, 80 + delay);
+    });
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            var delay = Number(el.getAttribute('data-delay') || 0);
+            window.setTimeout(function () {
+              el.classList.add('is-in');
+            }, delay);
+            io.unobserve(el);
+          });
+        },
+        /* threshold 0: any pixel visible — tall docs never hit 0.12 of their height */
+        { threshold: 0, rootMargin: '0px 0px -8% 0px' }
+      );
+      document.querySelectorAll('.reveal').forEach(function (el) {
+        io.observe(el);
+      });
+    } else {
+      document.querySelectorAll('.reveal').forEach(function (el) {
+        el.classList.add('is-in');
+      });
+    }
+  }
+
+  if (!isHomeHero) {
+    markMediaReady();
+    runReveals();
   } else {
-    document.querySelectorAll('.reveal').forEach(function (el) {
-      el.classList.add('is-in');
+    var safety = window.setTimeout(function () {
+      markMediaReady();
+      runReveals();
+    }, MEDIA_TIMEOUT_MS);
+
+    preloadImages(collectHomeMediaUrls(), function () {
+      window.clearTimeout(safety);
+      markMediaReady();
+      runReveals();
     });
   }
 })();

@@ -1285,7 +1285,7 @@ p.footer-links a,
   color: #fff;
   background:
     linear-gradient(135deg, rgba(0, 87, 217, 0.92), rgba(18, 24, 32, 0.88)),
-    url("../assets/marketing/hero-collaboration.png") center / cover no-repeat;
+    url("../assets/marketing/hero-collaboration.webp") center / cover no-repeat;
   overflow: hidden;
 }
 

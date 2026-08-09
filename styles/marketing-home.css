@@ -461,6 +461,52 @@ a {
   background-position: center;
   transform: scale(1.05);
   animation: hero-drift 22s ease-in-out infinite alternate;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+html.media-ready .hero-bg,
+html.media-ready .cta-panel-bg,
+html.media-ready .offer-media,
+html.media-ready .split-ops-media {
+  opacity: 1;
+}
+
+html.media-pending .hero-inner,
+html.media-pending main > .section,
+html.media-pending main > .cta-panel {
+  opacity: 0;
+  pointer-events: none;
+}
+
+html.media-ready .hero-inner,
+html.media-ready main > .section,
+html.media-ready main > .cta-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.55s ease 0.35s;
+}
+
+.offer-media,
+.split-ops-media,
+.cta-panel-bg {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg,
+  .offer-media,
+  .split-ops-media,
+  .cta-panel-bg,
+  html.media-pending .hero-inner,
+  html.media-pending main > .section,
+  html.media-pending main > .cta-panel,
+  html.media-ready .hero-inner,
+  html.media-ready main > .section,
+  html.media-ready main > .cta-panel {
+    transition: none;
+  }
 }
 
 .hero-scrim {

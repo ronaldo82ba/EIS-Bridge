@@ -7,10 +7,10 @@ Homepage now uses photo-led assets in `assets/marketing/`.
 
 | File | Role |
 |------|------|
-| `hero-collaboration.png` | Full-bleed hero |
-| `feature-bridge.png` | Merchant / async queue scene |
-| `feature-vendor.png` | Vendor API workshop |
-| `feature-ops.png` | Partner / developers ops |
+| `hero-collaboration.webp` (+ `.jpg` / legacy `.png`) | Full-bleed hero (~40KB WebP) |
+| `feature-bridge.webp` | Merchant / async queue scene |
+| `feature-vendor.webp` | Vendor API workshop |
+| `feature-ops.webp` | Partner / developers ops |
 
 ## Product-truth locks (keep on regenerations)
 
