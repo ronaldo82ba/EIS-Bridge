@@ -2,7 +2,10 @@
 /**
  * Generate EIS Bridge Insights HTML for PH Findings · 60-Day Series.
  * Source: scripts/data/ph-findings-60.json
- * Output: insights/ph-findings/index.html + day-01.html … day-60.html
+ * Output: insights/ph-findings/index.html + only day pages published through --through=YYYY-MM-DD
+ *
+ * Daily cadence: publish one day at a time. Default --through is today (Asia/Manila).
+ * Example: node scripts/generate-ph-findings-insights.mjs --through=2026-08-09
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +19,22 @@ const OUT = path.join(ROOT, 'insights/ph-findings');
 const SERIES = 'PH Findings · 60-Day Series';
 const DISCLAIMER =
   'Figures are from published PSA / PIDS / DepEd / CHED / TESDA / DSWD / DTI / NEDA releases as compiled for this series (updated 2026-08-09). Survey estimates have sampling error. Household income ≠ individual salary. Not legal, tax, or investment advice. EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer’s responsibility.';
+
+function manilaToday() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Manila',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+}
+
+function parseThroughArg(argv) {
+  const flag = argv.find((a) => a.startsWith('--through='));
+  if (flag) return flag.slice('--through='.length);
+  if (process.env.PH_FINDINGS_THROUGH) return process.env.PH_FINDINGS_THROUGH;
+  return manilaToday();
+}
 
 function esc(s) {
   return String(s)
@@ -177,11 +196,12 @@ ${mainHtml}
 `;
 }
 
-function articlePage(article, all) {
+function articlePage(article, published) {
   const n = article.day;
   const file = `day-${pad(n)}.html`;
-  const prev = n > 1 ? all[n - 2] : null;
-  const next = n < all.length ? all[n] : null;
+  const idx = published.findIndex((a) => a.day === n);
+  const prev = idx > 0 ? published[idx - 1] : null;
+  const next = idx >= 0 && idx < published.length - 1 ? published[idx + 1] : null;
   const tags = (article.tags || []).join(', ');
   const description = `${article.key_stat} — ${SERIES} Day ${n} on EIS Bridge Insights.`;
   const canonical = `https://eisbridge.com/insights/ph-findings/${file}`;
@@ -251,8 +271,9 @@ ${bodyToHtml(article.body)}
   });
 }
 
-function hubPage(articles) {
-  const cards = articles
+function hubPage(published, throughDate, totalCount) {
+  const remaining = totalCount - published.length;
+  const cards = published
     .map((a) => {
       const file = `day-${pad(a.day)}.html`;
       return `          <a class="insight-card" href="${file}">
@@ -263,20 +284,25 @@ function hubPage(articles) {
     })
     .join('\n');
 
+  const upcomingNote =
+    remaining > 0
+      ? `<p class="section-lead">Published through ${esc(formatDate(throughDate))} (${published.length} of ${totalCount}). One new article posts each day — ${remaining} still scheduled.</p>`
+      : `<p class="section-lead">All ${totalCount} daily readings are published.</p>`;
+
   const breadcrumbHtml = `    <section class="hero hero--page" aria-labelledby="hero-heading">
       <div class="container hero-inner">
         <p class="breadcrumb"><a href="../index.html">Insights</a> &rsaquo; ${esc(SERIES)}</p>
         <h1 id="hero-heading">${esc(SERIES)}</h1>
         <p class="hero-subheader">
-          Sixty short, public-data readings on Philippine demography, income, labor, regions, and market behaviour — a daily series for store owners, operators, and builders who want numbers over vibes.
+          Sixty short, public-data readings on Philippine demography, income, labor, regions, and market behaviour — posted one day at a time for store owners, operators, and builders who want numbers over vibes.
         </p>
       </div>
     </section>`;
 
   const mainHtml = `    <section class="audiences" aria-labelledby="series-heading">
       <div class="container">
-        <h2 id="series-heading" class="section-title">All 60 days</h2>
-        <p class="section-lead">Suggested publish window: 9 August 2026 through 7 October 2026. Each page stands alone; read in order for the full spine.</p>
+        <h2 id="series-heading" class="section-title">Published so far</h2>
+        ${upcomingNote}
         <div class="insights-grid">
 ${cards}
         </div>
@@ -295,7 +321,7 @@ ${cards}
   return siteChrome({
     title: `${SERIES} — EIS Bridge Insights`,
     description:
-      'Sixty short Philippine public-data findings on population, income, labor, and market behaviour — EIS Bridge Insights series.',
+      'Daily Philippine public-data findings on population, income, labor, and market behaviour — EIS Bridge Insights series.',
     canonical: 'https://eisbridge.com/insights/ph-findings/',
     ogType: 'website',
     breadcrumbHtml,
@@ -305,6 +331,11 @@ ${cards}
 }
 
 function main() {
+  const throughDate = parseThroughArg(process.argv.slice(2));
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(throughDate)) {
+    throw new Error(`Invalid --through date: ${throughDate}`);
+  }
+
   const articles = JSON.parse(fs.readFileSync(DATA, 'utf8'));
   if (!Array.isArray(articles) || articles.length !== 60) {
     throw new Error(`Expected 60 articles, got ${articles?.length}`);
@@ -315,13 +346,35 @@ function main() {
     }
   }
 
-  fs.mkdirSync(OUT, { recursive: true });
-  fs.writeFileSync(path.join(OUT, 'index.html'), hubPage(articles), 'utf8');
-  for (const article of articles) {
-    const name = `day-${pad(article.day)}.html`;
-    fs.writeFileSync(path.join(OUT, name), articlePage(article, articles), 'utf8');
+  const published = articles.filter((a) => a.date <= throughDate);
+  if (published.length === 0) {
+    throw new Error(`No articles on or before ${throughDate}`);
   }
-  console.log(`Wrote ${OUT}/index.html and day-01.html … day-60.html`);
+
+  fs.mkdirSync(OUT, { recursive: true });
+
+  // Remove previously generated day pages that are not yet published.
+  for (const name of fs.readdirSync(OUT)) {
+    const m = name.match(/^day-(\d{2})\.html$/);
+    if (!m) continue;
+    const dayNum = Number(m[1]);
+    if (!published.some((a) => a.day === dayNum)) {
+      fs.unlinkSync(path.join(OUT, name));
+    }
+  }
+
+  fs.writeFileSync(
+    path.join(OUT, 'index.html'),
+    hubPage(published, throughDate, articles.length),
+    'utf8'
+  );
+  for (const article of published) {
+    const name = `day-${pad(article.day)}.html`;
+    fs.writeFileSync(path.join(OUT, name), articlePage(article, published), 'utf8');
+  }
+  console.log(
+    `Published through ${throughDate}: wrote index.html + ${published.length} day page(s) (day-${pad(published[0].day)} … day-${pad(published[published.length - 1].day)})`
+  );
 }
 
 main();
