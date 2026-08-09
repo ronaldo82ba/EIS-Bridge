@@ -38,6 +38,9 @@ git sparse-checkout set \
 git checkout -f "$SITE_BRANCH"
 git clean -fdx
 
+# Embargo: PH Findings must not ship during the 60-day social window.
+rm -rf insights/ph-findings
+
 for required_path in index.html partner.html certification-playbook.html portal styles privacy.html terms.html marketing-deploy.sh robots.txt; do
     if [ ! -e "$required_path" ]; then
         echo "Missing required marketing asset: $required_path"
@@ -56,6 +59,11 @@ do
         exit 1
     fi
 done
+
+if [ -e "insights/ph-findings" ]; then
+    echo "Embargoed path present after deploy: insights/ph-findings"
+    exit 1
+fi
 
 for required_doc in \
     docs/partner-program.md \
@@ -101,17 +109,11 @@ do
     fi
 done
 
-# PH Findings stays off the public site until after the 60-day social series completes.
-for embargoed_insight_url in \
-    "https://eisbridge.com/insights/ph-findings/index.html" \
-    "https://eisbridge.com/insights/ph-findings/day-01.html"
-do
-    status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$embargoed_insight_url" || true)"
-    if [ "$status_code" -ne 404 ]; then
-        echo "Embargoed PH Findings URL must be 404 ($status_code): $embargoed_insight_url"
-        exit 1
-    fi
-done
+# PH Findings is embargoed: must not exist in the deploy tree.
+if [ -e "insights/ph-findings" ]; then
+    echo "Embargoed path present after deploy: insights/ph-findings"
+    exit 1
+fi
 
 for required_brand_asset in \
     assets/brand/favicon.svg \
