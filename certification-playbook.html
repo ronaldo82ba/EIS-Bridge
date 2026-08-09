@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EIS Bridge Certification Playbook — sandbox integration, QA certification, EIS CERT, PTT, and production go-live for POS vendors and merchants.">
+  <title>Certification Playbook — EIS Bridge</title>
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+  <meta name="theme-color" content="#0057D9">
+  <link rel="canonical" href="https://eisbridge.com/certification-playbook.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="EIS Bridge">
+  <meta property="og:title" content="Certification Playbook — EIS Bridge">
+  <meta property="og:description" content="End-to-end guide for POS vendors and merchants moving from sandbox integration to live BIR EIS transmission.">
+  <meta property="og:image" content="https://eisbridge.com/assets/brand/og-image.png">
+  <meta property="og:url" content="https://eisbridge.com/certification-playbook.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Certification Playbook — EIS Bridge">
+  <meta name="twitter:description" content="End-to-end guide for POS vendors and merchants moving from sandbox integration to live BIR EIS transmission.">
+  <meta name="twitter:image" content="https://eisbridge.com/assets/brand/og-image.png">
+  <link rel="stylesheet" href="styles/theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/marketing-home.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('eis-theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="has-site-chrome">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-top" data-site-header>
+    <div class="top-ribbon">
+      <p>EIS Bridge&trade; &mdash; connect any POS to BIR EIS transmission without source-code changes</p>
+    </div>
+    <div class="wrap header-row">
+      <a class="logo" href="index.html" aria-label="EIS Bridge home">
+        <span class="logo-mark">EIS</span> Bridge
+      </a>
+      <nav class="nav-desktop" aria-label="Primary">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="partner.html">Partner</a>
+        <a href="index.html#editions">Editions</a>
+        <a href="insights/index.html">Insights</a>
+        <a href="portal/index.html">Developers</a>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+          <span aria-hidden="true">&#9678;</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <a class="btn btn-primary btn-header" href="partner.html">Partner with us</a>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark look">
+          <span aria-hidden="true">&#9678;</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <button type="button" class="nav-burger" data-nav-toggle aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+      </div>
+    </div>
+    <div id="mobile-nav" class="mobile-nav" data-mobile-nav hidden>
+      <a href="index.html">Home</a>
+      <a href="partner.html">Partner</a>
+      <a href="index.html#editions">Editions</a>
+      <a href="insights/index.html">Insights</a>
+      <a href="portal/index.html">Developers</a>
+      <a href="certification-playbook.html">Certification playbook</a>
+      <a class="btn btn-primary" href="partner.html">Partner with us</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="article-hero">
+      <div class="container">
+        <p class="breadcrumb"><a href="index.html">Home</a> &rsaquo; Certification Playbook</p>
+        <h1>EIS Bridge Certification Playbook</h1>
+        <p class="article-meta">Sandbox integration through EIS CERT, PTT, and production go-live</p>
+      </div>
+    </header>
+
+    <article class="container article-content">
+      <div class="article-summary">
+        <p>End-to-end guide for POS vendors and merchants moving from sandbox integration to live BIR EIS transmission. EIS Bridge handles technical mapping, signing, and submission; <strong>each merchant taxpayer</strong> still completes BIR registration, EIS CERT, and Permit to Transmit (PTT) on <a href="https://eis-cert.bir.gov.ph/" rel="noopener">eis-cert.bir.gov.ph</a>.</p>
+      </div>
+
+      <h2>Who does what</h2>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Party</th>
+              <th>Responsibility</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>POS vendor</strong></td>
+              <td>Map POS sales to the Standard Sale Object, integrate the Vendor API, pass the QA certification suite</td>
+            </tr>
+            <tr>
+              <td><strong>Merchant (taxpayer)</strong></td>
+              <td>EIS registration, EIS CERT application, PTT issuance, valid digital certificate</td>
+            </tr>
+            <tr>
+              <td><strong>EIS Bridge</strong></td>
+              <td>Merchant onboarding in the console, JSON mapping, JWS signing, queued transmission, status and audit logs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>BIR certifies <strong>taxpayer systems</strong> (middleware plus invoicing system), not software providers. EIS Bridge is not affiliated with or accredited by the BIR.</p>
+
+      <h2>Phase 1 — Vendor integration (sandbox)</h2>
+      <ol>
+        <li><strong>Register as a POS/ERP vendor</strong> — contact <a href="mailto:support@eisbridge.ph">support@eisbridge.ph</a> for Vendor Edition onboarding and sandbox credentials.</li>
+        <li><strong>Implement the Standard Sale Object</strong> — see the <a href="portal/quickstart.html">Developer Quickstart</a> and <a href="docs/schemas/sale-object.schema.json">sale-object.schema.json</a>.</li>
+        <li><strong>Integrate async submission</strong> — <code>POST /transactions</code> returns <code>processing_status: queued</code> immediately; poll status or use webhooks for BIR acknowledgment.</li>
+        <li><strong>Run QA Suite v1.0</strong> — all test cases in <a href="docs/qa/integration-test-cases-v1.md">integration-test-cases-v1.md</a> against the sandbox environment.</li>
+        <li><strong>Vendor certification sign-off</strong> — EIS Bridge reviews test evidence and approves production API key issuance.</li>
+      </ol>
+
+      <h3>Sandbox environment</h3>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Setting</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Base URL</td>
+              <td><code>https://sandbox.eisbridge.com/v1</code></td>
+            </tr>
+            <tr>
+              <td>Availability</td>
+              <td>Sandbox access is provisioned on request during vendor onboarding</td>
+            </tr>
+            <tr>
+              <td>Local alternative</td>
+              <td>Run the Laravel API locally (<code>api/</code> directory) with <code>EIS_SANDBOX_MODE=true</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Phase 2 — Merchant EIS CERT and PTT</h2>
+      <p>Each merchant on your platform must complete BIR taxpayer-side requirements before live transmission.</p>
+
+      <h3>Step 1 — EIS registration</h3>
+      <ul>
+        <li>Register the merchant on the BIR EIS portal per current Revenue Regulations.</li>
+        <li>Confirm the merchant's TIN, business name, and branch structure match EIS Bridge onboarding records.</li>
+      </ul>
+
+      <h3>Step 2 — EIS CERT (system certification)</h3>
+      <p>Apply for EIS CERT on <a href="https://eis-cert.bir.gov.ph/" rel="noopener">eis-cert.bir.gov.ph</a> covering:</p>
+      <ul>
+        <li>The merchant's POS or invoicing system</li>
+        <li>EIS Bridge as the transmission middleware (as configured in your integration)</li>
+      </ul>
+
+      <p><strong>Document pack checklist</strong> (prepare before submission):</p>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Document</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>System architecture diagram</td>
+              <td>POS → EIS Bridge → BIR EIS data flow</td>
+            </tr>
+            <tr>
+              <td>Standard Sale Object sample</td>
+              <td>Representative sale JSON from the merchant's POS</td>
+            </tr>
+            <tr>
+              <td>BIR EIS mapped JSON sample</td>
+              <td>Output after EIS Bridge mapping (available from sandbox signing tests)</td>
+            </tr>
+            <tr>
+              <td>Digital certificate details</td>
+              <td>Merchant's BIR-issued or approved signing certificate</td>
+            </tr>
+            <tr>
+              <td>Branch and device inventory</td>
+              <td>Branch codes, POS device IDs aligned with EIS Bridge console</td>
+            </tr>
+            <tr>
+              <td>Test transmission logs</td>
+              <td>Sandbox acknowledgments from QA suite or UAT</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>EIS Bridge readiness checks (signing test, mapping test) in the admin console produce evidence suitable for CERT supporting documents.</p>
+
+      <h3>Step 3 — Permit to Transmit (PTT)</h3>
+      <p>After EIS CERT approval:</p>
+      <ol>
+        <li>Apply for PTT with the certified system configuration.</li>
+        <li>Record the PTT number and validity dates in the EIS Bridge admin console (<code>POST /admin/ptts</code> or merchant PTT screen).</li>
+        <li>Upload the merchant's signing certificate in the console.</li>
+      </ol>
+
+      <h3>Step 4 — Readiness check</h3>
+      <p>Open <strong>Merchants → Readiness</strong> in the EIS Bridge admin console. All checks must pass:</p>
+      <pre><code>{
+  "ready": true,
+  "checks": {
+    "merchant_info": true,
+    "branches": true,
+    "devices": true,
+    "certificate": true,
+    "ptt": true,
+    "signing_test": true,
+    "mapping_test": true
+  }
+}</code></pre>
+      <p>See <a href="portal/support.html">Developer Portal support</a> for onboarding walkthrough and escalation paths.</p>
+
+      <h2>Phase 3 — Production go-live</h2>
+      <ol>
+        <li>Switch vendor integration to production base URL: <code>https://api.eisbridge.com/v1</code>.</li>
+        <li>Use production API key (issued after vendor certification).</li>
+        <li>Configure production webhook URL (<code>POST /vendors/webhook</code>).</li>
+        <li>Enable merchant licenses per your Vendor Edition agreement.</li>
+        <li>Monitor first live transmissions via admin dashboard and <code>GET /transactions/{bridge_transaction_id}</code>.</li>
+        <li>Persist <code>eis_reference_no</code> on acknowledged transactions for audit and customer receipts.</li>
+      </ol>
+
+      <h2>Sandbox testing flow (quick reference)</h2>
+      <div class="flow-diagram">
+        <p><strong>Map POS sale to Standard Sale Object</strong> → <strong>POST /transactions</strong> → Accepted? → Store <code>bridge_transaction_id</code> → Poll status or webhook → <code>eis_status</code> acknowledged? → Persist <code>eis_reference_no</code></p>
+        <p>If not accepted, fix validation errors and retry from mapping.</p>
+      </div>
+      <p><strong>Key test scenarios</strong> (from QA Suite v1.0):</p>
+      <ul>
+        <li>Single transaction submit (TC-01)</li>
+        <li>Required field validation (TC-10 through TC-15)</li>
+        <li>Duplicate / idempotency (TC-40)</li>
+        <li>Batch submit (TC-50)</li>
+        <li>Webhook delivery (TC-60)</li>
+        <li>Offline / T+3 delayed transmission (TC-72)</li>
+      </ul>
+
+      <h2>Vendor certification checklist</h2>
+      <p>Before production API key issuance:</p>
+      <ul class="checklist">
+        <li>Standard Sale Object mapping implemented and validated against JSON schema</li>
+        <li>Single and batch submit working</li>
+        <li>Status polling and/or webhooks implemented</li>
+        <li>Duplicate handling tested (<code>status: duplicate</code> treated as success)</li>
+        <li>Error handling for 400, 401, 403, 409 verified</li>
+        <li>QA Suite v1.0 executed with documented results</li>
+        <li>At least one test merchant onboarded with branches and devices</li>
+        <li>Production webhook endpoint reachable over HTTPS</li>
+      </ul>
+
+      <h2>Merchant go-live checklist</h2>
+      <p>Before enabling live transmission for a merchant:</p>
+      <ul class="checklist">
+        <li>EIS registration complete</li>
+        <li>EIS CERT approved for configured system</li>
+        <li>PTT issued and recorded in EIS Bridge console</li>
+        <li>Signing certificate uploaded and valid</li>
+        <li>Readiness check passes (all seven checks green)</li>
+        <li>Merchant license active (Vendor Edition)</li>
+      </ul>
+
+      <h2>Support and escalation</h2>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Need</th>
+              <th>Contact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Vendor onboarding, sandbox access</td>
+              <td><a href="mailto:support@eisbridge.ph">support@eisbridge.ph</a></td>
+            </tr>
+            <tr>
+              <td>CERT/PTT document guidance</td>
+              <td>EIS Bridge onboarding team (technical pack only — not tax or legal advice)</td>
+            </tr>
+            <tr>
+              <td>Integration issues</td>
+              <td><a href="portal/quickstart.html">Developer Quickstart</a>, <a href="docs/vendor-api.md">Vendor API</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="article-cta-inline">
+        <h3>Ready to start certification?</h3>
+        <p>Request vendor onboarding or open the Developer Portal to begin sandbox integration.</p>
+        <div class="hero-actions" style="justify-content: center;">
+          <a class="btn btn-primary" href="mailto:support@eisbridge.ph?subject=Vendor%20Certification%20Inquiry">Request vendor access</a>
+          <a class="btn btn-secondary" href="portal/testing.html">QA testing guide</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-positioning">
+        EIS Bridge connects any POS, ERP, or merchant to the BIR Electronic Invoicing System — without POS source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
+      </p>
+      <p class="footer-disclaimer">
+        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+      </p>
+      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
+      <p class="footer-links">
+        <a href="index.html">Home</a> &middot;
+        <a href="partner.html">Partner Program</a> &middot;
+        <a href="insights/index.html">Insights</a> &middot;
+        <a href="certification-playbook.html">Certification Playbook</a> &middot;
+        <a href="privacy.html">Privacy Policy</a> &middot;
+        <a href="terms.html">Terms of Service</a>
+      </p>
+      <p class="footer-copy">&copy; 2026 EIS Bridge</p>
+    </div>
+  </footer>
+  <script src="assets/js/marketing-home.js" defer></script>
+</body>
+</html>
