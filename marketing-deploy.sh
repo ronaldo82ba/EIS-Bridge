@@ -25,15 +25,20 @@ git sparse-checkout set \
     /certification-playbook.html \
     /marketing-deploy.sh \
     /robots.txt \
-    insights \
-    portal \
-    styles \
-    assets \
+    /insights/ \
+    /insights/** \
+    /portal/ \
+    /portal/** \
+    /styles/ \
+    /styles/** \
+    /assets/ \
+    /assets/** \
     /docs/partner-program.md \
     /docs/certification-playbook.md \
     /docs/vendor-api.md \
     /docs/qa/integration-test-cases-v1.md \
-    docs/postman \
+    /docs/postman/ \
+    /docs/postman/** \
     /docs/schemas/sale-object.schema.json
 git checkout -f "$SITE_BRANCH"
 git clean -fdx
@@ -60,10 +65,13 @@ do
 done
 
 # Only Day 01 (and the series hub) should be public during early series days.
-if [ -e "insights/ph-findings/day-02.html" ]; then
-    echo "PH Findings day-02+ must not ship yet: remove unpublished day pages before deploy"
+shopt -s nullglob
+unpublished=(insights/ph-findings/day-0[2-9].html insights/ph-findings/day-[1-9][0-9].html)
+if [ ${#unpublished[@]} -gt 0 ]; then
+    echo "PH Findings unpublished day pages must not ship yet: ${unpublished[*]}"
     exit 1
 fi
+shopt -u nullglob
 
 for required_doc in \
     docs/partner-program.md \
@@ -96,13 +104,13 @@ do
 done
 
 # Insights pages linked from marketing nav must be live after deploy.
+# Note: ph-findings is verified on-disk above only. Do not curl brand-new paths here —
+# a mid-deploy public 404 would fail the release before nginx can serve the fresh tree.
 for public_insight_url in \
     "https://eisbridge.com/insights/index.html" \
     "https://eisbridge.com/insights/philippine-convenience-store-business-june-2026.html" \
     "https://eisbridge.com/insights/bir-eis-readiness-retail-chains.html" \
-    "https://eisbridge.com/insights/sari-sari-to-modern-retail-upgrade.html" \
-    "https://eisbridge.com/insights/ph-findings/index.html" \
-    "https://eisbridge.com/insights/ph-findings/day-01.html"
+    "https://eisbridge.com/insights/sari-sari-to-modern-retail-upgrade.html"
 do
     status_code="$(curl -sS -o /dev/null -w "%{http_code}" "$public_insight_url" || true)"
     if [ "$status_code" -ne 200 ]; then
