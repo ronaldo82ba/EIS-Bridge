@@ -1661,6 +1661,47 @@ body.has-site-chrome .data-table td {
   border-bottom-color: var(--line);
 }
 
+body.has-site-chrome .data-table td strong {
+  color: var(--ink) !important;
+}
+
+/* Kill leftover light-only inline table shells (partner pricing, etc.) */
+[data-theme='dark'] .editions table,
+[data-theme='dark'] .editions .data-table,
+body.has-site-chrome[data-theme='dark'] .editions table,
+html[data-theme='dark'] body.has-site-chrome .editions table {
+  color: var(--slate);
+}
+
+[data-theme='dark'] .editions table th,
+html[data-theme='dark'] .editions table th {
+  background: var(--paper-2) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+
+[data-theme='dark'] .editions table td,
+html[data-theme='dark'] .editions table td {
+  background: var(--paper) !important;
+  color: var(--slate) !important;
+  border-color: var(--line) !important;
+}
+
+[data-theme='dark'] .editions table td strong,
+html[data-theme='dark'] .editions table td strong {
+  color: var(--ink) !important;
+}
+
+[data-theme='dark'] .editions [style*="background: #fff"],
+[data-theme='dark'] .editions [style*="background:#fff"],
+[data-theme='dark'] .editions [style*="background: #FFF"],
+html[data-theme='dark'] .editions [style*="background: #fff"],
+html[data-theme='dark'] .editions [style*="background:#fff"] {
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+  color: var(--slate) !important;
+}
+
 body.has-site-chrome .proof-band,
 body.has-site-chrome .partner-band,
 body.has-site-chrome .audiences,
