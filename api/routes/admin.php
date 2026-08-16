@@ -37,6 +37,11 @@ Route::bind('certificate', fn (string $value) => MerchantCertificate::findOrFail
 Route::post('/login', [AuthController::class, 'login'])
     ->middleware('throttle:login');
 
+// CodeBooks server→server ingest (machine token; no Sanctum). Keep Sanctum route below.
+Route::middleware(['codebooks.ingest_token', 'throttle:admin-api'])->group(function () {
+    Route::post('/codebooks/ingest/service', [CodeBooksIngestController::class, 'ingestWithToken']);
+});
+
 Route::middleware(['auth:sanctum', 'admin', 'throttle:admin-api'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);

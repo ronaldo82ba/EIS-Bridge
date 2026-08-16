@@ -35,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'support.write' => \App\Http\Middleware\EnsureSupportWriteAction::class,
             'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
             'sandbox.api_key' => \App\Http\Middleware\EnsureSandboxApiKey::class,
+            'codebooks.ingest_token' => \App\Http\Middleware\EnsureCodeBooksIngestToken::class,
         ]);
 
         $middleware->api(prepend: [
