@@ -52,6 +52,16 @@ class BillingPolicy
         return $user->role === 'vendor_admin' && $user->vendor_id === $merchant->vendor_id;
     }
 
+    public function viewMerchantWallet(User $user, Merchant $merchant): bool
+    {
+        return $this->canAccessMerchant($user, $merchant);
+    }
+
+    public function manageMerchantWallet(User $user, Merchant $merchant): bool
+    {
+        return $this->manageMerchantLicenses($user, $merchant);
+    }
+
     public function viewInvoices(User $user): bool
     {
         return in_array($user->role, ['super_admin', 'vendor_admin', 'support'], true);

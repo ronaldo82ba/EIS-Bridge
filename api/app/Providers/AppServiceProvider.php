@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Enforce only on /up (DiagnosingHealth). Do not throw during HTTP kernel boot —
+        // Enforce only on /up (DiagnosingHealth). Do not throw during HTTP kernel boot â€”
         // a mis-cached APP_ENV would otherwise blank-500 every route before JSON handlers run.
         Event::listen(DiagnosingHealth::class, function () {
             $this->guardProductionSandboxConfig();
@@ -63,6 +63,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('billing.manageVendorLicenses', fn (User $user, Vendor $vendor) => $billing->manageVendorLicenses($user, $vendor));
         Gate::define('billing.viewMerchantLicenses', fn (User $user, Merchant $merchant) => $billing->viewMerchantLicenses($user, $merchant));
         Gate::define('billing.manageMerchantLicenses', fn (User $user, Merchant $merchant) => $billing->manageMerchantLicenses($user, $merchant));
+        Gate::define('billing.viewMerchantWallet', fn (User $user, Merchant $merchant) => $billing->viewMerchantWallet($user, $merchant));
+        Gate::define('billing.manageMerchantWallet', fn (User $user, Merchant $merchant) => $billing->manageMerchantWallet($user, $merchant));
         Gate::define('billing.viewInvoices', fn (User $user) => $billing->viewInvoices($user));
         Gate::define('billing.viewInvoice', fn (User $user, BillingInvoice $invoice) => $billing->viewInvoice($user, $invoice));
         Gate::define('billing.generateInvoices', fn (User $user) => $billing->generateInvoices($user));

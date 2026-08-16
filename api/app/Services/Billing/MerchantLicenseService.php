@@ -102,4 +102,69 @@ class MerchantLicenseService
             'currency' => 'PHP',
         ];
     }
+
+    /**
+     * Flat monthly charges for active commercial postpaid tiers
+     * (`postpaid_tier_1500`, `postpaid_tier_2500`).
+     */
+    public function calculateMonthlyPostpaidFees(Merchant $merchant): array
+    {
+        $lineItems = [];
+        $total = 0.0;
+
+        $activeLicenses = $merchant->licenses()
+            ->active()
+            ->with('licensePlan')
+            ->where(function ($query) {
+                $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('ends_at')->orWhere('ends_at', '>', now());
+            })
+            ->get();
+
+        foreach ($activeLicenses as $license) {
+            $plan = $license->licensePlan;
+            if (! $plan || ! in_array($plan->slug, ['postpaid_tier_1500', 'postpaid_tier_2500'], true)) {
+                continue;
+            }
+
+            $quantity = max(1, (int) $license->quantity);
+            $unit = (float) $plan->amount;
+            $amount = round($quantity * $unit, 2);
+            $lineItems[] = [
+                'description' => $plan->name,
+                'plan_slug' => $plan->slug,
+                'quantity' => $quantity,
+                'unit_amount' => $unit,
+                'amount' => $amount,
+            ];
+            $total += $amount;
+        }
+
+        return [
+            'line_items' => $lineItems,
+            'total' => round($total, 2),
+            'currency' => 'PHP',
+        ];
+    }
+
+    /**
+     * Combined merchant monthly line items (legacy per-branch + commercial postpaid).
+     */
+    public function calculateMonthlyMerchantFees(Merchant $merchant): array
+    {
+        $branchFees = $this->calculateMonthlyBranchFees($merchant);
+        $postpaidFees = $this->calculateMonthlyPostpaidFees($merchant);
+
+        $lineItems = array_merge($branchFees['line_items'], $postpaidFees['line_items']);
+        $total = round($branchFees['total'] + $postpaidFees['total'], 2);
+
+        return [
+            'branch_count' => $branchFees['branch_count'],
+            'line_items' => $lineItems,
+            'total' => $total,
+            'currency' => 'PHP',
+        ];
+    }
 }

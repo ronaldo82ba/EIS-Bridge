@@ -10,7 +10,10 @@ use App\Models\Merchant;
 use App\Models\TransmissionLog;
 use App\Models\Vendor;
 use App\Support\InvoiceBroadcaster;
+use App\Exceptions\CommercialBillingException;
+use App\Services\Billing\CommercialBillingEnforcer;
 use App\Services\Billing\LicenseEnforcement;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreTransactionRequest;
 use Illuminate\Support\Arr;
 
@@ -18,6 +21,7 @@ class TransactionProcessor
 {
     public function __construct(
         private readonly LicenseEnforcement $licenseEnforcement,
+        private readonly CommercialBillingEnforcer $commercialBilling,
     ) {}
 
     public function processSingle(array $data, Vendor $vendor)
@@ -85,6 +89,18 @@ class TransactionProcessor
             ];
         }
 
+        try {
+            $this->commercialBilling->assertCanAccept($merchant);
+        } catch (CommercialBillingException $e) {
+            return [
+                'http_status' => 403,
+                'status' => 'rejected',
+                'error' => $e->errorCode,
+                'message' => $e->getMessage(),
+                'details' => $e->details,
+            ];
+        }
+
         $deviceLockResult = $this->rejectIfDeviceLocked($data, $vendor);
 
         if ($deviceLockResult !== null) {
@@ -120,15 +136,41 @@ class TransactionProcessor
 
         $bridgeId = Invoice::generateBridgeTransactionId();
 
-        $invoice = Invoice::create([
-            'bridge_transaction_id' => $bridgeId,
-            'transaction_id'        => $transactionId,
-            'merchant_code'         => $merchantCode,
-            'branch_code'           => $branchCode,
-            'pos_device_id'         => $posDeviceId,
-            'raw_pos_json'          => $data,
-            'processing_status'     => 'queued',
-        ]);
+        try {
+            $invoice = DB::transaction(function () use (
+                $merchant,
+                $bridgeId,
+                $transactionId,
+                $merchantCode,
+                $branchCode,
+                $posDeviceId,
+                $data,
+            ) {
+                $this->commercialBilling->assertCanAccept($merchant);
+
+                $invoice = Invoice::create([
+                    'bridge_transaction_id' => $bridgeId,
+                    'transaction_id'        => $transactionId,
+                    'merchant_code'         => $merchantCode,
+                    'branch_code'           => $branchCode,
+                    'pos_device_id'         => $posDeviceId,
+                    'raw_pos_json'          => $data,
+                    'processing_status'     => 'queued',
+                ]);
+
+                $this->commercialBilling->recordAccepted($merchant, $invoice);
+
+                return $invoice;
+            });
+        } catch (CommercialBillingException $e) {
+            return [
+                'http_status' => 403,
+                'status' => 'rejected',
+                'error' => $e->errorCode,
+                'message' => $e->getMessage(),
+                'details' => $e->details,
+            ];
+        }
 
         TransmissionLog::create([
             'invoice_id' => $invoice->id,

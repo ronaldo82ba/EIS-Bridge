@@ -21,6 +21,7 @@ class Merchant extends Model
         'bir_ack_date',
         'address',
         'status',
+        'prepaid_wallet_balance',
     ];
 
     protected function casts(): array
@@ -28,6 +29,7 @@ class Merchant extends Model
         return [
             'vat_registered' => 'boolean',
             'bir_ack_date' => 'date',
+            'prepaid_wallet_balance' => 'decimal:2',
         ];
     }
 
@@ -81,6 +83,16 @@ class Merchant extends Model
     public function licenses(): HasMany
     {
         return $this->hasMany(MerchantLicense::class);
+    }
+
+    public function prepaidWalletLedgers(): HasMany
+    {
+        return $this->hasMany(PrepaidWalletLedger::class);
+    }
+
+    public function dailyVolumes(): HasMany
+    {
+        return $this->hasMany(MerchantDailyVolume::class);
     }
 
     public function billingInvoices(): \Illuminate\Database\Eloquent\Relations\MorphMany

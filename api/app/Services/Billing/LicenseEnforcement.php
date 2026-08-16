@@ -5,7 +5,12 @@ namespace App\Services\Billing;
 use App\Enums\LicenseStatus;
 use App\Models\Merchant;
 use App\Models\Vendor;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Suspended/expired license gates for vendors and merchants.
+ * Commercial prepaid wallet + postpaid daily caps live in CommercialBillingEnforcer.
+ */
 class LicenseEnforcement
 {
     public function canVendorOperate(Vendor $vendor): bool
@@ -14,26 +19,26 @@ class LicenseEnforcement
             return false;
         }
 
-        $hasActiveLicense = $vendor->licenses()
-            ->active()
-            ->where(function ($query) {
-                $query->whereNull('ends_at')->orWhere('ends_at', '>', now());
-            })
-            ->exists();
-
-        if (! $hasActiveLicense) {
-            return true;
-        }
-
         $hasBlockingLicense = $vendor->licenses()
-            ->where('status', LicenseStatus::Suspended->value)
+            ->whereIn('status', [
+                LicenseStatus::Suspended->value,
+                LicenseStatus::Expired->value,
+            ])
             ->whereHas('licensePlan', fn ($query) => $query->whereIn('slug', [
                 'vendor_one_time',
                 'vendor_monthly_hosting',
             ]))
             ->exists();
 
-        return ! $hasBlockingLicense;
+        if ($hasBlockingLicense) {
+            return false;
+        }
+
+        if (! $vendor->licenses()->exists()) {
+            return (bool) config('eis.sandbox_mode');
+        }
+
+        return $this->hasCurrentActiveLicense($vendor->licenses());
     }
 
     public function canMerchantOperate(Merchant $merchant): bool
@@ -42,20 +47,21 @@ class LicenseEnforcement
             return false;
         }
 
-        $activeLicenses = $merchant->licenses()
-            ->active()
-            ->where(function ($query) {
-                $query->whereNull('ends_at')->orWhere('ends_at', '>', now());
-            })
-            ->exists();
-
-        if (! $activeLicenses) {
-            return true;
+        if ($merchant->licenses()
+            ->whereIn('status', [
+                LicenseStatus::Suspended->value,
+                LicenseStatus::Expired->value,
+            ])
+            ->exists()
+        ) {
+            return false;
         }
 
-        return ! $merchant->licenses()
-            ->where('status', LicenseStatus::Suspended->value)
-            ->exists();
+        if (! $merchant->licenses()->exists()) {
+            return (bool) config('eis.sandbox_mode');
+        }
+
+        return $this->hasCurrentActiveLicense($merchant->licenses());
     }
 
     /**
@@ -73,5 +79,18 @@ class LicenseEnforcement
         if (! $this->canMerchantOperate($merchant)) {
             throw new \RuntimeException('Merchant license is not active.');
         }
+    }
+
+    private function hasCurrentActiveLicense(HasMany $licenses): bool
+    {
+        return $licenses
+            ->active()
+            ->where(function ($query) {
+                $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('ends_at')->orWhere('ends_at', '>', now());
+            })
+            ->exists();
     }
 }

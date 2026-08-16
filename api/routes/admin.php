@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\Billing\BillingController;
 use App\Http\Controllers\Admin\Billing\LicensePlanController;
 use App\Http\Controllers\Admin\Billing\MerchantLicenseController;
+use App\Http\Controllers\Admin\Billing\MerchantWalletController;
 use App\Http\Controllers\Admin\Billing\VendorLicenseController;
 use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CodeBooksIngestController;
@@ -145,4 +146,6 @@ Route::middleware(['auth:sanctum', 'admin', 'throttle:admin-api'])->group(functi
     Route::post('/vendors/{vendor}/licenses', [VendorLicenseController::class, 'store']);
     Route::get('/merchants/{merchant}/licenses', [MerchantLicenseController::class, 'index']);
     Route::post('/merchants/{merchant}/licenses', [MerchantLicenseController::class, 'store']);
+    Route::get('/merchants/{merchant}/wallet', [MerchantWalletController::class, 'show']);
+    Route::post('/merchants/{merchant}/wallet/recharge', [MerchantWalletController::class, 'recharge']);
 });

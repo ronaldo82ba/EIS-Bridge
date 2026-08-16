@@ -5,11 +5,28 @@
 
 This module is separate from EIS **`invoices`** (POS transaction records). All billing records use the **`billing_invoices`** table.
 
-For external Vendor Edition pricing (core license and per-merchant activation), see [Partner Program](partner-program.md).
+**Sales / commercial pricing truth** (vendor ₱350k distributor setup + Lite prepaid + postpaid tiers) lives in **[Commercial Pricing](commercial-pricing.md)** and **supersedes** the legacy default amounts below for quotes and GTM. Seeded commercial slugs: `vendor_distributor_setup_350k`, `lite_setup`, `lite_prepaid_wallet`, `store_activation_35k`, `postpaid_tier_1500`, `postpaid_tier_2500`.
+
+For external Vendor Edition pricing (core license and per-merchant activation), see [Partner Program](partner-program.md). Commercial vendor setup for sales is **₱350,000** one-time (includes distributorship) — see [commercial-pricing.md](commercial-pricing.md).
 
 ---
 
 ## Plan types
+
+### Commercial (sales truth)
+
+| Slug | Name | Billing model | Unit | Amount (PHP) |
+|------|------|---------------|------|--------------|
+| `vendor_distributor_setup_350k` | Vendor / Distributor Setup (incl. Distributorship) | one_time | vendor | 350,000.00 |
+| `lite_setup` | EIS Bridge Lite Setup | one_time | merchant | 17,000.00 |
+| `lite_prepaid_wallet` | EIS Bridge Lite Prepaid Wallet (₱1/upload) | per_unit | merchant | 1.00 |
+| `store_activation_35k` | Store / Merchant Activation | one_time | merchant | 35,000.00 |
+| `postpaid_tier_1500` | Postpaid Standard (≤800 e-invoices/day) | recurring_monthly | merchant | 1,500.00 |
+| `postpaid_tier_2500` | Postpaid High Volume (up to 3,000 e-invoices/day) | recurring_monthly | merchant | 2,500.00 |
+
+Full matrix, assumptions, and wallet/metering how-to: [commercial-pricing.md](commercial-pricing.md).
+
+### Legacy (retained for tests / older flows)
 
 | Slug | Name | Billing model | Unit | Default amount (PHP) |
 |------|------|---------------|------|----------------------|
@@ -38,8 +55,12 @@ php artisan db:seed --class=LicensePlanSeeder
 | `merchant_licenses` | Licenses assigned to merchants |
 | `billing_invoices` | Polymorphic billing records (vendor or merchant) |
 | `billing_events` | Audit trail (activation, suspension, invoice issued) |
+| `merchants.prepaid_wallet_balance` | Lite prepaid balance (PHP decimal) |
+| `prepaid_wallet_ledgers` | Wallet credits/debits (recharge, ₱1/upload debit) |
+| `merchant_daily_volumes` | Asia/Manila per-day accepted e-invoice counters |
 
-Migration: `database/migrations/0001_01_01_000010_create_billing_licensing_tables.php`
+Migration: `database/migrations/0001_01_01_000010_create_billing_licensing_tables.php`  
+Commercial wallet/meter: `database/migrations/2026_08_16_000001_add_commercial_prepaid_wallet_and_daily_volume.php`
 
 ---
 
@@ -60,8 +81,9 @@ flowchart TD
 **Monthly generation logic:**
 
 1. **Vendor invoices** — `vendor_monthly_hosting` (flat) + `vendor_per_merchant` (× merchant count) + SaaS charges for that vendor's merchants/branches.
-2. **Merchant invoices** — `merchant_per_branch_monthly` (× branch count).
+2. **Merchant invoices** — `merchant_per_branch_monthly` (× branch count) **plus** active commercial postpaid flats (`postpaid_tier_1500` / `postpaid_tier_2500`).
 3. SaaS rates come from the plan catalog and apply to live merchant/branch counts.
+4. One-time commercial SKUs (₱350k / ₱35k / ₱17k) are assignable via licenses; no auto payment-gateway invoice on assign.
 
 ---
 
@@ -71,10 +93,13 @@ flowchart TD
 |---------|----------------|
 | `LicensePlanCatalog` | List/find plans by category or slug |
 | `VendorLicenseService` | Assign, activate, suspend; calculate monthly hosting |
-| `MerchantLicenseService` | Assign, activate, suspend; per-branch monthly fees |
+| `MerchantLicenseService` | Assign, activate, suspend; per-branch + postpaid monthly fees |
 | `SaasBillingService` | Monthly SaaS total from merchant/branch counts |
 | `BillingInvoiceGenerator` | Generate monthly `billing_invoices` |
-| `LicenseEnforcement` | `canVendorOperate` / `canMerchantOperate` — hook for Phase 4 |
+| `LicenseEnforcement` | `canVendorOperate` / `canMerchantOperate` — suspended/expired gates |
+| `CommercialBillingEnforcer` | Lite wallet + postpaid daily caps on ingest |
+| `PrepaidWalletService` | Recharge / debit ₱1 / balance |
+| `DailyVolumeMeter` | Manila-day counters and cap checks |
 | `BillingEventLogger` | Writes `billing_events` |
 
 ---
@@ -91,6 +116,8 @@ Base path: `/admin` (Sanctum session). All routes require `auth:sanctum`.
 | POST | `/vendors/{vendor}/licenses` | super_admin, vendor_admin (own vendor) |
 | GET | `/merchants/{merchant}/licenses` | scoped by role |
 | POST | `/merchants/{merchant}/licenses` | super_admin, vendor_admin (own merchant) |
+| GET | `/merchants/{merchant}/wallet` | scoped by role (balance + daily volume) |
+| POST | `/merchants/{merchant}/wallet/recharge` | super_admin, vendor_admin (own merchant) |
 | GET | `/billing/summary` | all admin roles (vendor_admin scoped) |
 | GET | `/billing/invoices` | all admin roles (vendor_admin scoped) |
 | GET | `/billing/invoices/{id}` | scoped by billable |
@@ -129,15 +156,40 @@ Content-Type: application/json
 
 ## Enforcement hooks (Phase 4)
 
-`LicenseEnforcement` is the integration point for transaction gating:
+`LicenseEnforcement` gates suspended/expired licenses. `CommercialBillingEnforcer` applies Lite wallet and postpaid daily caps when commercial plans are assigned; legacy-only merchants stay metering-permissive.
 
 ```php
-// Future middleware on POST /v1/transactions
-app(LicenseEnforcement::class)->assertVendorCanTransact($vendor);
 app(LicenseEnforcement::class)->assertMerchantCanTransact($merchant);
+app(CommercialBillingEnforcer::class)->assertCanAccept($merchant);
 ```
 
-Current behavior: if no licenses are assigned, operations are allowed (permissive default until licenses are enforced platform-wide).
+Wired in `TransactionProcessor` on accept (after validation; debit/meter inside the create transaction).
+
+### Example reject payloads
+
+```json
+{
+  "status": "rejected",
+  "error": "insufficient_prepaid_balance",
+  "message": "Prepaid wallet balance is insufficient. Recharge before uploading more e-invoices.",
+  "details": { "balance": 0, "required": 1, "currency": "PHP" }
+}
+```
+
+```json
+{
+  "status": "rejected",
+  "error": "daily_volume_cap_exceeded",
+  "message": "Daily e-invoice cap of 800 reached for Asia/Manila calendar day. Upgrade tier or wait until the next Manila day.",
+  "details": {
+    "cap": 800,
+    "used": 800,
+    "plan": "postpaid_tier_1500",
+    "usage_date": "2026-08-16",
+    "timezone": "Asia/Manila"
+  }
+}
+```
 
 ---
 
@@ -157,9 +209,10 @@ Current behavior: if no licenses are assigned, operations are allowed (permissiv
 cd api
 php artisan migrate
 php artisan test --filter=SaasBillingServiceTest
+php artisan test --filter=CommercialBilling
 ```
 
-Unit test verifies SaaS monthly total for 3 merchants and 6 branches: `(3 × 999) + (6 × 199) = 4191 PHP`.
+Unit test verifies SaaS monthly total for 3 merchants and 6 branches: `(3 × 999) + (6 × 199) = 4191 PHP`. Commercial tests cover wallet block/recharge and postpaid daily caps.
 
 ---
 
@@ -168,10 +221,10 @@ Unit test verifies SaaS monthly total for 3 merchants and 6 branches: `(3 × 999
 - Payment gateway integration and `paid_at` automation
 - Email dunning for overdue `billing_invoices`
 - License expiry cron and auto-suspension
-- Middleware enforcement on `/v1/transactions` (Phase 4)
 - Full billing invoice list UI and assign-license forms in admin
 - Proration, discounts, and multi-currency support
+- Auto-tier switching between postpaid ₱1,500 and ₱2,500
 
 ---
 
-*Document version: 1.0 — 2026-06-08*
+*Document version: 1.2 — 2026-08-16*
