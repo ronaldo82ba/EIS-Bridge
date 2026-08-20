@@ -39,7 +39,7 @@
 
   <header class="site-top" data-site-header>
     <div class="top-ribbon">
-      <p>EIS Bridge&trade; &mdash; connect any POS, ERP, or merchant/business system to BIR EIS transmission without heavy system source-code changes</p>
+      <p>EIS Bridge&trade; &mdash; connect any POS/ERP/Business System to BIR EIS transmission without heavy system source-code changes</p>
     </div>
     <div class="wrap header-row">
       <a class="logo" href="../index.html" aria-label="EIS Bridge home">
@@ -97,7 +97,7 @@
       <ul>
         <li><strong>VAT-registered taxpayers</strong> required to issue VAT invoices or official receipts are the primary compliance targets. The &#8369;3,000,000 gross annual sales threshold triggers mandatory VAT registration — and with it, EIS obligations as BIR phased implementation expands to additional taxpayer groups.</li>
         <li><strong>Large taxpayers and selected non-large taxpayers</strong> are covered under current Revenue Regulations and Revenue Memorandum Circulars. BIR has been expanding mandatory EIS coverage in phases — check the latest RMC for your taxpayer classification.</li>
-        <li><strong>Franchise operators</strong> are taxpayers in their own right. Even if your franchisor (7-Eleven, Alfamart, etc.) provides the POS system, <em>you</em> as the franchisee-taxpayer are responsible for EIS registration, CERT, and PTT for your outlets. POS vendors and middleware providers like EIS Bridge are not BIR-accredited on your behalf.</li>
+        <li><strong>Franchise operators</strong> are taxpayers in their own right. Even if your franchisor (7-Eleven, Alfamart, etc.) provides the POS system, <em>you</em> as the franchisee-taxpayer are responsible for EIS registration, CERT, and PTT for your outlets. System vendors and middleware providers like EIS Bridge are not BIR-accredited on your behalf.</li>
         <li><strong>Multi-branch merchants</strong> must register each branch and associated POS device in the EIS system. Branch-level compliance is not an optional add-on — EIS requires granular branch and device mapping.</li>
       </ul>
 
@@ -128,7 +128,7 @@
             </tr>
             <tr>
               <td><strong>EIS CERT</strong></td>
-              <td>Merchant (taxpayer), with technical support from POS vendor / middleware</td>
+              <td>Merchant (taxpayer), with technical support from POS/ERP/Business System vendor / middleware</td>
               <td>System certification on <a href="https://eis-cert.bir.gov.ph" target="_blank" rel="noopener">eis-cert.bir.gov.ph</a>. Submit architecture diagram, sample sale JSON, signed JSON sample, digital certificate details, and test transmission logs covering each branch type.</td>
               <td>2–6 weeks (BIR review cycle; document quality is the key variable)</td>
             </tr>
@@ -140,8 +140,8 @@
             </tr>
             <tr>
               <td><strong>Technical integration</strong></td>
-              <td>POS vendor or merchant IT team</td>
-              <td>Map POS sale data to the Standard Sale Object; integrate the transmission API (Vendor Edition, Merchant Edition, or SaaS); run QA suite; verify sandbox to production switch.</td>
+              <td>POS/ERP/Business System vendor or merchant IT team</td>
+              <td>Map sale data from any POS/ERP/Business System to the Standard Sale Object; integrate the transmission API (Vendor Edition, Merchant Edition, or SaaS); run QA suite; verify sandbox to production switch.</td>
               <td>2–8 weeks (varies by POS complexity and integration path)</td>
             </tr>
           </tbody>
@@ -301,7 +301,7 @@
         </table>
       </div>
 
-      <h3>Technical integration (POS vendor or merchant IT)</h3>
+      <h3>Technical integration (POS/ERP/Business System vendor or merchant IT)</h3>
       <div class="data-table-wrap">
         <table class="data-table">
           <thead>
@@ -383,7 +383,7 @@
           <tbody>
             <tr>
               <td><strong>Vendor Edition</strong></td>
-              <td>Chains using a POS vendor who integrates EIS Bridge into their product</td>
+              <td>Chains using a POS/ERP/Business System vendor who integrates EIS Bridge into their product</td>
               <td>POS software vendor (one-time vendor certification)</td>
               <td>Vendor maps their POS sale object to EIS Bridge Standard Sale Object; all merchants on that POS inherit the integration. Chain enables merchant license.</td>
               <td>Zero internal integration effort; POS upgrades maintain compliance automatically; vendor handles QA suite</td>
@@ -393,7 +393,7 @@
               <td>Chains with in-house or proprietary POS, or multi-vendor POS fleet</td>
               <td>Merchant IT team</td>
               <td>Direct <code>POST /transactions</code> integration from each POS system; chain manages API keys, branch/device config, and QA</td>
-              <td>Full control; no POS vendor dependency; single admin console for all branches</td>
+              <td>Full control; no system-vendor dependency; single admin console for all branches</td>
             </tr>
             <tr>
               <td><strong>SaaS</strong></td>
@@ -408,14 +408,14 @@
 
       <h3>Choosing an integration path: decision guide</h3>
       <ul>
-        <li><strong>Your POS vendor already integrates EIS Bridge?</strong> &rarr; Vendor Edition. Ask your vendor for their EIS Bridge certification status and merchant onboarding process.</li>
+        <li><strong>Your POS/ERP/Business System vendor already integrates EIS Bridge?</strong> &rarr; Vendor Edition. Ask your vendor for their EIS Bridge certification status and merchant onboarding process.</li>
         <li><strong>You operate a branded proprietary POS across all branches?</strong> &rarr; Merchant Edition. Your IT team integrates once; all branches share the same configuration.</li>
-        <li><strong>You use different POS systems across branches (mixed fleet)?</strong> &rarr; Evaluate per vendor. Some branches may use Vendor Edition (for certified POS vendors), others Merchant Edition for proprietary terminals.</li>
+        <li><strong>You use different POS/ERP/Business Systems across branches (mixed fleet)?</strong> &rarr; Evaluate per vendor. Some branches may use Vendor Edition (for certified system vendors), others Merchant Edition for proprietary terminals.</li>
         <li><strong>You are a franchisee with 1–5 outlets and no IT team?</strong> &rarr; SaaS. Focus on BIR taxpayer steps; EIS Bridge SaaS handles the transmission layer.</li>
       </ul>
 
       <div class="article-cta-inline">
-        <h3>POS vendor serving retail chains?</h3>
+        <h3>POS/ERP/Business System vendor serving retail chains?</h3>
         <p>Integrate once with EIS Bridge Vendor Edition and offer BIR EIS compliance as a native feature for your entire merchant base — no per-merchant integration required.</p>
         <a class="btn btn-primary" href="../partner.html">Vendor Partner Program</a>
         <a class="btn btn-secondary" href="../portal/index.html" style="margin-left: 0.75rem;">Developer Portal</a>
@@ -512,7 +512,7 @@
             <tr>
               <td>EIS CERT</td>
               <td>Tied to system configuration; no annual fee, but material POS/middleware changes may require re-certification</td>
-              <td>Merchant + POS vendor</td>
+              <td>Merchant + POS/ERP/Business System vendor</td>
               <td>Non-compliant system configuration; BIR audit risk</td>
             </tr>
           </tbody>
@@ -591,12 +591,12 @@
       <ol>
         <li>Confirm your taxpayer classification and EIS coverage status with your tax adviser — check the current RMC for your revenue bracket and business type.</li>
         <li>Audit your branch and device inventory: create a master list of all branch codes and POS device IDs. This list becomes the foundation of EIS registration and EIS Bridge configuration.</li>
-        <li>Contact your POS vendor: ask if they have an EIS Bridge Vendor Edition integration. If yes, request merchant onboarding. If no, evaluate Merchant Edition or SaaS based on your IT capacity.</li>
+        <li>Contact your POS/ERP/Business System vendor: ask if they have an EIS Bridge Vendor Edition integration. If yes, request merchant onboarding. If no, evaluate Merchant Edition or SaaS based on your IT capacity.</li>
         <li>Obtain a BIR-accepted digital signing certificate early — certificate procurement can be a bottleneck if unfamiliar with the process.</li>
         <li>Build the 10–14 week compliance timeline into your store opening calendar. New branch go-live should not be scheduled before EIS readiness is confirmed.</li>
       </ol>
 
-      <h3>For POS vendors serving retail chains</h3>
+      <h3>For POS/ERP/Business System vendors serving retail chains</h3>
       <ol>
         <li>Complete EIS Bridge Vendor Edition certification once — all your merchant clients benefit immediately.</li>
         <li>The QA suite covers all required test cases. Sandbox access is provisioned on request.</li>
@@ -613,7 +613,7 @@
       <h3>Resources</h3>
       <ul>
         <li><a href="../certification-playbook.html">EIS Bridge Certification Playbook</a> &mdash; full phase-by-phase guide</li>
-        <li><a href="../partner.html">EIS Bridge Partner Program</a> &mdash; for POS vendors integrating Vendor Edition</li>
+        <li><a href="../partner.html">EIS Bridge Partner Program</a> &mdash; for POS/ERP/Business System vendors integrating Vendor Edition</li>
         <li><a href="../portal/index.html">Developer Portal</a> &mdash; API reference, schemas, QA suite</li>
         <li><a href="mailto:support@eisbridge.com">support@eisbridge.com</a> &mdash; merchant and vendor inquiries</li>
         <li><a href="https://eis-cert.bir.gov.ph" target="_blank" rel="noopener">eis-cert.bir.gov.ph</a> &mdash; BIR EIS CERT portal (external)</li>
@@ -624,7 +624,7 @@
     <section class="cta-band" aria-labelledby="cta-heading">
       <div class="container cta-inner">
         <h2 id="cta-heading">Need BIR EIS compliance for your retail chain?</h2>
-        <p>EIS Bridge connects your POS fleet to the BIR Electronic Invoicing System — without source-code changes. Multi-branch architecture, async transmission, and PTT management built in. Merchants complete EIS CERT and PTT per BIR; we handle mapping, signing, and transmission.</p>
+        <p>EIS Bridge connects any POS/ERP/Business System fleet to the BIR Electronic Invoicing System — without heavy system source-code changes. Multi-branch architecture, async transmission, and PTT management built in. Merchants complete EIS CERT and PTT per BIR; we handle mapping, signing, and transmission.</p>
         <a class="btn btn-primary" href="mailto:support@eisbridge.com?subject=Retail%20Chain%20EIS%20Compliance%20Inquiry">Contact support</a>
         <a class="btn btn-secondary" href="index.html">More insights</a>
       </div>
@@ -634,7 +634,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge connects any POS, ERP, or merchant/business system to the BIR Electronic Invoicing System — without heavy system source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
+        EIS Bridge connects any POS/ERP/Business System to the BIR Electronic Invoicing System — without heavy system source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
       <p class="footer-disclaimer">
         EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.

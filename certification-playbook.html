@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="EIS Bridge Certification Playbook — sandbox integration, QA certification, EIS CERT, PTT, and production go-live for POS vendors and merchants.">
+  <meta name="description" content="EIS Bridge Certification Playbook — sandbox integration, QA certification, EIS CERT, PTT, and production go-live for POS/ERP/Business System vendors and merchants.">
   <title>Certification Playbook — EIS Bridge</title>
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
@@ -13,12 +13,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="EIS Bridge">
   <meta property="og:title" content="Certification Playbook — EIS Bridge">
-  <meta property="og:description" content="End-to-end guide for POS vendors and merchants moving from sandbox integration to live BIR EIS transmission.">
+  <meta property="og:description" content="End-to-end guide for POS/ERP/Business System vendors and merchants moving from sandbox integration to live BIR EIS transmission.">
   <meta property="og:image" content="https://eisbridge.com/assets/brand/og-image.png">
   <meta property="og:url" content="https://eisbridge.com/certification-playbook.html">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Certification Playbook — EIS Bridge">
-  <meta name="twitter:description" content="End-to-end guide for POS vendors and merchants moving from sandbox integration to live BIR EIS transmission.">
+  <meta name="twitter:description" content="End-to-end guide for POS/ERP/Business System vendors and merchants moving from sandbox integration to live BIR EIS transmission.">
   <meta name="twitter:image" content="https://eisbridge.com/assets/brand/og-image.png">
   <link rel="stylesheet" href="styles/theme.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
 
   <header class="site-top" data-site-header>
     <div class="top-ribbon">
-      <p>EIS Bridge&trade; &mdash; connect any POS, ERP, or merchant/business system to BIR EIS transmission without heavy system source-code changes</p>
+      <p>EIS Bridge&trade; &mdash; connect any POS/ERP/Business System to BIR EIS transmission without heavy system source-code changes</p>
     </div>
     <div class="wrap header-row">
       <a class="logo" href="index.html" aria-label="EIS Bridge home">
@@ -87,7 +87,7 @@
 
     <article class="container article-content">
       <div class="article-summary">
-        <p>End-to-end guide for POS vendors and merchants moving from sandbox integration to live BIR EIS transmission. EIS Bridge handles technical mapping, signing, and submission; <strong>each merchant taxpayer</strong> still completes BIR registration, EIS CERT, and Permit to Transmit (PTT) on <a href="https://eis-cert.bir.gov.ph/" rel="noopener">eis-cert.bir.gov.ph</a>.</p>
+        <p>End-to-end guide for POS/ERP/Business System vendors and merchants moving from sandbox integration to live BIR EIS transmission. EIS Bridge handles technical mapping, signing, and submission; <strong>each merchant taxpayer</strong> still completes BIR registration, EIS CERT, and Permit to Transmit (PTT) on <a href="https://eis-cert.bir.gov.ph/" rel="noopener">eis-cert.bir.gov.ph</a>.</p>
       </div>
 
       <h2>Who does what</h2>
@@ -101,8 +101,8 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong>POS vendor</strong></td>
-              <td>Map POS sales to the Standard Sale Object, integrate the Vendor API, pass the QA certification suite</td>
+              <td><strong>POS/ERP/Business System vendor</strong></td>
+              <td>Map sales from any POS/ERP/Business System to the Standard Sale Object, integrate the Vendor API, pass the QA certification suite</td>
             </tr>
             <tr>
               <td><strong>Merchant (taxpayer)</strong></td>
@@ -119,7 +119,7 @@
 
       <h2>Phase 1 — Vendor integration (sandbox)</h2>
       <ol>
-        <li><strong>Register as a POS/ERP vendor</strong> — contact <a href="mailto:support@eisbridge.ph">support@eisbridge.ph</a> for Vendor Edition onboarding and sandbox credentials.</li>
+        <li><strong>Register as a POS/ERP/Business System vendor</strong> — contact <a href="mailto:support@eisbridge.ph">support@eisbridge.ph</a> for Vendor Edition onboarding and sandbox credentials.</li>
         <li><strong>Implement the Standard Sale Object</strong> — see the <a href="portal/quickstart.html">Developer Quickstart</a> and <a href="docs/schemas/sale-object.schema.json">sale-object.schema.json</a>.</li>
         <li><strong>Integrate async submission</strong> — <code>POST /transactions</code> returns <code>processing_status: queued</code> immediately; poll status or use webhooks for BIR acknowledgment.</li>
         <li><strong>Run QA Suite v1.0</strong> — all test cases in <a href="docs/qa/integration-test-cases-v1.md">integration-test-cases-v1.md</a> against the sandbox environment.</li>
@@ -164,7 +164,7 @@
       <h3>Step 2 — EIS CERT (system certification)</h3>
       <p>Apply for EIS CERT on <a href="https://eis-cert.bir.gov.ph/" rel="noopener">eis-cert.bir.gov.ph</a> covering:</p>
       <ul>
-        <li>The merchant's POS or invoicing system</li>
+        <li>The merchant's POS/ERP/Business System or invoicing system</li>
         <li>EIS Bridge as the transmission middleware (as configured in your integration)</li>
       </ul>
 
@@ -180,11 +180,11 @@
           <tbody>
             <tr>
               <td>System architecture diagram</td>
-              <td>POS → EIS Bridge → BIR EIS data flow</td>
+              <td>POS/ERP/Business System → EIS Bridge → BIR EIS data flow</td>
             </tr>
             <tr>
               <td>Standard Sale Object sample</td>
-              <td>Representative sale JSON from the merchant's POS</td>
+              <td>Representative sale JSON from the merchant's POS/ERP/Business System</td>
             </tr>
             <tr>
               <td>BIR EIS mapped JSON sample</td>
@@ -243,7 +243,7 @@
 
       <h2>Sandbox testing flow (quick reference)</h2>
       <div class="flow-diagram">
-        <p><strong>Map POS sale to Standard Sale Object</strong> → <strong>POST /transactions</strong> → Accepted? → Store <code>bridge_transaction_id</code> → Poll status or webhook → <code>eis_status</code> acknowledged? → Persist <code>eis_reference_no</code></p>
+        <p><strong>Map sale from any POS/ERP/Business System to Standard Sale Object</strong> → <strong>POST /transactions</strong> → Accepted? → Store <code>bridge_transaction_id</code> → Poll status or webhook → <code>eis_status</code> acknowledged? → Persist <code>eis_reference_no</code></p>
         <p>If not accepted, fix validation errors and retry from mapping.</p>
       </div>
       <p><strong>Key test scenarios</strong> (from QA Suite v1.0):</p>
@@ -320,7 +320,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge connects any POS, ERP, or merchant/business system to the BIR Electronic Invoicing System — without heavy system source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
+        EIS Bridge connects any POS/ERP/Business System to the BIR Electronic Invoicing System — without heavy system source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
       <p class="footer-disclaimer">
         EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.

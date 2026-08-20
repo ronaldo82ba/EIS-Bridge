@@ -2,7 +2,7 @@
 
 > **Quick start:** See the [POS Developer Integration Guide](pos-developer-integration-guide.md) for a minimal walkthrough before using this full reference.
 
-The **EIS Bridge Vendor API** is the primary integration surface for POS and ERP vendors. Send standardized sales data via the **Standard Sale Object**; EIS Bridge returns immediate async acceptance (`processing_status: queued`), then handles BIR EIS mapping, JWS signing, queued transmission, retries, and acknowledgment tracking.
+The **EIS Bridge Vendor API** is the primary integration surface for POS/ERP/Business System vendors. Send standardized sales data via the **Standard Sale Object**; EIS Bridge returns immediate async acceptance (`processing_status: queued`), then handles BIR EIS mapping, JWS signing, queued transmission, retries, and acknowledgment tracking.
 
 ### Tools
 
@@ -22,7 +22,7 @@ The **EIS Bridge Vendor API** is the primary integration surface for POS and ERP
 | Production | `https://api.eisbridge.com/v1` | Available after vendor certification |
 | Sandbox | `https://sandbox.eisbridge.com/v1` | Provisioned on request during vendor onboarding |
 
-Sandbox credentials are issued when you register as a POS/ERP vendor. For local development, run the Laravel API in `api/` with `EIS_SANDBOX_MODE=true` (see root README).
+Sandbox credentials are issued when you register as a POS/ERP/Business System vendor. For local development, run the Laravel API in `api/` with `EIS_SANDBOX_MODE=true` (see root README).
 
 ### Data format
 

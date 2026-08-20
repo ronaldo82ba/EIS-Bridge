@@ -1,14 +1,14 @@
-# EIS Bridge POS Vendor Partner Program
+# EIS Bridge Vendor Partner Program
 
-EIS Bridge is built **POS-vendor-first**: one Vendor API, one Standard Sale Object, and async queued acceptance so checkout never blocks on BIR transmission. POS companies integrate once and offer BIR EIS readiness across their merchant install base — without rebuilding their POS for BIR JSON, JWS signing, or transmission retries.
+EIS Bridge is built **system-vendor-first**: one Vendor API, one Standard Sale Object, and async queued acceptance so checkout never blocks on BIR transmission. POS/ERP/Business System companies integrate once and offer BIR EIS readiness across their merchant install base — without rebuilding their core product for BIR JSON, JWS signing, or transmission retries.
 
-This program is for **POS and ERP vendors** who want to embed EIS compliance as a native capability. EIS Bridge is an independent product; integration targets include Philippine POS platforms such as Condor, KaHero, and Mosaic — listed as market segments, not as existing partnerships unless separately announced.
+This program is for **POS/ERP/Business System vendors** who want to embed EIS compliance as a native capability. EIS Bridge is an independent product; integration targets include Philippine POS, ERP, and business platforms such as Condor, KaHero, and Mosaic — listed as market segments, not as existing partnerships unless separately announced.
 
 ---
 
 ## Why partner with EIS Bridge
 
-| Challenge for POS vendors | EIS Bridge answer |
+| Challenge for POS/ERP/Business System vendors | EIS Bridge answer |
 |---------------------------|-------------------|
 | BIR EIS JSON schema and API churn | Centralized mapping and transmission — one update serves all merchants |
 | JWS signing and certificate management | Per-merchant signing handled in the bridge |
@@ -16,7 +16,7 @@ This program is for **POS and ERP vendors** who want to embed EIS compliance as 
 | Custom CSV/ETL per client | One Standard Sale Object for every merchant |
 | Merchant CERT and PTT complexity | Certification playbook and admin onboarding tools |
 
-Unlike ERP-centric middleware (SAP connectors, scheduled ETL for large taxpayers), EIS Bridge is designed for **retail POS fleets** — multi-branch merchants, franchise operators, and SME install bases.
+Unlike ERP-only middleware (SAP connectors, scheduled ETL for large taxpayers), EIS Bridge is designed for **any POS/ERP/Business System fleet** — multi-branch merchants, franchise operators, and SME install bases.
 
 ---
 
@@ -25,17 +25,17 @@ Unlike ERP-centric middleware (SAP connectors, scheduled ETL for large taxpayers
 | Edition | Audience | What you get |
 |---------|----------|--------------|
 | **EIS Bridge Core** | Platform operators | Full middleware — mapping, signing, queue, admin console, Vendor API |
-| **EIS Bridge Vendor Edition** | POS/ERP companies | White-label ready: per-vendor API keys, merchant tenancy, partner economics |
+| **EIS Bridge Vendor Edition** | POS/ERP/Business System companies | White-label ready: per-vendor API keys, merchant tenancy, partner economics |
 | **EIS Bridge Merchant Edition** | Enterprise retailers | Direct license for large operators managing their own compliance |
-| **EIS Bridge SaaS** | Small merchants | Managed cloud compliance via POS vendor or direct subscription |
+| **EIS Bridge SaaS** | Small merchants | Managed cloud compliance via system vendor or direct subscription |
 
-Most POS vendors enter through **Vendor Edition**.
+Most POS/ERP/Business System vendors enter through **Vendor Edition**.
 
 ---
 
 ## Vendor Edition includes
 
-- **Vendor API keys** — unique key per POS company, rotatable in the admin console
+- **Vendor API keys** — unique key per system vendor company, rotatable in the admin console
 - **Standard Sale Object** — open integration spec with JSON schema, Postman collection, and QA certification suite
 - **Async submission contract** — `POST /transactions` returns immediately; webhooks notify on BIR acknowledgment
 - **Multi-merchant tenancy** — onboard merchants, branches, and devices under your vendor account

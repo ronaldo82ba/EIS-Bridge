@@ -39,7 +39,7 @@
 
 <header class="site-top" data-site-header>
     <div class="top-ribbon">
-      <p>EIS Bridge&trade; &mdash; connect any POS, ERP, or merchant/business system to BIR EIS transmission without heavy system source-code changes</p>
+      <p>EIS Bridge&trade; &mdash; connect any POS/ERP/Business System to BIR EIS transmission without heavy system source-code changes</p>
     </div>
     <div class="wrap header-row">
       <a class="logo" href="../index.html" aria-label="EIS Bridge home">
@@ -93,14 +93,14 @@
     <div class="container">
       <h1 class="page-title">Quickstart</h1>
       <p class="page-intro">
-        Integrate your POS in minutes. Follow these five steps to authenticate, submit a sale, and confirm BIR EIS acknowledgment.
+        Integrate any POS/ERP/Business System in minutes. Follow these five steps to authenticate, submit a sale, and confirm BIR EIS acknowledgment.
       </p>
 
       <ol class="steps">
         <li class="step">
           <h2>Get your API key</h2>
           <p>
-            Obtain a Vendor API key from your vendor administrator in the EIS Bridge Console. API keys are issued to registered POS/ERP vendors during onboarding. You will also receive <code>merchant_code</code>, <code>branch_code</code>, and <code>pos_device_id</code> for test accounts.
+            Obtain a Vendor API key from your vendor administrator in the EIS Bridge Console. API keys are issued to registered POS/ERP/Business System vendors during onboarding. You will also receive <code>merchant_code</code>, <code>branch_code</code>, and <code>pos_device_id</code> for test accounts.
           </p>
           <p><a href="support.html#get-api-key">Get API Key &rarr;</a></p>
         </li>
@@ -165,7 +165,7 @@ curl -X GET "$BASE_URL/transactions?page=1&amp;page_size=1" \
   "processing_status": "queued",
   "message": "Transaction accepted for EIS processing."
 }</code></pre>
-          <p>Store <code>bridge_transaction_id</code> in your POS for status lookups and webhook correlation.</p>
+          <p>Store <code>bridge_transaction_id</code> in your POS/ERP/Business System for status lookups and webhook correlation.</p>
         </li>
 
         <li class="step">
@@ -206,7 +206,7 @@ curl -X GET "$BASE_URL/transactions?page=1&amp;page_size=1" \
   <footer class="site-footer portal-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge connects any POS, ERP, or merchant/business system to the BIR Electronic Invoicing System — without heavy system source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
+        EIS Bridge connects any POS/ERP/Business System to the BIR Electronic Invoicing System — without heavy system source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
       <p class="footer-disclaimer">
         EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.

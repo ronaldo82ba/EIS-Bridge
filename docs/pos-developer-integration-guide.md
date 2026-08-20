@@ -1,12 +1,12 @@
-# EIS Bridge — POS Developer Integration Guide
+# EIS Bridge — Developer Integration Guide
 
-**Quick Start Guide for POS & ERP Vendors**
+**Quick Start Guide for POS/ERP/Business System Vendors**
 
 ---
 
 ## Overview
 
-EIS Bridge lets POS and ERP vendors connect to the BIR Electronic Invoicing System **without changing POS source code**. Map each sale to the **Standard Sale Object**, POST it to the Vendor API, and receive immediate async acceptance — EIS Bridge handles:
+EIS Bridge lets any POS/ERP/Business System connect to the BIR Electronic Invoicing System **without heavy system source-code changes**. Map each sale to the **Standard Sale Object**, POST it to the Vendor API, and receive immediate async acceptance — EIS Bridge handles:
 
 - JSON → BIR EIS mapping
 - Digital signing (JWS)
@@ -42,7 +42,7 @@ Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for sandbox credenti
 
 ## Standard Sale Object — Minimum Required Fields
 
-This is the **only JSON format** your POS needs to produce. Send this structure to EIS Bridge:
+This is the **only JSON format** your POS/ERP/Business System needs to produce. Send this structure to EIS Bridge:
 
 ```json
 {
@@ -209,7 +209,7 @@ Treat `duplicate` as success — the original transaction was already accepted.
 ## Developer Checklist
 
 - [ ] Obtain sandbox API key and test merchant/branch/device codes
-- [ ] Map POS sale → Standard Sale Object
+- [ ] Map sale from any POS/ERP/Business System → Standard Sale Object
 - [ ] Send `POST /transactions` and verify `processing_status: queued`
 - [ ] Store `bridge_transaction_id`
 - [ ] Poll status or configure webhooks

@@ -1,6 +1,6 @@
 # EIS Bridge Certification Playbook
 
-End-to-end guide for POS vendors and merchants moving from sandbox integration to live BIR EIS transmission. EIS Bridge handles technical mapping, signing, and submission; **each merchant taxpayer** still completes BIR registration, EIS CERT, and Permit to Transmit (PTT) on [eis-cert.bir.gov.ph](https://eis-cert.bir.gov.ph/).
+End-to-end guide for POS/ERP/Business System vendors and merchants moving from sandbox integration to live BIR EIS transmission. EIS Bridge handles technical mapping, signing, and submission; **each merchant taxpayer** still completes BIR registration, EIS CERT, and Permit to Transmit (PTT) on [eis-cert.bir.gov.ph](https://eis-cert.bir.gov.ph/).
 
 ---
 
@@ -8,7 +8,7 @@ End-to-end guide for POS vendors and merchants moving from sandbox integration t
 
 | Party | Responsibility |
 |-------|----------------|
-| **POS vendor** | Map POS sales to the Standard Sale Object, integrate the Vendor API, pass the QA certification suite |
+| **POS/ERP/Business System vendor** | Map sales from any POS/ERP/Business System to the Standard Sale Object, integrate the Vendor API, pass the QA certification suite |
 | **Merchant (taxpayer)** | EIS registration, EIS CERT application, PTT issuance, valid digital certificate |
 | **EIS Bridge** | Merchant onboarding in the console, JSON mapping, JWS signing, queued transmission, status and audit logs |
 
@@ -18,7 +18,7 @@ BIR certifies **taxpayer systems** (middleware plus invoicing system), not softw
 
 ## Phase 1 — Vendor integration (sandbox)
 
-1. **Register as a POS/ERP vendor** — contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for Vendor Edition onboarding and sandbox credentials.
+1. **Register as a POS/ERP/Business System vendor** — contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for Vendor Edition onboarding and sandbox credentials.
 2. **Implement the Standard Sale Object** — see [POS Developer Integration Guide](pos-developer-integration-guide.md) and [sale-object.schema.json](schemas/sale-object.schema.json).
 3. **Integrate async submission** — `POST /transactions` returns `processing_status: queued` immediately; poll status or use webhooks for BIR acknowledgment.
 4. **Run QA Suite v1.0** — all test cases in [integration-test-cases-v1.md](qa/integration-test-cases-v1.md) against the sandbox environment.
@@ -47,15 +47,15 @@ Each merchant on your platform must complete BIR taxpayer-side requirements befo
 
 Apply for EIS CERT on [eis-cert.bir.gov.ph](https://eis-cert.bir.gov.ph/) covering:
 
-- The merchant's POS or invoicing system
+- The merchant's POS/ERP/Business System or invoicing system
 - EIS Bridge as the transmission middleware (as configured in your integration)
 
 **Document pack checklist** (prepare before submission):
 
 | Document | Notes |
 |----------|-------|
-| System architecture diagram | POS → EIS Bridge → BIR EIS data flow |
-| Standard Sale Object sample | Representative sale JSON from the merchant's POS |
+| System architecture diagram | POS/ERP/Business System → EIS Bridge → BIR EIS data flow |
+| Standard Sale Object sample | Representative sale JSON from the merchant's POS/ERP/Business System |
 | BIR EIS mapped JSON sample | Output after EIS Bridge mapping (available from sandbox signing tests) |
 | Digital certificate details | Merchant's BIR-issued or approved signing certificate |
 | Branch and device inventory | Branch codes, POS device IDs aligned with EIS Bridge console |
@@ -109,7 +109,7 @@ See [merchant-onboarding.md](merchant-onboarding.md) for the admin API and UI wa
 
 ```mermaid
 flowchart TD
-    A[Map POS sale to Standard Sale Object] --> B[POST /transactions]
+    A[Map sale from any POS/ERP/Business System to Standard Sale Object] --> B[POST /transactions]
     B --> C{Accepted?}
     C -->|yes| D[Store bridge_transaction_id]
     C -->|no| E[Fix validation errors]
