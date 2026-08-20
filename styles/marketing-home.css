@@ -854,11 +854,6 @@ html.media-ready main > .cta-panel {
   display: none;
 }
 
-.partner-logos__logo--codepos {
-  height: 2.15rem;
-  max-width: 10.5rem;
-}
-
 html[data-theme="dark"] .partner-logos__logo--runbook-light {
   display: none;
 }
@@ -907,11 +902,6 @@ html[data-theme="dark"] .partner-logos__logo--codebooks {
   height: 1rem;
   max-width: 7rem;
   filter: brightness(0) invert(1);
-}
-
-.partner-logos__item--compact .partner-logos__logo--codepos {
-  height: 1.35rem;
-  max-width: 6.25rem;
 }
 
 .partner-logos__item--compact .partner-logos__name {
