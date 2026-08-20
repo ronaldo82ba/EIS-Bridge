@@ -806,9 +806,9 @@ html.media-ready main > .cta-panel {
 .partner-logos__item {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  min-height: 3rem;
-  padding: 0.55rem 1rem;
+  gap: 0.7rem;
+  min-height: 3.5rem;
+  padding: 0.65rem 1.15rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--paper);
@@ -823,31 +823,31 @@ html.media-ready main > .cta-panel {
 }
 
 .partner-logos__item--lockup {
-  padding-inline: 1.1rem;
+  padding-inline: 1.2rem;
 }
 
 .partner-logos__logo {
   display: block;
   flex-shrink: 0;
   width: auto;
-  height: 1.85rem;
+  height: 2.15rem;
   object-fit: contain;
 }
 
 .partner-logos__logo--mark,
 .partner-logos__logo--ribbon {
-  width: 1.85rem;
-  height: 1.85rem;
+  width: 2.35rem;
+  height: 2.35rem;
 }
 
 .partner-logos__logo--codebooks {
-  height: 1.65rem;
-  max-width: 10.5rem;
+  height: 2.15rem;
+  max-width: 12rem;
 }
 
 .partner-logos__logo--runbook {
-  height: 1.7rem;
-  max-width: 10.5rem;
+  height: 2.15rem;
+  max-width: 12rem;
 }
 
 .partner-logos__logo--runbook-dark {
@@ -868,10 +868,11 @@ html[data-theme="dark"] .partner-logos__logo--codebooks {
 
 .partner-logos__name {
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ink);
+  line-height: 1.1;
 }
 
 .partner-logos__row--footer {
@@ -881,31 +882,36 @@ html[data-theme="dark"] .partner-logos__logo--codebooks {
 }
 
 .partner-logos__item--compact {
-  min-height: 2.25rem;
-  padding: 0.35rem 0.7rem;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.8rem;
   background: color-mix(in oklab, var(--on-panel) 8%, transparent);
   border-color: color-mix(in oklab, var(--on-panel) 18%, transparent);
   color: var(--on-panel);
 }
 
 .partner-logos__item--compact .partner-logos__logo {
-  height: 1.15rem;
+  height: 1.35rem;
 }
 
 .partner-logos__item--compact .partner-logos__logo--mark,
 .partner-logos__item--compact .partner-logos__logo--ribbon {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.4rem;
+  height: 1.4rem;
 }
 
 .partner-logos__item--compact .partner-logos__logo--codebooks {
-  height: 1rem;
-  max-width: 7rem;
+  height: 1.35rem;
+  max-width: 8.5rem;
   filter: brightness(0) invert(1);
 }
 
+.partner-logos__item--compact .partner-logos__logo--runbook {
+  height: 1.35rem;
+  max-width: 8.5rem;
+}
+
 .partner-logos__item--compact .partner-logos__name {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: color-mix(in oklab, var(--on-panel) 88%, transparent);
 }
 
