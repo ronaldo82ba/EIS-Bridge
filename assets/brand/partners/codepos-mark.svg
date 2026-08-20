@@ -1,21 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-  <!-- Flat CP monogram  CodePOS brand colors, ecosystem-strip friendly -->
-  <path
-    d="M42 13.5C29.5 13.5 19.5 23.2 19.5 32.5S29.5 51.5 42 51.5"
-    stroke="#0EA5E9"
-    stroke-width="8"
-    stroke-linecap="round"
-  />
-  <path
-    d="M27 13h15c9.1 0 16 6.9 16 15.5S51.1 44 42 44H27V13Z"
-    stroke="#64748B"
-    stroke-width="8"
-    stroke-linejoin="round"
-  />
-  <path
-    d="M41.5 44L53 55"
-    stroke="#64748B"
-    stroke-width="8"
-    stroke-linecap="round"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <path d="M42 13.5C29.5 13.5 19.5 23.2 19.5 32.5S29.5 51.5 42 51.5" stroke="#0EA5E9" stroke-width="8" stroke-linecap="round"/>
+  <path d="M27 13h15c9.1 0 16 6.9 16 15.5S51.1 44 42 44H27V13Z" stroke="#64748B" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M41.5 44L53 55" stroke="#64748B" stroke-width="8" stroke-linecap="round"/>
 </svg>
