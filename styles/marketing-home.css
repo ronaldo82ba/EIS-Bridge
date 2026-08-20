@@ -855,8 +855,8 @@ html.media-ready main > .cta-panel {
 }
 
 .partner-logos__logo--codepos {
-  height: 2rem;
-  max-width: 9.5rem;
+  height: 2.15rem;
+  max-width: 10.5rem;
 }
 
 html[data-theme="dark"] .partner-logos__logo--runbook-light {
