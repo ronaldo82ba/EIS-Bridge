@@ -822,19 +822,63 @@ html.media-ready main > .cta-panel {
   transform: translateY(-2px);
 }
 
-.partner-logos__mark {
-  display: inline-block;
-  width: 1.75rem;
-  height: 1.75rem;
+.partner-logos__item--lockup {
+  padding-inline: 1.1rem;
+}
+
+.partner-logos__item--codepos {
+  background: #0b1220;
+  border-color: color-mix(in oklab, #3aa0ff 35%, #1a2438);
+}
+
+.partner-logos__logo {
+  display: block;
   flex-shrink: 0;
-  background-color: currentColor;
-  color: inherit;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+  width: auto;
+  height: 1.85rem;
+  object-fit: contain;
+}
+
+.partner-logos__logo--mark,
+.partner-logos__logo--ribbon {
+  width: 1.85rem;
+  height: 1.85rem;
+}
+
+.partner-logos__logo--codebooks {
+  height: 1.65rem;
+  max-width: 10.5rem;
+}
+
+.partner-logos__logo--runbook {
+  height: 1.7rem;
+  max-width: 10.5rem;
+}
+
+.partner-logos__logo--runbook-dark {
+  display: none;
+}
+
+.partner-logos__logo--codepos {
+  height: 2.35rem;
+  max-width: 7.5rem;
+}
+
+html[data-theme="dark"] .partner-logos__logo--runbook-light {
+  display: none;
+}
+
+html[data-theme="dark"] .partner-logos__logo--runbook-dark {
+  display: block;
+}
+
+html[data-theme="dark"] .partner-logos__logo--codebooks {
+  filter: brightness(0) invert(1);
+}
+
+html[data-theme="dark"] .partner-logos__item--codepos {
+  background: #070b14;
+  border-color: color-mix(in oklab, #3aa0ff 40%, transparent);
 }
 
 .partner-logos__name {
@@ -859,9 +903,31 @@ html.media-ready main > .cta-panel {
   color: var(--on-panel);
 }
 
-.partner-logos__item--compact .partner-logos__mark {
+.partner-logos__item--compact .partner-logos__logo {
+  height: 1.15rem;
+}
+
+.partner-logos__item--compact .partner-logos__logo--mark,
+.partner-logos__item--compact .partner-logos__logo--ribbon {
   width: 1.15rem;
   height: 1.15rem;
+}
+
+.partner-logos__item--compact .partner-logos__logo--codebooks {
+  height: 1rem;
+  max-width: 7rem;
+  filter: brightness(0) invert(1);
+}
+
+.partner-logos__item--compact .partner-logos__logo--codepos {
+  height: 1.45rem;
+  max-width: 4.75rem;
+}
+
+.partner-logos__item--compact.partner-logos__item--codepos {
+  background: #070b14;
+  border-color: color-mix(in oklab, #3aa0ff 35%, transparent);
+  padding-block: 0.2rem;
 }
 
 .partner-logos__item--compact .partner-logos__name {
@@ -872,6 +938,10 @@ html.media-ready main > .cta-panel {
 .partner-logos__item--compact:hover {
   border-color: color-mix(in oklab, var(--sky) 55%, transparent);
   background: color-mix(in oklab, var(--on-panel) 12%, transparent);
+}
+
+.partner-logos__item--compact.partner-logos__item--codepos:hover {
+  background: #0b1220;
 }
 
 /* Offer features */

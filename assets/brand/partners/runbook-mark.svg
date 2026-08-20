@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-  <path d="M14 6v52" stroke="#000" stroke-width="6.5" stroke-linecap="square"/>
-  <path d="M14 6h20c11 0 18.5 6.2 18.5 16.2S45 38.5 34 38.5H14M34 38.5L56 58" stroke="#000" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter"/>
+    <!-- Concept 3: Integrated "R" Refuge — architectural monoline -->
+    <path d="M14 6v52" stroke="currentColor" stroke-width="6.5" stroke-linecap="square"/>
+    <path d="M14 6h20c11 0 18.5 6.2 18.5 16.2S45 38.5 34 38.5H14M34 38.5L56 58" stroke="currentColor" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>
