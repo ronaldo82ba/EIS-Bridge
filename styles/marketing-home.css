@@ -826,11 +826,6 @@ html.media-ready main > .cta-panel {
   padding-inline: 1.1rem;
 }
 
-.partner-logos__item--codepos {
-  background: #0b1220;
-  border-color: color-mix(in oklab, #3aa0ff 35%, #1a2438);
-}
-
 .partner-logos__logo {
   display: block;
   flex-shrink: 0;
@@ -860,8 +855,8 @@ html.media-ready main > .cta-panel {
 }
 
 .partner-logos__logo--codepos {
-  height: 2.35rem;
-  max-width: 7.5rem;
+  height: 2rem;
+  max-width: 9.5rem;
 }
 
 html[data-theme="dark"] .partner-logos__logo--runbook-light {
@@ -874,11 +869,6 @@ html[data-theme="dark"] .partner-logos__logo--runbook-dark {
 
 html[data-theme="dark"] .partner-logos__logo--codebooks {
   filter: brightness(0) invert(1);
-}
-
-html[data-theme="dark"] .partner-logos__item--codepos {
-  background: #070b14;
-  border-color: color-mix(in oklab, #3aa0ff 40%, transparent);
 }
 
 .partner-logos__name {
@@ -920,14 +910,8 @@ html[data-theme="dark"] .partner-logos__item--codepos {
 }
 
 .partner-logos__item--compact .partner-logos__logo--codepos {
-  height: 1.45rem;
-  max-width: 4.75rem;
-}
-
-.partner-logos__item--compact.partner-logos__item--codepos {
-  background: #070b14;
-  border-color: color-mix(in oklab, #3aa0ff 35%, transparent);
-  padding-block: 0.2rem;
+  height: 1.35rem;
+  max-width: 6.25rem;
 }
 
 .partner-logos__item--compact .partner-logos__name {
@@ -938,10 +922,6 @@ html[data-theme="dark"] .partner-logos__item--codepos {
 .partner-logos__item--compact:hover {
   border-color: color-mix(in oklab, var(--sky) 55%, transparent);
   background: color-mix(in oklab, var(--on-panel) 12%, transparent);
-}
-
-.partner-logos__item--compact.partner-logos__item--codepos:hover {
-  background: #0b1220;
 }
 
 /* Offer features */
