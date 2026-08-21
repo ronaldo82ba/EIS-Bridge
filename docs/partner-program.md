@@ -61,13 +61,15 @@ Full API reference: [vendor-api.md](vendor-api.md) · Quick start: [pos-develope
 
 Pricing is structured for POS vendor channel economics — a core platform license plus per-merchant activation fees as you roll out across your install base.
 
-| Component | Typical range (PHP) | Notes |
-|-----------|---------------------|-------|
-| **Vendor core license** | ₱180,000 – ₱350,000 | One-time; covers Vendor Edition platform, API access, and onboarding |
-| **Per-merchant activation** | ₱25,000 – ₱35,000 | Charged when a merchant goes live with EIS CERT, PTT, and production transmission |
+| Component | Price (PHP) | Notes |
+|-----------|-------------|-------|
+| **Vendor core license** | **₱350,000** | One-time; covers Vendor Edition platform, API access, and onboarding |
+| **Per-merchant activation** | **₱35,000** | Charged when a merchant goes live with EIS CERT, PTT, and production transmission |
+| **CodeBooks + EIS Bridge Bundle** | **₱65,000** | Invoice-first path for businesses without POS/CAS yet |
+| **CodeBooks alone** | **₱35,000** | Principal SI/OR source only; no EIS Bridge transmission |
 | **Monthly hosting** (optional) | Per agreement | Managed infrastructure for vendors who prefer not to self-host |
 
-Exact pricing depends on merchant volume, white-label scope, and support tier. Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for a Vendor Edition quote.
+Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for a Vendor Edition or CodeBooks quote.
 
 Internal billing module reference (platform operators): [billing-licensing.md](billing-licensing.md).
 
