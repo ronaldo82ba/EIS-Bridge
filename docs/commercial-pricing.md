@@ -72,6 +72,37 @@ Legacy vendor / SaaS plan rows remain in the seeder for existing tests and admin
 
 ---
 
+## CodeBooks Lite + EIS Bridge™ Bundle
+
+Public launch SKU (`codebooks_lite_eis_bridge_bundle_35k`). Deposit-first. No payment gateway on the page.
+
+| Item | Amount | Notes |
+|------|--------|--------|
+| Regular / list | **₱35,000** | After the launch cap |
+| Launch promo | **₱15,000** | **First 100 takers** only |
+| Promo end | **100 takers** | Cap, not a calendar end date |
+
+CodeBooks Lite = SI/OR + lite books. EIS Bridge™ = BIR-ready connector (export → map → sign → queue → transmit). The taxpayer completes EIS CERT and PTT.
+
+**Not the same SKU as EIS Bridge Lite prepaid** (`lite_setup` ₱17,000 + ₱1/upload). Full CodeBooks + EIS Bridge remains **₱65,000**. CodeBooks alone remains **₱35,000** (SI/OR without EIS Bridge).
+
+---
+
+## GlobalShoppe Celsura + EIS Bridge™ Bundle — Enterprise Edition
+
+Public launch SKU on the Celsura marketing face (`celsura_eis_bridge_bundle_enterprise_150k`). Deposit-first. No payment gateway on the page.
+
+| Item | Amount | Notes |
+|------|--------|--------|
+| Regular / list | **₱150,000** | Enterprise Edition after the launch cap |
+| Launch promo | **₱75,000** | **First 100 takers** only |
+| Launch date | **15 September 2026** | Promo starts this date |
+| Promo end | **100 takers** | Cap, not a calendar end date |
+
+Celsura = books and principal SI/OR. EIS Bridge™ = BIR-ready connector (export → map → sign → queue → transmit). The taxpayer completes EIS CERT and PTT. Celsura does not transmit live to BIR.
+
+---
+
 ## Operational enforcement (implemented)
 
 Wallet ledger + Manila daily metering are live in the Laravel API. No payment gateway — admins assign licenses and recharge wallets; `billing_invoices` cover monthly postpaid.
@@ -96,4 +127,4 @@ Wallet ledger + Manila daily metering are live in the Laravel API. No payment ga
 
 ---
 
-*Document version: 1.2 — 2026-08-16 · Commercial pricing lock + wallet/metering ops*
+*Document version: 1.4 — 2026-09-10 · CodeBooks Lite (₱35k / ₱15k × 100) + GlobalShoppe Celsura Enterprise (₱150k / ₱75k × 100 from 15 Sep 2026)*

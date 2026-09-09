@@ -65,11 +65,17 @@ Pricing is structured for POS vendor channel economics — a core platform licen
 |-----------|-------------|-------|
 | **Vendor core license** | **₱350,000** | One-time; covers Vendor Edition platform, API access, and onboarding |
 | **Per-merchant activation** | **₱35,000** | Charged when a merchant goes live with EIS CERT, PTT, and production transmission |
+| **EIS Bridge Lite (prepaid)** | **₱17,000** setup + **₱1**/upload | Prepaid wallet; not the same SKU as CodeBooks Lite bundle |
+| **Postpaid Standard** | **₱1,500**/mo | ≤800 e-invoices/day (Asia/Manila); after store activation |
+| **Postpaid High volume** | **₱2,500**/mo | Up to 3,000 e-invoices/day (Asia/Manila); after store activation |
+| **CodeBooks Lite + EIS Bridge Bundle** | **₱35,000** regular · **₱15,000** promo | SI/OR + lite books + EIS Bridge. First 100 takers at promo |
 | **CodeBooks + EIS Bridge Bundle** | **₱65,000** | Invoice-first path for businesses without POS/CAS yet |
 | **CodeBooks alone** | **₱35,000** | Principal SI/OR source only; no EIS Bridge transmission |
+| **GlobalShoppe Celsura + EIS Bridge Bundle Enterprise** | **₱150,000** regular · **₱75,000** promo | Launch 15 September 2026; first 100 takers at promo |
 | **Monthly hosting** (optional) | Per agreement | Managed infrastructure for vendors who prefer not to self-host |
 
-Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for a Vendor Edition or CodeBooks quote.
+Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for a Vendor Edition, merchant, or CodeBooks quote.
+Sales catalog lock: [commercial-pricing.md](commercial-pricing.md).
 
 Internal billing module reference (platform operators): [billing-licensing.md](billing-licensing.md).
 
