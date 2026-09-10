@@ -61,6 +61,15 @@ class SandboxApiKeyMiddlewareTest extends TestCase
         $response->assertJsonStructure(['status']);
     }
 
+    public function test_admin_login_does_not_require_sandbox_header(): void
+    {
+        $this->postJson('/api/admin/login', [
+            'email' => 'missing@example.com',
+            'password' => 'invalid-password',
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors(['email']);
+    }
+
     public function test_middleware_skipped_when_not_sandbox_mode(): void
     {
         Config::set('eis.sandbox_mode', false);

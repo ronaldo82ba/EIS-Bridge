@@ -11,6 +11,10 @@ class EnsureSandboxApiKey
 {
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->is('api/admin/*')) {
+            return $next($request);
+        }
+
         if (! config('eis.sandbox_mode')) {
             return $next($request);
         }

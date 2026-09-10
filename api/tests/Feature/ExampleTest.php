@@ -8,8 +8,13 @@ class ExampleTest extends TestCase
 {
     public function test_root_route_is_available(): void
     {
-        $response = $this->get('/');
+        $this->getJson('/')->assertOk()->assertJsonStructure([
+            'service',
+            'api',
+            'health',
+            'admin',
+        ]);
 
-        $response->assertStatus(200);
+        $this->get('/')->assertRedirect('/admin');
     }
 }
