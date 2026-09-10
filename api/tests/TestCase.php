@@ -11,12 +11,11 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUp(): void
     {
-        // Process env (including CI job env) wins over phpunit.xml unless we reset it.
-        // Individual tests that need sandbox mode call Config::set() after boot.
-        putenv('EIS_SANDBOX_MODE=false');
-        $_ENV['EIS_SANDBOX_MODE'] = 'false';
-        $_SERVER['EIS_SANDBOX_MODE'] = 'false';
-
         parent::setUp();
+
+        // CI sets EIS_SANDBOX_MODE=true so unlicensed vendor fixtures can operate.
+        // Do not require X-SANDBOX-API-KEY on every HTTP test; the dedicated
+        // middleware suite re-enables this check.
+        $this->withoutMiddleware(\App\Http\Middleware\EnsureSandboxApiKey::class);
     }
 }

@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_ENV: testing
+      EIS_SANDBOX_MODE: 'true'
     defaults:
       run:
         working-directory: api

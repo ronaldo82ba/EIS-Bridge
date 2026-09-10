@@ -16,6 +16,8 @@ class SandboxApiKeyMiddlewareTest extends TestCase
     {
         parent::setUp();
 
+        $this->withMiddleware(\App\Http\Middleware\EnsureSandboxApiKey::class);
+
         Config::set([
             'eis.sandbox_mode' => true,
             'sandbox.api_key' => $this->sandboxKey,

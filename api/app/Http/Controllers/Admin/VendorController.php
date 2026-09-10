@@ -9,7 +9,9 @@ use Illuminate\Http\JsonResponse;
 use App\Services\Security\AuditLogger;
 use App\Services\Security\VendorApiKeyService;
 use App\Support\AdminScope;
+use App\Support\UrlSecurity;
 use Illuminate\Http\Request;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Str;
 
 class VendorController extends AdminController
@@ -83,6 +85,8 @@ class VendorController extends AdminController
             'webhook_url' => ['nullable', 'url', 'max:2048'],
             'status'      => ['nullable', 'in:active,suspended'],
         ]);
+
+        $this->validatePublicWebhookUrl($data['webhook_url'] ?? null);
 
         $vendor = Vendor::create([
             ...$data,
@@ -168,6 +172,10 @@ class VendorController extends AdminController
             'status'         => ['sometimes', 'in:active,suspended'],
         ]);
 
+        if (array_key_exists('webhook_url', $data)) {
+            $this->validatePublicWebhookUrl($data['webhook_url']);
+        }
+
         if (array_key_exists('webhook_secret', $data) && ($data['webhook_secret'] === null || $data['webhook_secret'] === '')) {
             unset($data['webhook_secret']);
         }
@@ -187,5 +195,24 @@ class VendorController extends AdminController
         $vendor->delete();
 
         return response()->json(null, 204);
+    }
+
+    private function validatePublicWebhookUrl(?string $url): void
+    {
+        if ($url === null || $url === '') {
+            return;
+        }
+
+        if (UrlSecurity::isAllowedPublicHttpsUrl($url)) {
+            return;
+        }
+
+        throw new HttpResponseException(response()->json([
+            'error' => 'validation_error',
+            'message' => 'The vendor payload is invalid.',
+            'details' => [
+                'webhook_url' => ['Webhook URL must be an HTTPS endpoint with a public host.'],
+            ],
+        ], 422));
     }
 }

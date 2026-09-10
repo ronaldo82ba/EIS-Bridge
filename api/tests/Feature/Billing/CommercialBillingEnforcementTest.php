@@ -123,10 +123,9 @@ class CommercialBillingEnforcementTest extends TestCase
 
     public function test_manila_day_boundary_uses_separate_counters(): void
     {
+        Carbon::setTestNow(Carbon::parse('2026-08-16 23:30:00', 'Asia/Manila'));
         app(MerchantLicenseService::class)->assign($this->merchant, 'postpaid_tier_1500');
         $meter = app(DailyVolumeMeter::class);
-
-        Carbon::setTestNow(Carbon::parse('2026-08-16 23:30:00', 'Asia/Manila'));
         MerchantDailyVolume::create([
             'merchant_id' => $this->merchant->id,
             'usage_date' => '2026-08-16',
