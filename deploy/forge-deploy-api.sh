@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
-# EIS Bridge - production API deploy script for Laravel Forge (zero-downtime + monorepo).
-# Paste into Forge -> Site -> Deployment -> Deploy Script (api.eisbridge.com).
+# EIS Bridge - production API deploy script (zero-downtime + monorepo).
+# Site: api.eisbridge.com. Paste as the site deploy script (CodeDEV; historical filename).
 #
-# Requires: web directory api/public, zero-downtime ON.
+# Web directory: public when the site root is api, or api/public when the site root is the repo.
+# Zero-downtime ON.
+#
+# GET /admin renders resources/views/admin.blade.php, which calls @vite. If
+# public/build/manifest.json is missing, Laravel throws
+# Illuminate\Foundation\ViteManifestNotFoundException and nginx returns HTTP 500.
+# The committed public/build is the fallback when npm is missing or the build fails.
 
 set -euo pipefail
 
@@ -91,27 +97,81 @@ validate_eis_endpoint_config() {
   ' "${API_DIR}/.env"
 }
 
+# Prefer a fresh Vite build (so VITE_* from the site .env are inlined). If npm
+# cannot run, keep the committed public/build so /admin still renders.
+refresh_admin_vite_build() {
+  local BACKUP
+  BACKUP="$(mktemp -d)"
+  if [ -d public/build ]; then
+    cp -a public/build "${BACKUP}/build"
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "WARN: npm not found. Using the committed public/build for the admin SPA."
+  elif [ ! -f package-lock.json ]; then
+    echo "WARN: package-lock.json missing. Using the committed public/build for the admin SPA."
+  elif npm ci --ignore-scripts && npm run build; then
+    echo "Vite production build refreshed."
+  else
+    echo "WARN: npm run build failed. Restoring committed public/build so GET /admin does not throw ViteManifestNotFoundException."
+    rm -rf public/build
+    if [ -d "${BACKUP}/build" ]; then
+      cp -a "${BACKUP}/build" public/build
+    fi
+  fi
+  rm -rf "${BACKUP}"
+
+  local MANIFEST="public/build/manifest.json"
+  if [ ! -f "${MANIFEST}" ]; then
+    echo "ERROR: ${MANIFEST} is missing."
+    echo "GET /admin returns HTTP 500: Illuminate\\Foundation\\ViteManifestNotFoundException (Vite manifest not found)."
+    exit 1
+  fi
+
+  "${FORGE_PHP_BIN}" -r '
+    $manifest = json_decode((string) file_get_contents($argv[1]), true);
+    if (!is_array($manifest)) {
+      fwrite(STDERR, "ERROR: public/build/manifest.json is not a JSON object.\n");
+      exit(1);
+    }
+    foreach (["resources/css/admin.css", "resources/js/admin/main.jsx"] as $entry) {
+      if (!isset($manifest[$entry]["file"])) {
+        fwrite(STDERR, "ERROR: Vite manifest is missing {$entry}. GET /admin cannot render the admin SPA.\n");
+        exit(1);
+      }
+    }
+    $file = $manifest["resources/js/admin/main.jsx"]["file"];
+    fwrite(STDOUT, "Admin Vite manifest OK ({$file}).\n");
+  ' "${MANIFEST}"
+}
+
 $CREATE_RELEASE()
 
 cd "$FORGE_RELEASE_DIRECTORY"
 REPO_ROOT="$FORGE_RELEASE_DIRECTORY"
-API_DIR="${REPO_ROOT}/api"
 
-if [ -f "${REPO_ROOT}/.env" ] && [ ! -e "${API_DIR}/.env" ]; then
-  ln -sf ../.env "${API_DIR}/.env"
-fi
-
-if [ ! -f "${API_DIR}/.env" ]; then
-  echo "ERROR: ${API_DIR}/.env not found. Create Environment in Forge first."
+# Site root may be the repo ("/") or the Laravel app ("api").
+if [ -f "${REPO_ROOT}/composer.json" ]; then
+  API_DIR="${REPO_ROOT}"
+elif [ -f "${REPO_ROOT}/api/composer.json" ]; then
+  API_DIR="${REPO_ROOT}/api"
+else
+  echo "ERROR: composer.json not found in ${REPO_ROOT} or ${REPO_ROOT}/api."
+  echo "Set the site root to api (web directory public) or / (web directory api/public)."
   exit 1
 fi
 
-if [ ! -f "${API_DIR}/composer.json" ]; then
-  echo "ERROR: ${API_DIR}/composer.json not found. Web directory must be api/public (monorepo)."
+if [ -f "${REPO_ROOT}/.env" ] && [ ! -e "${API_DIR}/.env" ]; then
+  ln -sf "${REPO_ROOT}/.env" "${API_DIR}/.env"
+fi
+
+if [ ! -f "${API_DIR}/.env" ]; then
+  echo "ERROR: ${API_DIR}/.env not found. Save the site environment, then redeploy."
   exit 1
 fi
 
 cd "${API_DIR}"
+echo "Deploying API from ${API_DIR}"
 
 require_php_redis
 require_redis_server
@@ -119,10 +179,7 @@ validate_eis_endpoint_config
 
 ${FORGE_COMPOSER:-composer} install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-if [ -f package-lock.json ]; then
-  npm ci --ignore-scripts
-  npm run build
-fi
+refresh_admin_vite_build
 
 ${FORGE_PHP_BIN} artisan migrate --force
 

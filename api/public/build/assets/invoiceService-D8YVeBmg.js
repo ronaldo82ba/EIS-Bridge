@@ -1,0 +1,1 @@
+import{t as e}from"./api-B5L1IaUh.js";import"./main-wvX_t_Rb.js";var t={list:t=>e.get(`/invoices`,{params:t}),search:t=>e.get(`/invoices/search`,{params:t}),getAnalytics:(t,n={})=>e.get(`/invoices/analytics`,{params:{range:t,...n}}),get:t=>e.get(`/invoices/${t}`),retry:t=>e.post(`/invoices/${t}/retry`),bulk:(t,n)=>e.post(`/invoices/bulk`,{action:t,ids:n})};export{t};

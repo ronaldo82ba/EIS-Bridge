@@ -1,0 +1,1 @@
+import{i as e,t}from"./react-B8IZ02wI.js";var n=e(t(),1);function r(e=1,t=25){let[r,i]=(0,n.useState)(e),[a,o]=(0,n.useState)(t);return{page:r,perPage:a,params:(0,n.useMemo)(()=>({page:r,per_page:a}),[r,a]),setPage:i,setPerPage:o,onPageChange:i,onPerPageChange:o}}export{r as t};

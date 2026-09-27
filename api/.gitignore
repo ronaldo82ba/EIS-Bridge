@@ -16,7 +16,8 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
+# public/build is tracked. GET /admin calls @vite and throws
+# Illuminate\Foundation\ViteManifestNotFoundException when manifest.json is absent.
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage

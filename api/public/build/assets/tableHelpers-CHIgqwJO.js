@@ -1,0 +1,1 @@
+function e(e){return e==null?!1:typeof e==`string`?e.trim().length>0:typeof e==`object`?Object.keys(e).length>0:!0}function t(e,t,n){let r=t?.trim().toLowerCase();return r?e.filter(e=>n.some(t=>{let n=t.split(`.`).reduce((e,t)=>e?.[t],e);return String(n??``).toLowerCase().includes(r)})):e}export{e as n,t};

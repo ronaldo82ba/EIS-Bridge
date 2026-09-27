@@ -475,7 +475,7 @@ To rotate `SANDBOX_API_KEY`: update **Site → Environment**, **Save**, **Deploy
 | Deploy fails: **PHP redis extension not enabled** | `SESSION_DRIVER=redis` + `REDIS_CLIENT=phpredis` but phpredis missing | **Forge → Server → PHP → Extensions** (same version as site, e.g. **PHP 8.5**) **→ enable `redis`** → **Restart PHP** → redeploy |
 | Deploy fails: **redis-cli ping failed** | Redis service not running | **Forge → Server → Network** (install Redis) or `sudo systemctl start redis-server` |
 | `/up` returns **500** JSON `{"status":"down"}` | `APP_ENV=production` with `EIS_SANDBOX_MODE=true` (intentional guard) | Set `APP_ENV=staging` in Forge Environment for sandbox; save and redeploy |
-| `/` returns 500 but `/up` is 200 | Admin Vite build missing or session/redis error on web routes | Confirm `npm run build` in deploy log; check `storage/logs/laravel.log` |
+| `GET /admin` returns **500** HTML ("Server Error") while `GET /up` is 200. On production, `GET /` is a 302 to `/admin`. The 500 can still set `XSRF-TOKEN` and `eis-bridge-session`. | `Illuminate\Foundation\ViteManifestNotFoundException`: `admin.blade.php` calls `@vite` and `api/public/build/manifest.json` is not on the release (live check: `https://api.eisbridge.com/build/manifest.json` is 404). Sandbox stays 200 because its release has the manifest. | Redeploy `api.eisbridge.com` with [`deploy/forge-deploy-api.sh`](../deploy/forge-deploy-api.sh). That script will not activate a release whose Vite manifest lacks `resources/js/admin/main.jsx`. If npm fails, it restores the committed `api/public/build`. After deploy, `GET /build/manifest.json` and `GET /admin` are both 200, and the admin HTML contains `id="admin-root"`. |
 | `/up` returns **500** with `Unsupported cipher or incorrect key length` | `APP_KEY` in Forge Environment is wrong length (e.g. truncated, extra characters, or not `base64:` format) — must decode to **32 bytes** for AES-256-CBC | Locally: `cd api && php artisan key:generate --show`. Copy the full `base64:...` value into **Forge → Site → Environment**, **Save**, redeploy. Latest [`deploy/forge-deploy-sandbox.sh`](../deploy/forge-deploy-sandbox.sh) fails deploy early with byte count if `APP_KEY` is invalid |
 | Deploy fails: **APP_KEY decodes to N bytes, expected 32** | Same as above — caught before `config:cache` | Regenerate with `php artisan key:generate --show`; replace entire `APP_KEY` line in Forge Environment (do not hand-edit the base64 payload) |
 
@@ -506,7 +506,7 @@ tail -50 storage/logs/laravel.log
 7. **Horizon daemon** — command `php8.5 artisan horizon`, directory `/home/forge/api.eisbridge.com/current/api`, user `forge`, processes `1`; set `stopwaitsecs=3600` in Supervisor after create.
 8. **Scheduler** — enable on the site.
 9. **SSL** — Lets Encrypt for `api.eisbridge.com`, force HTTPS.
-10. **Verify** — `curl -sS https://api.eisbridge.com/up` → 200; `php8.5 artisan horizon:status`; restrict `/horizon` (IP allowlist or Forge auth).
+10. **Verify** — `curl -sS -o /dev/null -w '%{http_code}\n' https://api.eisbridge.com/up` → 200; `curl -sS -o /dev/null -w '%{http_code}\n' https://api.eisbridge.com/build/manifest.json` → 200; `curl -sS https://api.eisbridge.com/admin` → 200 and the body contains `id="admin-root"` (the console shell; sign-in is client-side). It must not be the Laravel "Server Error" page. Then `php8.5 artisan horizon:status`. Restrict `/horizon` (IP allowlist or site auth).
 
 ---
 
