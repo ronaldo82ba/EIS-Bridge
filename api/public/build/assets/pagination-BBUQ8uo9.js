@@ -1,0 +1,1 @@
+function e(e){let t=e.data??{},n=t.meta??{};return{data:t.data??[],pagination:{current:t.current_page??n.current_page??1,pageSize:t.per_page??n.per_page??25,total:t.total??n.total??0,lastPage:t.last_page??n.last_page??1}}}export{e as t};

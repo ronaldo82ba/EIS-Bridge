@@ -2,12 +2,20 @@
 
 @import url("../../styles/theme.css");
 
-:root {
+:root,
+[data-theme='light'] {
   --portal-code-bg: #1e2430;
   --portal-code-text: #e8ecf1;
   --portal-code-accent: #7ec8ff;
-  --portal-border: rgba(46, 58, 69, 0.14);
+  --portal-border: var(--line, #d5deea);
   --portal-sidebar-width: 14rem;
+}
+
+[data-theme='dark'] {
+  --portal-code-bg: #0a1018;
+  --portal-code-text: #e8ecf1;
+  --portal-code-accent: #9ad0ff;
+  --portal-border: var(--line, #2a384c);
 }
 
 /* Portal header & nav */
@@ -20,10 +28,10 @@
 .portal-badge {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--bridge-teal);
+  color: var(--sky, var(--bridge-teal));
   margin-left: 0.5rem;
   padding: 0.15rem 0.5rem;
-  border: 1px solid rgba(0, 168, 168, 0.35);
+  border: 1px solid color-mix(in oklab, var(--sky, var(--bridge-teal)) 40%, transparent);
   border-radius: 999px;
   letter-spacing: 0.02em;
 }
@@ -33,10 +41,10 @@
   padding: 0.5rem 0.85rem;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: var(--slate-gray);
-  background: var(--cloud-white);
+  color: var(--ink, var(--slate-gray));
+  background: var(--paper-2, var(--cloud-white));
   border: 1px solid var(--portal-border);
-  border-radius: var(--radius);
+  border-radius: 0.5rem;
   cursor: pointer;
 }
 
@@ -54,26 +62,26 @@
   padding: 0.4rem 0.75rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--slate-gray);
+  color: var(--slate, var(--slate-gray));
   text-decoration: none;
-  border-radius: var(--radius);
+  border-radius: 999px;
   transition: background-color 0.15s, color 0.15s;
 }
 
 .portal-nav a:hover {
-  color: var(--eis-blue);
-  background: rgba(0, 87, 217, 0.06);
+  color: var(--ink, var(--eis-blue));
+  background: color-mix(in oklab, var(--brand, var(--eis-blue)) 10%, transparent);
 }
 
 .portal-nav a[aria-current="page"] {
-  color: var(--eis-blue);
-  background: rgba(0, 87, 217, 0.1);
+  color: var(--ink, var(--eis-blue));
+  background: color-mix(in oklab, var(--brand, var(--eis-blue)) 14%, transparent);
 }
 
 .marketing-link {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--bridge-teal);
+  color: var(--sky, var(--bridge-teal));
   text-decoration: none;
   white-space: nowrap;
 }
@@ -87,27 +95,50 @@
 .portal-main {
   padding-block: 2.5rem 4rem;
   min-height: calc(100vh - 12rem);
+  background: transparent;
 }
 
 .portal-hero {
-  background: linear-gradient(135deg, #fff 0%, var(--cloud-white) 55%, rgba(0, 168, 168, 0.07) 100%);
-  border-bottom: 1px solid rgba(46, 58, 69, 0.08);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 420px at 90% 10%, color-mix(in oklab, var(--sky, #00a8a8) 14%, transparent), transparent 55%),
+    linear-gradient(160deg, var(--paper-2, var(--cloud-white)) 0%, var(--paper, #fff) 55%, color-mix(in oklab, var(--brand, #0057d9) 6%, var(--paper, #fff)) 100%);
+  border-bottom: 1px solid var(--line, rgba(46, 58, 69, 0.08));
   padding-block: 3rem 3.5rem;
+}
+
+.portal-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -8% -45% auto;
+  width: min(40vw, 26rem);
+  height: min(40vw, 26rem);
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in oklab, var(--brand, #0057d9) 16%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.portal-hero .container {
+  position: relative;
+  z-index: 1;
 }
 
 .portal-hero h1 {
   margin: 0 0 1rem;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
-  color: var(--eis-blue);
+  font-family: var(--font-display, Syne, sans-serif);
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--ink, var(--eis-blue));
+  max-width: 38rem;
 }
 
 .portal-hero .lead {
   margin: 0 0 1.75rem;
-  font-size: clamp(1rem, 2vw, 1.1875rem);
-  color: var(--slate-gray);
+  font-size: clamp(0.9875rem, 1.8vw, 1.1rem);
+  color: var(--slate, var(--slate-gray));
   max-width: 40rem;
 }
 
@@ -118,30 +149,35 @@
   margin-bottom: 1.25rem;
 }
 
+.cta-row .btn {
+  border-radius: 999px;
+}
+
 .btn-secondary {
-  color: var(--eis-blue);
-  background: #fff;
-  border: 2px solid var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
+  background: var(--paper, #fff);
+  border: 2px solid color-mix(in oklab, var(--ink, var(--eis-blue)) 35%, transparent);
   box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 87, 217, 0.06);
+  background: color-mix(in oklab, var(--brand, #0057d9) 8%, var(--paper, #fff));
   transform: translateY(-1px);
 }
 
 .page-title {
   margin: 0 0 0.5rem;
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.3rem, 2.4vw, 1.65rem);
   font-weight: 700;
-  color: var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
   letter-spacing: -0.02em;
 }
 
 .page-intro {
   margin: 0 0 2rem;
-  color: var(--slate-gray);
+  color: var(--slate, var(--slate-gray));
   max-width: 42rem;
+  font-size: 0.9875rem;
 }
 
 .content-section {
@@ -150,18 +186,18 @@
 
 .content-section h2 {
   margin: 0 0 1rem;
-  font-size: 1.375rem;
+  font-size: clamp(1.1rem, 2vw, 1.25rem);
   font-weight: 700;
-  color: var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid rgba(0, 168, 168, 0.35);
+  border-bottom: 2px solid color-mix(in oklab, var(--sky, #00a8a8) 45%, transparent);
 }
 
 .content-section h3 {
   margin: 1.5rem 0 0.75rem;
-  font-size: 1.0625rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--slate-gray);
+  color: var(--slate, var(--slate-gray));
 }
 
 .content-section p,
@@ -223,9 +259,9 @@
 }
 
 .field-table th {
-  background: rgba(0, 87, 217, 0.06);
+  background: var(--paper-2);
   font-weight: 700;
-  color: var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
 }
 
 .field-table td code {
@@ -233,7 +269,7 @@
 }
 
 .field-table tr:nth-child(even) td {
-  background: rgba(247, 249, 250, 0.7);
+  background: var(--paper-2);
 }
 
 .badge-required {
@@ -285,9 +321,9 @@ code {
   font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
   font-size: 0.875em;
   padding: 0.15rem 0.35rem;
-  background: rgba(46, 58, 69, 0.08);
+  background: color-mix(in oklab, var(--brand, #0057d9) 12%, var(--paper-2, #f4f7fb));
   border-radius: 0.25rem;
-  color: var(--graphite-black);
+  color: var(--ink, var(--graphite-black));
 }
 
 .code-label {
@@ -360,23 +396,24 @@ code {
 
 .portal-card {
   padding: 1.5rem;
-  background: #fff;
+  background: var(--paper, #fff);
   border: 1px solid var(--portal-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   border-top: 3px solid var(--bridge-teal);
+  color: var(--slate, var(--slate-gray));
 }
 
 .portal-card h3 {
   margin: 0 0 0.5rem;
   font-size: 1.0625rem;
-  color: var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
 }
 
 .portal-card p {
   margin: 0 0 1rem;
   font-size: 0.9375rem;
-  color: var(--slate-gray);
+  color: var(--slate, var(--slate-gray));
 }
 
 /* Tools tabs (language snippets) */
@@ -453,37 +490,44 @@ code {
   top: 0.35rem;
   width: 1rem;
   height: 1rem;
-  border: 2px solid var(--bridge-teal);
+  border: 2px solid var(--sky, var(--bridge-teal));
   border-radius: 0.2rem;
-  background: #fff;
+  background: var(--paper, #fff);
 }
 
 .checklist-section {
   margin-bottom: 2rem;
   padding: 1.25rem 1.5rem;
-  background: #fff;
-  border: 1px solid var(--portal-border);
+  background: var(--paper, #fff);
+  border: 1px solid var(--portal-border, var(--line));
   border-radius: var(--radius);
+  color: var(--slate, var(--slate-gray));
 }
 
 .checklist-section h3 {
   margin: 0 0 1rem;
-  color: var(--eis-blue);
+  color: var(--ink, var(--eis-blue));
+}
+
+.checklist-section .checklist li,
+.checklist-section p {
+  color: var(--slate, var(--slate-gray));
 }
 
 .callout {
   padding: 1rem 1.25rem;
   margin: 1rem 0;
-  background: rgba(0, 87, 217, 0.06);
-  border-left: 4px solid var(--eis-blue);
-  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--brand, #0057d9) 8%, var(--paper, #fff));
+  border-left: 4px solid var(--brand, var(--eis-blue));
+  border-radius: 0 0.5rem 0.5rem 0;
   font-size: 0.9375rem;
-  color: var(--slate-gray);
+  color: var(--ink, var(--slate-gray));
 }
 
 .callout-warning {
-  background: rgba(255, 195, 0, 0.12);
-  border-left-color: var(--signal-yellow);
+  background: color-mix(in oklab, var(--signal-yellow, #ffc300) 16%, var(--paper));
+  border-left-color: var(--signal-yellow, #ffc300);
+  color: var(--ink);
 }
 
 .changelog-entry {
@@ -563,4 +607,132 @@ code {
   .field-table td {
     padding: 0.5rem;
   }
+}
+
+/* Dual-theme + high-tech content overrides */
+body.has-site-chrome .portal-hero h1,
+body.has-site-chrome .page-title,
+body.has-site-chrome .content-section h2,
+body.has-site-chrome .content-section h3 {
+  color: var(--ink) !important;
+  font-family: var(--font-display, Syne, sans-serif);
+}
+
+body.has-site-chrome .portal-hero h1 {
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem) !important;
+}
+
+body.has-site-chrome .content-section h2 {
+  font-size: clamp(1.1rem, 2vw, 1.25rem) !important;
+}
+
+body.has-site-chrome .portal-hero .lead,
+body.has-site-chrome .page-intro,
+body.has-site-chrome .content-section p,
+body.has-site-chrome .content-section li {
+  color: var(--slate) !important;
+}
+
+body.has-site-chrome .content-section {
+  background: transparent;
+}
+
+body.has-site-chrome .endpoint-card,
+body.has-site-chrome .tool-card,
+body.has-site-chrome .step,
+body.has-site-chrome .support-card,
+body.has-site-chrome .changelog-entry,
+body.has-site-chrome .portal-card,
+body.has-site-chrome .checklist-section {
+  background: var(--paper-2) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 1rem !important;
+  color: var(--slate);
+}
+
+body.has-site-chrome .endpoint-card h3,
+body.has-site-chrome .tool-card h3,
+body.has-site-chrome .step h3,
+body.has-site-chrome .support-card h3,
+body.has-site-chrome .portal-card h3,
+body.has-site-chrome .checklist-section h3 {
+  color: var(--ink) !important;
+}
+
+body.has-site-chrome .checklist-section .checklist li,
+body.has-site-chrome .portal-card p,
+body.has-site-chrome .callout {
+  color: var(--slate) !important;
+}
+
+body.has-site-chrome .callout {
+  background: color-mix(in oklab, var(--brand) 10%, var(--paper)) !important;
+  border-left-color: var(--brand);
+}
+
+body.has-site-chrome .checklist li::before {
+  background: var(--paper) !important;
+  border-color: var(--sky);
+}
+
+body.has-site-chrome .btn-secondary {
+  color: var(--ink) !important;
+  background: var(--paper) !important;
+  border-color: color-mix(in oklab, var(--ink) 28%, transparent) !important;
+  border-radius: 999px;
+}
+
+body.has-site-chrome .btn-primary {
+  border-radius: 999px;
+  color: #fff !important;
+}
+
+body.has-site-chrome code,
+body.has-site-chrome .inline-code {
+  background: color-mix(in oklab, var(--brand) 10%, var(--paper-2));
+  color: var(--ink);
+}
+
+body.has-site-chrome pre,
+body.has-site-chrome pre code {
+  background: var(--portal-code-bg, var(--code-bg)) !important;
+  color: var(--portal-code-text, var(--code-text)) !important;
+}
+
+body.has-site-chrome pre {
+  border-radius: 0.75rem;
+  border: 1px solid var(--line);
+}
+
+body.has-site-chrome .field-table th {
+  background: var(--paper-2) !important;
+  color: var(--ink) !important;
+}
+
+body.has-site-chrome .field-table td {
+  color: var(--slate) !important;
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+}
+
+body.has-site-chrome .field-table tr:nth-child(even) td {
+  background: var(--paper-2) !important;
+}
+
+body.has-site-chrome .endpoint-path {
+  color: var(--ink) !important;
+}
+
+body.has-site-chrome p.footer-links {
+  display: block !important;
+  font-size: 0.8125rem;
+}
+
+body.has-site-chrome .field-table td {
+  color: var(--slate);
+  border-color: var(--line);
+}
+
+body.has-site-chrome .anchor-target {
+  scroll-margin-top: 8rem;
 }

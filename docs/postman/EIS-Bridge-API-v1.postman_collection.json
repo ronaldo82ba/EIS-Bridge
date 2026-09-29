@@ -103,7 +103,7 @@
   "variable": [
     {
       "key": "BASE_URL",
-      "value": "https://sandbox.eisbridge.ph/v1"
+      "value": "https://sandbox.eisbridge.com/v1"
     },
     {
       "key": "API_KEY",

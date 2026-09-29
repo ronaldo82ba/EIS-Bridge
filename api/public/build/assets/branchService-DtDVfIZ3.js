@@ -1,0 +1,1 @@
+import{t as e}from"./api-B5L1IaUh.js";import"./main-wvX_t_Rb.js";var t={list:t=>e.get(`/branches`,{params:t}),get:t=>e.get(`/branches/${t}`),create:t=>e.post(`/branches`,t),update:(t,n)=>e.patch(`/branches/${t}`,n),createDevice:(t,n)=>e.post(`/branches/${t}/devices`,n),updateDevice:(t,n)=>e.patch(`/devices/${t}`,n)};export{t};

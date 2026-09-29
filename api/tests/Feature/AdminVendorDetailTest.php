@@ -164,4 +164,79 @@ class AdminVendorDetailTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.id', $vendor->id);
     }
+
+    public function test_admin_vendor_store_returns_vendor_identifier_for_redirects(): void
+    {
+        Sanctum::actingAs(User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'vendor_id' => null,
+        ]));
+
+        $response = $this->postJson('/api/admin/vendors', [
+            'name' => 'Redirect Vendor',
+            'webhook_url' => 'https://example.test/redirect-webhook',
+        ])
+            ->assertCreated()
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'name',
+                ],
+                'api_key',
+            ]);
+
+        $this->assertIsInt($response->json('data.id'));
+        $this->assertSame('Redirect Vendor', $response->json('data.name'));
+    }
+
+    public function test_admin_vendor_store_rejects_private_webhook_url(): void
+    {
+        Sanctum::actingAs(User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'vendor_id' => null,
+        ]));
+
+        $this->postJson('/api/admin/vendors', [
+            'name' => 'Private Webhook Vendor',
+            'webhook_url' => 'https://127.0.0.1/webhook',
+        ])
+            ->assertStatus(422)
+            ->assertJsonPath('error', 'validation_error')
+            ->assertJsonStructure(['details' => ['webhook_url']]);
+    }
+
+    public function test_admin_vendor_update_rejects_private_webhook_url(): void
+    {
+        Sanctum::actingAs(User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'vendor_id' => null,
+        ]));
+
+        [$vendor] = $this->seedVendorWithMerchant('PRIVATE-UPDATE');
+
+        $this->patchJson("/api/admin/vendors/{$vendor->id}", [
+            'webhook_url' => 'http://localhost/webhook',
+        ])
+            ->assertStatus(422)
+            ->assertJsonPath('error', 'validation_error')
+            ->assertJsonStructure(['details' => ['webhook_url']]);
+    }
+
+    public function test_admin_webhook_update_rejects_private_webhook_url(): void
+    {
+        Sanctum::actingAs(User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'vendor_id' => null,
+        ]));
+
+        [$vendor] = $this->seedVendorWithMerchant('PRIVATE-WEBHOOK');
+
+        $this->patchJson("/api/admin/webhooks/{$vendor->id}", [
+            'webhook_url' => 'https://10.0.0.5/webhook',
+            'webhook_secret' => 'secret-12345678',
+        ])
+            ->assertStatus(422)
+            ->assertJsonPath('error', 'validation_error')
+            ->assertJsonStructure(['details' => ['webhook_url']]);
+    }
 }

@@ -2,13 +2,14 @@ name: Lint
 
 on:
   pull_request:
+    branches: [main, master, 'release/**']
     paths:
       - 'api/resources/js/**'
       - 'api/.eslintrc.cjs'
       - 'api/package.json'
       - 'api/package-lock.json'
   push:
-    branches: [main, master]
+    branches: [main, master, 'release/**']
     paths:
       - 'api/resources/js/**'
       - 'api/.eslintrc.cjs'
@@ -22,9 +23,9 @@ jobs:
       run:
         working-directory: api
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: npm

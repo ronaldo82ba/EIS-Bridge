@@ -10,6 +10,16 @@ import { usePagination } from '../../hooks/usePagination';
 import { extractPaginated } from '../../utils/pagination';
 import { filterRows } from '../../utils/tableHelpers';
 
+function getVendorRouteId(vendor) {
+    const id = vendor?.id ?? vendor?.vendor_id;
+
+    if (id === undefined || id === null || String(id).trim() === '') {
+        return null;
+    }
+
+    return String(id);
+}
+
 export default function VendorList() {
     const { page, perPage, params, setPage } = usePagination();
     const [search, setSearch] = useState('');
@@ -48,24 +58,34 @@ export default function VendorList() {
             key: 'actions',
             label: 'Actions',
             sortable: false,
-            render: (_, row) => (
-                <div className="flex items-center gap-3">
-                    <Link
-                        to={`/vendors/${row.id}`}
-                        className="font-medium text-blue-600 hover:text-blue-800"
-                        onClick={(event) => event.stopPropagation()}
-                    >
-                        View
-                    </Link>
-                    <Link
-                        to={`/vendors/${row.id}`}
-                        className="text-slate-600 hover:text-slate-800"
-                        onClick={(event) => event.stopPropagation()}
-                    >
-                        Edit
-                    </Link>
-                </div>
-            ),
+            render: (_, row) => {
+                const vendorId = getVendorRouteId(row);
+
+                if (!vendorId) {
+                    return <span className="text-slate-400">Unavailable</span>;
+                }
+
+                const vendorPath = `/vendors/${encodeURIComponent(vendorId)}`;
+
+                return (
+                    <div className="flex items-center gap-3">
+                        <Link
+                            to={vendorPath}
+                            className="font-medium text-blue-600 hover:text-blue-800"
+                            onClick={(event) => event.stopPropagation()}
+                        >
+                            View
+                        </Link>
+                        <Link
+                            to={vendorPath}
+                            className="text-slate-600 hover:text-slate-800"
+                            onClick={(event) => event.stopPropagation()}
+                        >
+                            Edit
+                        </Link>
+                    </div>
+                );
+            },
         },
     ];
 

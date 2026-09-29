@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware(['api', 'security.headers'])
                 ->prefix('api/admin')
                 ->group(base_path('routes/admin.php'));
+
+            Route::get('/horizon-health', \App\Http\Controllers\HorizonHealthController::class)
+                ->middleware(['security.headers']);
         },
     )
     ->withBroadcasting(
@@ -31,16 +34,20 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\EnsureRole::class,
             'support.write' => \App\Http\Middleware\EnsureSupportWriteAction::class,
             'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            'sandbox.api_key' => \App\Http\Middleware\EnsureSandboxApiKey::class,
+            'codebooks.ingest_token' => \App\Http\Middleware\EnsureCodeBooksIngestToken::class,
         ]);
 
         $middleware->api(prepend: [
             \App\Http\Middleware\CorsMiddleware::class,
             \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            \App\Http\Middleware\EnsureSandboxApiKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('v1/*')
+            fn (Request $request) => $request->is('up')
+                || $request->is('v1/*')
                 || $request->is('api/*')
                 || $request->is('admin/*'),
         );

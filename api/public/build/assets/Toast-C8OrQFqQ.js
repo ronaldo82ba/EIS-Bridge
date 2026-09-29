@@ -1,0 +1,1 @@
+import{J as e}from"./main-wvX_t_Rb.js";e();var t=null;function n(e){if(t){t(e,`success`);return}window.alert(e)}function r(e){if(t){t(e,`error`);return}window.alert(e)}export{n,r as t};

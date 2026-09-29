@@ -144,10 +144,19 @@ class MerchantOnboardingTest extends TestCase
 
         $result = $processor->processSingle([
             'transaction_id' => 'TX-LOCK-001',
+            'transaction_datetime' => '2026-06-12T01:00:00+08:00',
             'merchant_code' => 'LOCK001',
             'branch_code' => 'BR001',
             'pos_device_id' => 'POS-LOCKED',
-            'totals' => ['net' => 100],
+            'invoice_type' => 'OR',
+            'items' => [[
+                'sku' => 'SKU-LOCK',
+                'description' => 'Locked item',
+                'qty' => 1,
+                'unit_price' => 100,
+            ]],
+            'totals' => ['net' => 100, 'gross' => 100],
+            'payment' => ['method' => 'CASH', 'amount' => 100],
         ], $vendor);
 
         $this->assertSame(403, $result['http_status']);

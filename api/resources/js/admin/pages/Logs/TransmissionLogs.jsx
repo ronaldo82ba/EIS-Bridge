@@ -2,9 +2,10 @@ import { Button, DatePicker, Form, Input, Select, Typography } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import DataTable from '../../components/DataTable';
-import JsonViewer from '../../components/JsonViewer';
+import JsonDetailModal from '../../components/JsonDetailModal';
 import Pagination from '../../components/Pagination';
 import { logService } from '../../services/logService';
+import { hasJsonContent } from '../../utils/tableHelpers';
 
 const { RangePicker } = DatePicker;
 
@@ -12,7 +13,7 @@ export default function TransmissionLogs() {
     const [filters, setFilters] = useState({});
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(25);
-    const [expanded, setExpanded] = useState(null);
+    const [detail, setDetail] = useState(null);
 
     const { data, isLoading } = useQuery({
         queryKey: ['logs', 'transmission', filters, page, perPage],
@@ -34,8 +35,14 @@ export default function TransmissionLogs() {
             title: 'Metadata',
             key: 'metadata',
             render: (_, record) =>
-                record.metadata ? (
-                    <Typography.Link onClick={() => setExpanded(record.id)}>View</Typography.Link>
+                hasJsonContent(record.metadata) ? (
+                    <Typography.Link
+                        onClick={() =>
+                            setDetail({ title: 'Transmission metadata', data: record.metadata })
+                        }
+                    >
+                        View
+                    </Typography.Link>
                 ) : (
                     '—'
                 ),
@@ -51,8 +58,6 @@ export default function TransmissionLogs() {
         setFilters(next);
         setPage(1);
     };
-
-    const expandedRow = data?.data?.find((row) => row.id === expanded);
 
     return (
         <>
@@ -98,11 +103,12 @@ export default function TransmissionLogs() {
                 }}
             />
 
-            {expandedRow && (
-                <div style={{ marginTop: 16 }}>
-                    <JsonViewer data={expandedRow.metadata} title="Transmission metadata" />
-                </div>
-            )}
+            <JsonDetailModal
+                open={!!detail}
+                title={detail?.title}
+                data={detail?.data}
+                onClose={() => setDetail(null)}
+            />
         </>
     );
 }

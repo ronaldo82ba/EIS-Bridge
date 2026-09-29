@@ -23,6 +23,8 @@ const mockStore = {
     ptt: {},
 };
 
+// Phase-1 mock bridge for onboarding screens while admin endpoints are bootstrapped.
+
 function unwrap(response) {
     return response?.data?.data ?? response?.data ?? response;
 }

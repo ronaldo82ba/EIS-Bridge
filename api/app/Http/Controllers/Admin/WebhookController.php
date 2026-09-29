@@ -6,7 +6,9 @@ use App\Models\Vendor;
 use App\Models\WebhookDelivery;
 use App\Services\Audit\AuditLogger;
 use App\Support\AdminScope;
+use App\Support\UrlSecurity;
 use Illuminate\Http\Request;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Str;
 
 class WebhookController extends AdminController
@@ -65,6 +67,8 @@ class WebhookController extends AdminController
             'webhook_secret' => ['nullable', 'string', 'min:8'],
         ]);
 
+        $this->validatePublicWebhookUrl($data['webhook_url'] ?? null);
+
         if (array_key_exists('webhook_secret', $data) && $data['webhook_secret'] === null) {
             unset($data['webhook_secret']);
         }
@@ -116,5 +120,24 @@ class WebhookController extends AdminController
             ->paginate($request->integer('per_page', 25));
 
         return response()->json($deliveries);
+    }
+
+    private function validatePublicWebhookUrl(?string $url): void
+    {
+        if ($url === null || $url === '') {
+            return;
+        }
+
+        if (UrlSecurity::isAllowedPublicHttpsUrl($url)) {
+            return;
+        }
+
+        throw new HttpResponseException(response()->json([
+            'error' => 'validation_error',
+            'message' => 'The webhook payload is invalid.',
+            'details' => [
+                'webhook_url' => ['Webhook URL must be an HTTPS endpoint with a public host.'],
+            ],
+        ], 422));
     }
 }

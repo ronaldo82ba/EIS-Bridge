@@ -1,0 +1,1 @@
+import{t as e}from"./api-B5L1IaUh.js";import"./main-wvX_t_Rb.js";var t={status:()=>e.get(`/queues`),failedJobs:t=>e.get(`/jobs/failed`,{params:t}),retryJob:t=>e.post(`/jobs/${t}/retry`),deleteJob:t=>e.delete(`/jobs/${t}`)};export{t};

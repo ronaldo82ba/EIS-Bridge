@@ -119,6 +119,53 @@ class MapInvoiceJobTest extends TestCase
         });
     }
 
+    public function test_maps_qa_minimum_payload_with_net_only_totals(): void
+    {
+        $this->seedMerchantGraph();
+
+        $invoice = Invoice::create([
+            'bridge_transaction_id' => 'EB-MAP-NET-ONLY',
+            'transaction_id' => 'TX-QA-NET-ONLY',
+            'merchant_code' => 'MRC-MAP',
+            'branch_code' => 'BR001',
+            'pos_device_id' => 'POS01',
+            'raw_pos_json' => [
+                'transaction_id' => 'TX-QA-NET-ONLY',
+                'transaction_datetime' => '2026-06-12T00:00:00+08:00',
+                'merchant_code' => 'MRC-MAP',
+                'branch_code' => 'BR001',
+                'pos_device_id' => 'POS01',
+                'invoice_type' => 'OR',
+                'items' => [
+                    [
+                        'sku' => 'SKU-1',
+                        'description' => 'Item 1',
+                        'qty' => 1,
+                        'unit_price' => 100,
+                    ],
+                ],
+                'totals' => ['net' => 100],
+                'payment' => ['method' => 'CASH', 'amount' => 100],
+            ],
+            'processing_status' => 'queued',
+        ]);
+
+        Queue::fake([SignInvoiceJob::class]);
+
+        (new MapInvoiceJob($invoice->id))->handle(
+            $this->app->make(\App\Services\Mapping\PosToBirMapper::class),
+            $this->app->make(\App\Services\Mapping\BirSchemaValidator::class)
+        );
+
+        $invoice->refresh();
+
+        $this->assertSame('mapped', $invoice->processing_status);
+        $this->assertEquals(100.0, $invoice->bir_json['totals']['gross_amount']);
+        $this->assertEquals(100.0, $invoice->bir_json['totals']['net_amount']);
+
+        Queue::assertPushed(SignInvoiceJob::class);
+    }
+
     public function test_fails_gracefully_with_invalid_payload(): void
     {
         $this->seedMerchantGraph();

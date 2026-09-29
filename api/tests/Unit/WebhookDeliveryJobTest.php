@@ -7,6 +7,8 @@ use App\Models\Invoice;
 use App\Models\Merchant;
 use App\Models\Vendor;
 use App\Models\WebhookDelivery;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -58,12 +60,15 @@ class WebhookDeliveryJobTest extends TestCase
             ],
         ];
 
-        Http::fake(function ($request) use ($vendor, $payload) {
-            $body = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            $expectedSignature = hash_hmac('sha256', $body, $vendor->webhook_secret);
+        Http::fake(function ($request) use ($vendor) {
+            $requestBody = (string) $request->body();
 
             $this->assertSame('https://vendor.example/webhooks/eis', $request->url());
-            $this->assertSame($expectedSignature, $request->header('X-EISBridge-Signature')[0] ?? null);
+            $this->assertSame(
+                hash_hmac('sha256', $requestBody, $vendor->webhook_secret),
+                $request->header('X-EISBridge-Signature')[0] ?? null
+            );
+            $this->assertNotEmpty($request->header('X-EISBridge-Timestamp')[0] ?? null);
 
             return Http::response(['ok' => true], 200);
         });
@@ -117,5 +122,42 @@ class WebhookDeliveryJobTest extends TestCase
         $job = new WebhookDeliveryJob(1, null, 'webhook.test');
 
         $this->assertSame([30, 60, 90, 120], $job->backoff());
+    }
+
+    public function test_connection_error_is_rethrown_for_queue_retry(): void
+    {
+        [$vendor, $invoice] = $this->seedVendorWithInvoice();
+
+        Http::fake(function () {
+            throw new ConnectionException('Network unreachable');
+        });
+
+        $this->expectException(ConnectionException::class);
+
+        (new WebhookDeliveryJob($vendor->id, $invoice->id, 'transaction.eis_acknowledged', [
+            'event' => 'transaction.eis_acknowledged',
+            'data' => ['bridge_transaction_id' => $invoice->bridge_transaction_id],
+        ]))->handle();
+    }
+
+    public function test_replay_cache_blocks_duplicate_payload_delivery(): void
+    {
+        [$vendor, $invoice] = $this->seedVendorWithInvoice();
+
+        Cache::flush();
+        Http::fake(['https://vendor.example/*' => Http::response(['ok' => true], 200)]);
+
+        $payload = [
+            'event' => 'transaction.eis_acknowledged',
+            'data' => [
+                'bridge_transaction_id' => $invoice->bridge_transaction_id,
+                'transaction_id' => $invoice->transaction_id,
+            ],
+        ];
+
+        (new WebhookDeliveryJob($vendor->id, $invoice->id, 'transaction.eis_acknowledged', $payload))->handle();
+        (new WebhookDeliveryJob($vendor->id, $invoice->id, 'transaction.eis_acknowledged', $payload))->handle();
+
+        Http::assertSentCount(1);
     }
 }

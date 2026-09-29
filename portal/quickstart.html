@@ -1,26 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="EIS Bridge quickstart — send your first BIR EIS transaction in five steps.">
   <title>Quickstart — EIS Bridge Developer Portal</title>
+  <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/brand/apple-touch-icon.png">
+  <meta name="theme-color" content="#0057D9">
+  <link rel="canonical" href="https://eisbridge.com/portal/quickstart.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="EIS Bridge">
+  <meta property="og:title" content="Quickstart — EIS Bridge Developer Portal">
+  <meta property="og:description" content="EIS Bridge quickstart — send your first BIR EIS transaction in five steps.">
+  <meta property="og:image" content="https://eisbridge.com/assets/brand/og-image.png">
+  <meta property="og:url" content="https://eisbridge.com/portal/quickstart.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Quickstart — EIS Bridge Developer Portal">
+  <meta name="twitter:description" content="Send your first BIR EIS transaction in five steps.">
+  <meta name="twitter:image" content="https://eisbridge.com/assets/brand/og-image.png">
   <link rel="stylesheet" href="styles/portal.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/marketing-home.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('eis-theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
 </head>
-<body>
+<body class="has-site-chrome">
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <header class="site-header portal-header">
-    <div class="container header-inner">
-      <a href="index.html" class="logo" aria-label="EIS Bridge Developer Portal home">
-        <span class="logo-mark" aria-hidden="true">EIS</span>
-        <span class="logo-text">Bridge</span>
-        <span class="portal-badge">Developer Portal</span>
+<header class="site-top" data-site-header>
+    <div class="top-ribbon">
+      <p>EIS Bridge&trade; &mdash; connect any POS/ERP/Business System to BIR EIS transmission without heavy system source-code changes</p>
+    </div>
+    <div class="wrap header-row">
+      <a class="logo" href="../index.html" aria-label="EIS Bridge home">
+        <span class="logo-mark">EIS</span> Bridge
       </a>
-      <input type="checkbox" id="nav-check" class="nav-check" hidden>
-      <label for="nav-check" class="nav-toggle">Menu</label>
-      <nav id="portal-nav" class="portal-nav" aria-label="Developer portal">
-        <ul>
+      <nav class="nav-desktop" aria-label="Primary">
+        <a href="../index.html">Home</a>
+        <a href="../partner.html">Partner</a>
+        <a href="../index.html#editions">Editions</a>
+        <a href="../insights/index.html">Insights</a>
+        <a href="../portal/index.html" aria-current="page">Developers</a>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+          <span aria-hidden="true">&#9678;</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <a class="btn btn-primary btn-header" href="../partner.html">Partner with us</a>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark look">
+          <span aria-hidden="true">&#9678;</span>
+          <span data-theme-label>Dark</span>
+        </button>
+        <button type="button" class="nav-burger" data-nav-toggle aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+      </div>
+    </div>
+    <div id="mobile-nav" class="mobile-nav" data-mobile-nav hidden>
+      <a href="../index.html">Home</a>
+      <a href="../partner.html">Partner</a>
+      <a href="../index.html#editions">Editions</a>
+      <a href="../insights/index.html">Insights</a>
+      <a href="../portal/index.html">Developers</a>
+      <a href="../certification-playbook.html">Certification playbook</a>
+      <a class="btn btn-primary" href="../partner.html">Partner with us</a>
+    </div>
+  </header>
+  <div class="portal-subnav wrap">
+    <nav class="portal-nav" aria-label="Developer portal">
+      <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="quickstart.html" aria-current="page">Quickstart</a></li>
           <li><a href="api.html">API Reference</a></li>
@@ -28,38 +85,36 @@
           <li><a href="tools.html">Tools</a></li>
           <li><a href="testing.html">Testing</a></li>
           <li><a href="support.html">Support</a></li>
-        </ul>
-      </nav>
-      <a class="marketing-link" href="../index.html">&larr; Marketing site</a>
-    </div>
-  </header>
+      </ul>
+    </nav>
+  </div>
 
   <main id="main" class="portal-main">
     <div class="container">
       <h1 class="page-title">Quickstart</h1>
       <p class="page-intro">
-        Integrate your POS in minutes. Follow these five steps to authenticate, submit a sale, and confirm BIR EIS acknowledgment.
+        Integrate any POS/ERP/Business System in minutes. Follow these five steps to authenticate, submit a sale, and confirm BIR EIS acknowledgment.
       </p>
 
       <ol class="steps">
         <li class="step">
           <h2>Get your API key</h2>
           <p>
-            Obtain a Vendor API key from your vendor administrator in the EIS Bridge Console. API keys are issued to registered POS/ERP vendors during onboarding. You will also receive <code>merchant_code</code>, <code>branch_code</code>, and <code>pos_device_id</code> for test accounts.
+            Obtain a Vendor API key from your vendor administrator in the EIS Bridge Console. API keys are issued to registered POS/ERP/Business System vendors during onboarding. You will also receive <code>merchant_code</code>, <code>branch_code</code>, and <code>pos_device_id</code> for test accounts.
           </p>
           <p><a href="support.html#get-api-key">Get API Key &rarr;</a></p>
         </li>
 
         <li class="step">
           <h2>Set BASE_URL and headers</h2>
-          <p>Use the Sandbox environment for development. Every request requires your API key and JSON content type.</p>
+          <p>Use the Sandbox environment for development. Sandbox credentials are issued during vendor onboarding. Every request requires your API key and JSON content type.</p>
           <span class="code-label">Environment &amp; headers</span>
           <pre><code># Sandbox (development)
-export BASE_URL="https://sandbox.eisbridge.ph/v1"
+export BASE_URL="https://sandbox.eisbridge.com/v1"
 export API_KEY="YOUR_VENDOR_API_KEY"
 
 # Production
-# export BASE_URL="https://api.eisbridge.ph/v1"
+# export BASE_URL="https://api.eisbridge.com/v1"
 
 curl -X GET "$BASE_URL/transactions?page=1&amp;page_size=1" \
   -H "Authorization: Bearer $API_KEY" \
@@ -110,7 +165,7 @@ curl -X GET "$BASE_URL/transactions?page=1&amp;page_size=1" \
   "processing_status": "queued",
   "message": "Transaction accepted for EIS processing."
 }</code></pre>
-          <p>Store <code>bridge_transaction_id</code> in your POS for status lookups and webhook correlation.</p>
+          <p>Store <code>bridge_transaction_id</code> in your POS/ERP/Business System for status lookups and webhook correlation.</p>
         </li>
 
         <li class="step">
@@ -137,7 +192,7 @@ curl -X GET "$BASE_URL/transactions?page=1&amp;page_size=1" \
           <h2>Done — EIS acknowledged</h2>
           <div class="step-success">
             <p>
-              When <code>eis_status</code> is <strong>acknowledged</strong>, BIR EIS has accepted the invoice. Persist <code>eis_reference_no</code> for audit and customer receipts. Your POS is now EIS-compliant for this transaction.
+              When <code>eis_status</code> is <strong>acknowledged</strong>, BIR EIS has accepted the invoice. Persist <code>eis_reference_no</code> for audit and customer receipts. The merchant must hold valid EIS CERT and PTT per BIR for live compliance.
             </p>
             <p style="margin-bottom: 0;">
               Next: run the <a href="testing.html">QA test suite</a>, explore <a href="api.html">batch submit and webhooks</a>, or download the <a href="tools.html">Postman collection</a>.
@@ -151,10 +206,16 @@ curl -X GET "$BASE_URL/transactions?page=1&amp;page_size=1" \
   <footer class="site-footer portal-footer">
     <div class="container footer-inner">
       <p class="footer-positioning">
-        EIS Bridge makes ANY POS, ANY ERP, and ANY merchant instantly BIR EIS-compliant — without rewrites, without re-certification, and without touching their source code.
+        EIS Bridge connects any POS/ERP/Business System to the BIR Electronic Invoicing System — without heavy system source-code changes. Merchants complete EIS CERT and Permit to Transmit (PTT) per BIR; the bridge handles mapping, signing, and transmission.
       </p>
+      <p class="footer-disclaimer">
+        EIS Bridge is not affiliated with or accredited by the BIR. BIR certifies taxpayer systems, not software providers. Tax compliance remains the taxpayer's responsibility.
+      </p>
+      <p class="footer-ip">EIS Bridge&trade; &mdash; trademark application pending, IPOPHL Class 42, Ref EFPH202600003850268</p>
+      <p class="footer-links"><a href="../privacy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Service</a></p>
       <p class="footer-copy">&copy; 2026 EIS Bridge</p>
     </div>
   </footer>
+  <script src="../assets/js/marketing-home.js" defer></script>
 </body>
 </html>

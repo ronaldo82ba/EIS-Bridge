@@ -17,6 +17,7 @@ use App\Policies\DevicePolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\VendorPolicy;
+use App\Support\UrlSecurity;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Events\DiagnosingHealth;
 use Illuminate\Http\Request;
@@ -41,8 +42,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->guardProductionSandboxConfig();
-
+        // Enforce only on /up (DiagnosingHealth). Do not throw during HTTP kernel boot â€”
+        // a mis-cached APP_ENV would otherwise blank-500 every route before JSON handlers run.
         Event::listen(DiagnosingHealth::class, function () {
             $this->guardProductionSandboxConfig();
         });
@@ -62,6 +63,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('billing.manageVendorLicenses', fn (User $user, Vendor $vendor) => $billing->manageVendorLicenses($user, $vendor));
         Gate::define('billing.viewMerchantLicenses', fn (User $user, Merchant $merchant) => $billing->viewMerchantLicenses($user, $merchant));
         Gate::define('billing.manageMerchantLicenses', fn (User $user, Merchant $merchant) => $billing->manageMerchantLicenses($user, $merchant));
+        Gate::define('billing.viewMerchantWallet', fn (User $user, Merchant $merchant) => $billing->viewMerchantWallet($user, $merchant));
+        Gate::define('billing.manageMerchantWallet', fn (User $user, Merchant $merchant) => $billing->manageMerchantWallet($user, $merchant));
         Gate::define('billing.viewInvoices', fn (User $user) => $billing->viewInvoices($user));
         Gate::define('billing.viewInvoice', fn (User $user, BillingInvoice $invoice) => $billing->viewInvoice($user, $invoice));
         Gate::define('billing.generateInvoices', fn (User $user) => $billing->generateInvoices($user));
@@ -110,10 +113,57 @@ class AppServiceProvider extends ServiceProvider
 
     private function guardProductionSandboxConfig(): void
     {
-        if ($this->app->environment('production') && config('eis.sandbox_mode')) {
+        if (! $this->app->environment('production')) {
+            return;
+        }
+
+        if (config('eis.sandbox_mode')) {
+            $liveEnv = $this->readAppEnvFromEnvironmentFile();
+            if ($liveEnv === 'staging') {
+                return;
+            }
+
             throw new RuntimeException(
                 'EIS sandbox mode (EIS_SANDBOX_MODE=true) cannot be enabled when APP_ENV=production.'
             );
         }
+
+        $endpoint = trim((string) config('eis.endpoint', ''));
+        if ($endpoint === '') {
+            throw new RuntimeException(
+                'EIS endpoint must be configured when APP_ENV=production and EIS_SANDBOX_MODE=false.'
+            );
+        }
+
+        if (! UrlSecurity::isAllowedPublicHttpsUrl($endpoint)) {
+            throw new RuntimeException(
+                'EIS endpoint must be an HTTPS URL with a public host when APP_ENV=production and EIS_SANDBOX_MODE=false.'
+            );
+        }
+    }
+
+    private function readAppEnvFromEnvironmentFile(): ?string
+    {
+        $path = $this->app->environmentFilePath();
+
+        if (! is_readable($path)) {
+            return null;
+        }
+
+        $contents = file_get_contents($path);
+
+        if ($contents === false) {
+            return null;
+        }
+
+        if (preg_match('/^\s*APP_ENV\s*=\s*(["\']?)([\w-]+)\1\s*$/m', $contents, $matches) === 1) {
+            return $matches[2];
+        }
+
+        if (preg_match('/^\s*APP_ENV\s*=\s*["\']?([\w-]+)/m', $contents, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return null;
     }
 }

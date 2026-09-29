@@ -65,9 +65,9 @@ class BillingInvoiceGenerator
         });
 
         Merchant::query()->with('licenses.licensePlan')->orderBy('id')->each(function (Merchant $merchant) use ($periodStart, $periodEnd, $performer, $invoices) {
-            $branchFees = $this->merchantLicenseService->calculateMonthlyBranchFees($merchant);
+            $merchantFees = $this->merchantLicenseService->calculateMonthlyMerchantFees($merchant);
 
-            if ($branchFees['total'] <= 0) {
+            if ($merchantFees['total'] <= 0) {
                 return;
             }
 
@@ -76,11 +76,11 @@ class BillingInvoiceGenerator
                 'billable_id' => $merchant->id,
                 'period_start' => $periodStart->toDateString(),
                 'period_end' => $periodEnd->toDateString(),
-                'amount' => $branchFees['total'],
+                'amount' => $merchantFees['total'],
                 'currency' => 'PHP',
                 'status' => BillingInvoiceStatus::Issued->value,
                 'due_at' => $periodEnd->copy()->addDays(15),
-                'line_items' => $branchFees['line_items'],
+                'line_items' => $merchantFees['line_items'],
             ]);
 
             BillingEventLogger::log('invoice_issued', $invoice, null, $performer, [

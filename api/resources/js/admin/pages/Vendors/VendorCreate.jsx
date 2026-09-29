@@ -11,8 +11,17 @@ export default function VendorCreate() {
     const createMutation = useMutation({
         mutationFn: (values) => vendorService.create(values),
         onSuccess: (response) => {
+            const vendorId = response.data?.data?.id ?? response.data?.id;
+
             message.success('Vendor created');
-            navigate(`/vendors/${response.data.id}`);
+
+            if (vendorId === undefined || vendorId === null || String(vendorId).trim() === '') {
+                message.warning('Vendor created, but no vendor ID was returned.');
+                navigate('/vendors');
+                return;
+            }
+
+            navigate(`/vendors/${encodeURIComponent(vendorId)}`);
         },
         onError: (error) => {
             message.error(error.response?.data?.message ?? 'Failed to create vendor');

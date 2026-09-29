@@ -1,0 +1,1 @@
+import{J as e}from"./main-wvX_t_Rb.js";var t=e();function n({label:e,value:n}){return(0,t.jsxs)(`div`,{className:`rounded-lg border bg-slate-50 p-4`,children:[(0,t.jsx)(`div`,{className:`mb-1 text-xs uppercase tracking-wide text-slate-500`,children:e}),(0,t.jsx)(`div`,{className:`text-2xl font-semibold text-slate-900`,children:n})]})}export{n as t};

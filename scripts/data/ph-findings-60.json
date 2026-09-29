@@ -1,0 +1,721 @@
+[
+  {
+    "day": 1,
+    "date": "2026-08-09",
+    "title": "The Philippines just crossed 112.7 million people",
+    "key_stat": "112,729,484 persons (PSA POPCEN 2024 reference stock)",
+    "tags": [
+      "population",
+      "psa"
+    ],
+    "sources": "PSA CPH 2020 / POPCEN 2024 proclamations",
+    "body": "Every market model needs a headcount. Ours starts with the Philippine Statistics Authority.\n\nIn May 2020, the census counted **109,035,343** people. By July 2024, the PSA reference stock used in our priors is **112,729,484**. That is roughly **3.7 million** more Filipinos in four years — more households, more workers, more consumers, and more pressure on jobs and services.\n\nFor simulation and content, we lock **112.7M** as the national person stock unless a newer official figure replaces it. We do not invent \"about 115 million\" from social media.\n\n**Why this matters for daily business reading:** ads, store traffic, and labor availability all scale with people. If your mental model still says \"100 million,\" you are already behind the official spine."
+  },
+  {
+    "day": 2,
+    "date": "2026-08-10",
+    "title": "Median age 25.3 — a young country still",
+    "key_stat": "Median age 25.3 (PSA 2020 household population)",
+    "tags": [
+      "demography",
+      "youth"
+    ],
+    "sources": "PSA age-sex structure, 2020 CPH",
+    "body": "A country's median age tells you whether the economy is youth-heavy or aging into pensions.\n\nPhilippines 2020 household population: **median age 25.3**. That is still young by global standards. It means large cohorts still entering schools, first jobs, and first businesses.\n\nIn our people simulation, age is not decoration — it drives school eligibility, labor-force entry, and consumption patterns. A young median age does **not** automatically mean high disposable income. It means volume of people at life stages that need wages, skills, and affordable goods.\n\n**Takeaway:** marketing that only targets \"retiree wealth\" will miss the country's demographic center of gravity."
+  },
+  {
+    "day": 3,
+    "date": "2026-08-11",
+    "title": "Age structure: 30.7% kids, 63.9% working-age, 5.4% seniors",
+    "key_stat": "0–14: 30.7% · 15–64: 63.9% · 65+: 5.4%",
+    "tags": [
+      "demography",
+      "labor"
+    ],
+    "sources": "PSA 2020 CPH age groups",
+    "body": "Break the population into three classic buckets (PSA 2020 household population shares):\n\n- **0–14:** 30.7% — children and early teens  \n- **15–64:** 63.9% — traditional working-age  \n- **65+:** 5.4% — seniors  \n\nThe working-age majority is good news for labor supply. The large child share means many households still carry school costs, food for dependents, and care time.\n\nOur sim samples agents with these shares as spine weights. Scenario shocks (job loss, cash aide) hit differently when a household has many dependents under 15."
+  },
+  {
+    "day": 4,
+    "date": "2026-08-12",
+    "title": "Almost even sex split — 50.6% male, 49.4% female",
+    "key_stat": "Male 50.6% · Female 49.4% (2020)",
+    "tags": [
+      "demography"
+    ],
+    "sources": "PSA 2020 CPH sex distribution",
+    "body": "National sex composition (PSA 2020): **50.6% male**, **49.4% female**.\n\nFor a national people model, that means you should not build \"default Filipino agent = male store owner\" as the only template. Labor force participation, unpaid care, and merchant personas differ by role — but the population base itself is nearly balanced.\n\nLater layers (LFS, education flows, Listahanan) add richer role structure. Sex share is only the first coin flip."
+  },
+  {
+    "day": 5,
+    "date": "2026-08-13",
+    "title": "Income class reality: ~59% low, ~40% middle, ~1% high",
+    "key_stat": "Low 59.2% · Middle 39.8% · High 1.0% (persons)",
+    "tags": [
+      "income",
+      "class"
+    ],
+    "sources": "PIDS / Albert et al. on PSA FIES 2021",
+    "body": "When Filipinos argue about \"middle class,\" definitions wander. Our spine uses PIDS clusters built on PSA Family Income and Expenditure Survey (FIES) 2021 — **per capita income versus the official poverty line**.\n\nBroad person shares:\n\n- **Low:** ~59.2%  \n- **Middle:** ~39.8%  \n- **High:** ~1.0%  \n\nThat middle band is **not** \"everyone who owns a car.\" It spans lower-middle through upper-middle clusters. The high band is tiny.\n\n**Sim rule:** population weights follow these clusters. Vibes and FB comments do not override FIES-based research."
+  },
+  {
+    "day": 6,
+    "date": "2026-08-14",
+    "title": "Cluster A — Poor: about 18.3% of persons",
+    "key_stat": "Poor: 18.3% persons · ~20.4M · fam-5 ≤ ~₱12,030/mo (2021)",
+    "tags": [
+      "income",
+      "poverty"
+    ],
+    "sources": "PIDS on PSA FIES 2021",
+    "body": "PIDS Cluster **A — Poor** (per capita below 1× poverty line):\n\n- **Persons:** ~20.431 million (**18.3%**)  \n- **Families:** ~3.592 million (**13.6%**)  \n- **Indicative monthly family income (fam of 5, 2021 prices):** up to about **₱12,030**\n\nThis is survey-based class, not a list of names. It is also not identical to DSWD Listahanan \"poor household\" counts (different method and universe — we cover that later in the series).\n\nFor merchants: a large share of the market is price-sensitive by necessity, not by preference."
+  },
+  {
+    "day": 7,
+    "date": "2026-08-15",
+    "title": "Cluster B — Low income but not poor: the biggest slice",
+    "key_stat": "40.9% persons · ~45.6M · ₱12,030–₱24,060/mo fam-5",
+    "tags": [
+      "income",
+      "class"
+    ],
+    "sources": "PIDS on PSA FIES 2021",
+    "body": "Cluster **B — Low income but not poor** is the largest person slice in the PIDS/FIES 2021 spine:\n\n- **Persons:** ~45.6 million (**40.9%**)  \n- Indicative fam-of-5 monthly income roughly **₱12,030–₱24,060** (2021 prices)\n\nThese households clear the poverty line but remain cash-tight. They are the \"almost middle\" conversation in retail — buying staples carefully, trading up slowly, and sensitive to transport and food inflation.\n\n**Business reading:** volume lives here. Do not design offers only for the thin upper bands."
+  },
+  {
+    "day": 8,
+    "date": "2026-08-16",
+    "title": "Lower middle class: 27.9% of persons",
+    "key_stat": "Lower middle: 27.9% persons · ~31.1M · fam-5 ~₱24,060–₱36,090/mo",
+    "tags": [
+      "income",
+      "class"
+    ],
+    "sources": "PIDS on PSA FIES 2021",
+    "body": "PIDS Cluster **C — Lower middle class** sits between \"not poor\" and the true middle-middle band:\n\n- **Persons:** ~31.1 million (**27.9%**)  \n- Indicative fam-of-5 monthly income roughly **₱24,060–₱36,090** (2021 prices)\n\nThese households have cleared survival thresholds but still budget tightly. They buy on promo cycles, stretch payday, and feel fuel and rice price moves immediately.\n\nIn our spine, this cluster is where sari-sari volume, installment plans, and \"value size\" packaging matter most. **Takeaway:** aspirational branding works here only when payment terms and unit economics match cash flow."
+  },
+  {
+    "day": 9,
+    "date": "2026-08-17",
+    "title": "Middle-middle: only about 9% of persons",
+    "key_stat": "Middle-middle: ~9.0% persons · ~10.1M",
+    "tags": [
+      "income",
+      "class"
+    ],
+    "sources": "PIDS on PSA FIES 2021",
+    "body": "Cluster **D — Middle-middle** is smaller than social media discourse suggests:\n\n- **Persons:** ~10.1 million (**~9.0%**)  \n- Indicative fam-of-5 monthly income band well above poverty multiples but still far from luxury tiers\n\nThis is the segment that owns some durables, pays tuition, and occasionally dines out — but is not immune to shocks. One medical bill or job disruption can push spending back to essentials.\n\n**Business reading:** do not confuse \"middle-middle\" with \"everyone in the mall.\" National market design must weight the much larger lower bands heavier."
+  },
+  {
+    "day": 10,
+    "date": "2026-08-18",
+    "title": "The ₱100k/month household band is only ~2.9% of persons",
+    "key_stat": "₱100k+/mo household band: ~2.9% of persons",
+    "tags": [
+      "income",
+      "salary"
+    ],
+    "sources": "PIDS on PSA FIES 2021",
+    "body": "LinkedIn threads treat **₱100,000/month** household income as a common milestone. FIES-based class research says otherwise at the person level:\n\n- Households in bands approaching **₱100k/month** represent only about **2.9%** of persons in the PIDS cluster spine\n\nThat is not \"nobody\" — it is millions of people — but it is a thin slice of **112.7M**. Most Filipinos live in clusters where monthly family cash flow is a fraction of that figure.\n\n**Sim rule:** we do not sample agents as if six-figure household income were the default Filipino experience."
+  },
+  {
+    "day": 11,
+    "date": "2026-08-19",
+    "title": "Above ₱100k household: upper income and rich are tiny",
+    "key_stat": "Upper income + rich: well under 2% of persons combined",
+    "tags": [
+      "income",
+      "class"
+    ],
+    "sources": "PIDS on PSA FIES 2021",
+    "body": "Above the middle-middle band, PIDS clusters compress sharply:\n\n- **Upper income** and **rich** tiers together account for **well under 2%** of persons nationally  \n- The \"high\" broad band from Day 5 totals only about **1.0%**\n\nLuxury retail, premium credit cards, and high-ticket B2B contracts serve real customers — but they are not the mass market. National campaigns built only on premium personas misread the pyramid.\n\n**Takeaway:** growth for most merchants still means winning in low and lower-middle clusters, not chasing the thinnest top."
+  },
+  {
+    "day": 12,
+    "date": "2026-08-20",
+    "title": "Why \"salary ₱100k\" is not in the public tables",
+    "key_stat": "No official public table of \"₱100k salary\" headcounts",
+    "tags": [
+      "data",
+      "salary"
+    ],
+    "sources": "PSA FIES / LFS; BIR non-publication practice",
+    "body": "Job ads and HR posts cite **₱100k/month** salaries constantly. Official open statistics do not publish a clean headcount of who earns exactly that.\n\nPSA surveys report **income brackets, occupation wages, and family income deciles** — not a searchable registry of individual salaries. FIES gives household and per capita distributions; LFS gives occupation-level wage rates. Neither is a \"salary leaderboard.\"\n\n**Why it matters:** when someone claims \"millions earn six figures,\" ask which survey, which definition, and which year. Our priors use published brackets — we do not fabricate salary census files."
+  },
+  {
+    "day": 13,
+    "date": "2026-08-21",
+    "title": "BIR holds tax data — it does not publish salary headcounts",
+    "key_stat": "BIR admin data exists; granular salary tables are not open",
+    "tags": [
+      "data",
+      "tax"
+    ],
+    "sources": "BIR; PSA public survey releases",
+    "body": "The Bureau of Internal Revenue sits on administrative records — withholding, filings, TIN-linked income. That universe could, in theory, describe wage distributions with tax-grade precision.\n\nIn practice, **BIR does not publish person-level or fine-grained salary headcounts** for public research. Privacy law, operational risk, and institutional practice keep those tables internal.\n\nFor market reading, that gap is permanent unless policy changes. We anchor on **PSA surveys** and published research (PIDS, NEDA) — not leaked spreadsheets or guessed tax rolls.\n\n**Takeaway:** \"the government knows\" is true; \"the government posted it\" usually is not."
+  },
+  {
+    "day": 14,
+    "date": "2026-08-22",
+    "title": "Transparency without names: what \"safe open data\" would look like",
+    "key_stat": "Safe open data = aggregates, brackets, methods — not names",
+    "tags": [
+      "data",
+      "privacy"
+    ],
+    "sources": "PSA OpenSTAT; Data Privacy Act context",
+    "body": "Better public statistics does not require publishing who earns what. **Safe open data** means:\n\n- Published **income brackets** and regional breakdowns  \n- Documented **survey methods** and sampling error  \n- Machine-readable **APIs or bulk downloads** (OpenSTAT direction)  \n- **No** household names, addresses, or TIN-linked rows in open files\n\nMerchants and researchers need trustworthy aggregates. Simulations need reproducible priors. Citizens need privacy. Those goals are compatible when agencies release bracketed tables and metadata, not raw admin microdata.\n\n**Our stance:** we build on what PSA and partner agencies already publish openly — and label uncertainty where tables end."
+  },
+  {
+    "day": 15,
+    "date": "2026-08-23",
+    "title": "National average family income: about ₱25,600 a month (2021 FIES)",
+    "key_stat": "Average monthly family income: ~₱25,600 (FIES 2021)",
+    "tags": [
+      "income",
+      "fies"
+    ],
+    "sources": "PSA FIES 2021",
+    "body": "FIES 2021 reports national **average monthly family income** of about **₱25,600** (2021 prices). That single number is easy to misread.\n\nIt is an **average**, pulled up by high-income tails. It is **family** income, not per-person or per-worker pay. It is **2021** — before the inflation waves merchants felt in 2022–2024.\n\nStill, it is the official household income anchor PSA publishes. Our spine uses it alongside per capita and cluster cuts, not as a stand-in for \"typical salary.\"\n\n**Business reading:** if your product needs ₱30k/month from every household, you are already above the national average family income line."
+  },
+  {
+    "day": 16,
+    "date": "2026-08-24",
+    "title": "Decile 1 vs Decile 10: ₱9.7k vs ₱67.8k average monthly family income",
+    "key_stat": "Decile 1: ~₱9,700/mo · Decile 10: ~₱67,800/mo (FIES 2021)",
+    "tags": [
+      "income",
+      "inequality"
+    ],
+    "sources": "PSA FIES 2021 income deciles",
+    "body": "FIES income deciles make inequality visible in pesos:\n\n- **Decile 1** (lowest 10% of families): average monthly income about **₱9,700**  \n- **Decile 10** (highest 10%): about **₱67,800**  \n\nThat is roughly a **7×** gap between bottom and top decile averages — before you even reach the ultra-thin rich tail.\n\nUniform pricing nationwide ignores this spread. The same ₱500 basket is routine for Decile 10 and a major event for Decile 1.\n\n**Sim use:** decile weights help stress-test promos, credit limits, and shock scenarios without pretending everyone sits at the mean."
+  },
+  {
+    "day": 17,
+    "date": "2026-08-25",
+    "title": "Poverty 2023: 15.5% of people, 10.9% of families",
+    "key_stat": "Poverty 2023: 15.5% population · 10.9% families",
+    "tags": [
+      "poverty",
+      "psa"
+    ],
+    "sources": "PSA Official Poverty Statistics 2023",
+    "body": "PSA's **2023 official poverty incidence** (annual poverty indicators release):\n\n- **15.5%** of Filipinos below the poverty threshold  \n- **10.9%** of families in poverty  \n\nPerson rates exceed family rates because poor households often have more dependents per earner. This is the government's headline poverty line method — survey-based, comparable year to year.\n\nIt differs from PIDS class clusters (Day 6) and from Listahanan household lists (later in the series). Each measure answers a different policy question.\n\n**Merchant lens:** one in roughly seven persons sits below the official poverty line — non-trivial demand for essentials, sachets, and flexible payment."
+  },
+  {
+    "day": 18,
+    "date": "2026-08-26",
+    "title": "Food poverty at 4.3% — the sharpest deprivation cut",
+    "key_stat": "Subsistence / food-poor: 4.3% of population (2023)",
+    "tags": [
+      "poverty",
+      "food"
+    ],
+    "sources": "PSA Official Poverty Statistics 2023",
+    "body": "Below headline poverty sits **subsistence** or **food-poor** incidence: about **4.3%** of the population in 2023 cannot afford minimum food needs even before other basic necessities.\n\nThat is the sharpest deprivation cut PSA publishes. These households are not debating brand upgrades — they are managing kilos of rice and cooking fuel.\n\nFood poverty rates vary by region and shock year. National **4.3%** still means millions of persons.\n\n**Takeaway:** elasticity assumptions for the food-poor slice should be near zero for discretionary categories. Simulation shocks that raise staple prices hit this group first and hardest."
+  },
+  {
+    "day": 19,
+    "date": "2026-08-27",
+    "title": "Literacy is high — 97% — but schooling depth varies",
+    "key_stat": "Basic literacy: ~97% (PSA 2019/2020 rounds)",
+    "tags": [
+      "education",
+      "literacy"
+    ],
+    "sources": "PSA Functional Literacy, Education and Mass Media Survey (FLEMMS)",
+    "body": "Philippines posts **~97% basic literacy** in PSA's functional literacy surveys — a strong floor for signage, SMS promos, and simple app flows.\n\nLiteracy is not the same as **schooling depth**. Millions stop after junior high; college attainment is a minority experience nationally. DepEd and CHED volumes (later in this series) show the pipeline, but the adult stock is uneven.\n\n**Business reading:** high literacy supports text-heavy marketing, but reading level and digital comfort still vary by age and region. Do not equate \"can read\" with \"prefers long English copy.\"\n\nOur agent education layers sample completion rates from published tables — not assumed \"everyone is college grad.\""
+  },
+  {
+    "day": 20,
+    "date": "2026-08-28",
+    "title": "Labor force June 2026: LFPR 65.1%, 53.25 million in the labor force",
+    "key_stat": "LFPR 65.1% · Labor force 53.25M (June 2026 LFS)",
+    "tags": [
+      "labor",
+      "lfs"
+    ],
+    "sources": "PSA Labor Force Survey June 2026",
+    "body": "June 2026 LFS headline stock:\n\n- **Labor force participation rate:** **65.1%**  \n- **Labor force size:** **53.25 million** persons  \n\nLFPR tells you what share of the working-age population is employed or actively looking. It is not \"everyone over 15.\" Students, homemakers, and discouraged workers sit outside or move in and out.\n\nFor hiring and B2B services, **53.25M** is the relevant worker-and-seeker pool — still huge, but smaller than total population.\n\n**Sim spine:** employment status draws from LFS-style rates, scaled to our population stock."
+  },
+  {
+    "day": 21,
+    "date": "2026-08-29",
+    "title": "Unemployment at 4.9% — headline calm, not full story",
+    "key_stat": "Unemployment rate: 4.9% (June 2026 LFS)",
+    "tags": [
+      "labor",
+      "unemployment"
+    ],
+    "sources": "PSA Labor Force Survey June 2026",
+    "body": "June 2026 **unemployment rate: 4.9%** — historically moderate by Philippine standards. Headlines call this \"strong.\"\n\nUnemployment counts people **without work, available, and seeking** in the survey reference week. It misses:\n\n- **Underemployed** workers wanting more hours (Day 22)  \n- **Discouraged** workers who stopped looking  \n- **Unpaid family** workers counted as employed  \n\nNational **4.9%** also hides regional spikes and youth clusters far above average.\n\n**Merchant reading:** low unemployment supports consumer confidence in aggregate, but your barangay labor market can feel tighter or looser than Manila headlines."
+  },
+  {
+    "day": 22,
+    "date": "2026-08-30",
+    "title": "Underemployment 12.1% — wanting more hours or better work",
+    "key_stat": "Underemployment: 12.1% of employed (June 2026)",
+    "tags": [
+      "labor",
+      "underemployment"
+    ],
+    "sources": "PSA Labor Force Survey June 2026",
+    "body": "**Underemployment rate: 12.1%** among employed persons in June 2026 — visibly employed, but wanting **more hours** or a **better job**.\n\nThis is the hidden slack LFS captures beside the **4.9%** unemployment line. A worker with two days of gigs counts as employed; if they wanted full weeks, they are underemployed.\n\nHigh underemployment means income volatility, side hustles, and price sensitivity even when \"employment\" looks fine.\n\n**Scenario use:** job-loss shocks and cash-aid scenarios (later in the series) should consider households already stretching irregular hours — not only the officially unemployed."
+  },
+  {
+    "day": 23,
+    "date": "2026-08-31",
+    "title": "Where Filipinos work: 62.7% services, 20% agriculture, 17.3% industry",
+    "key_stat": "Services 62.7% · Agriculture 20.0% · Industry 17.3%",
+    "tags": [
+      "labor",
+      "sectors"
+    ],
+    "sources": "PSA LFS industry employment shares",
+    "body": "Employment by major industry group (LFS shares, recent rounds):\n\n- **Services:** **62.7%**  \n- **Agriculture:** **20.0%**  \n- **Industry:** **17.3%**  \n\nThe economy is services-heavy — retail, transport, BPO, government, hospitality. Agriculture's share fell over decades but still anchors rural income and food supply.\n\nNational product strategy must decide whether you are selling to **urban service wages**, **farm gate seasons**, or **factory payrolls** — three different cash-flow calendars.\n\n**Our priors:** sector tags on agents follow these national weights unless a regional override applies."
+  },
+  {
+    "day": 24,
+    "date": "2026-09-01",
+    "title": "How people earn: 64% wage/salary, 27% self-employed",
+    "key_stat": "Wage/salary 64% · Self-employed 27% (LFS class of worker)",
+    "tags": [
+      "labor",
+      "income"
+    ],
+    "sources": "PSA LFS class-of-worker tables",
+    "body": "LFS **class of worker** breakdown (approximate national shares):\n\n- **Wage and salary workers:** **~64%**  \n- **Self-employed without paid employee:** **~27%**  \n- Remaining: employers with employees, unpaid family workers  \n\nMost Filipinos earn through **payroll or gig invoices**, not dividends. Self-employment spans sari-sari owners, tricycle operators, and freelancers — heterogeneous but huge.\n\nPayment behaviour differs: salaried workers cluster spending around paydays; informal self-employed flows are lumpier.\n\n**Sim note:** merchant personas and household earners use this split when assigning income regularity priors."
+  },
+  {
+    "day": 25,
+    "date": "2026-09-02",
+    "title": "Occupation pay anchors: managers ~₱1,387/day vs elementary ~₱416/day",
+    "key_stat": "Managers ~₱1,387/day · Elementary occupations ~₱416/day",
+    "tags": [
+      "wages",
+      "occupation"
+    ],
+    "sources": "PSA LFS occupation wage rates",
+    "body": "PSA publishes **basic wage per day** by major occupation group — useful anchors, not individual paychecks:\n\n- **Managers:** about **₱1,387/day**  \n- **Elementary occupations** (cleaners, helpers, farm laborers classed here): about **₱416/day**  \n\nThat is roughly a **3.3×** day-rate gap between top-coded groups and elementary work — before overtime, tips, or informal side income.\n\nOccupation wages explain why \"average family income\" and \"manager salary\" tweets talk past each other.\n\n**Business reading:** price points that assume manager wages nationwide will exclude most occupation groups."
+  },
+  {
+    "day": 26,
+    "date": "2026-09-03",
+    "title": "Rough monthly wages ×22 days: ₱9k elementary to ₱30k managers",
+    "key_stat": "×22 working days: ~₱9,152 elementary · ~₱30,514 managers",
+    "tags": [
+      "wages",
+      "math"
+    ],
+    "sources": "PSA LFS occupation wages; illustrative ×22 days",
+    "body": "Survey day-rates become monthly stories only with explicit assumptions. Using **22 paid days** (common rough month):\n\n- Elementary **₱416/day × 22 ≈ ₱9,152/month**  \n- Managers **₱1,387/day × 22 ≈ ₱30,514/month**  \n\nThis is **illustrative** — real months have holidays, absenteeism, overtime, and informal top-ups. But the order of magnitude is instructive.\n\n**₱30k/month** from wages alone is closer to **manager-class day rates**, not the national typical worker.\n\n**Sim rule:** we translate day-rates to monthly bands with documented day multipliers — never silently assume 30 calendar days at full rate."
+  },
+  {
+    "day": 27,
+    "date": "2026-09-04",
+    "title": "26.4 million households — average size 4.1",
+    "key_stat": "26.4M households · average household size 4.1",
+    "tags": [
+      "households",
+      "demography"
+    ],
+    "sources": "PSA 2020 CPH / household statistics",
+    "body": "Philippines counted about **26.4 million households** with **average household size (AHS) 4.1** persons in the 2020 census frame.\n\nHouseholds are the unit for **FIES income**, **Listahanan** targeting, and many utility bills. Persons are the unit for **population** and **poverty incidence**.\n\nConverting \"per person\" to \"per household\" requires AHS — national **4.1** is an average; BARMM and NCR diverge (later days).\n\n**Merchant lens:** basket size and repurchase frequency scale with people under one roof. A ₱200 spend is shared across 4.1 mouths on average."
+  },
+  {
+    "day": 28,
+    "date": "2026-09-05",
+    "title": "Most homes are 3–5 people (54.8% of households)",
+    "key_stat": "Households with 3–5 members: 54.8%",
+    "tags": [
+      "households",
+      "size"
+    ],
+    "sources": "PSA 2020 CPH household size distribution",
+    "body": "Household size distribution clusters in the middle:\n\n- **3–5 members:** **54.8%** of households  \n- Smaller (1–2) and larger (6+) split the remainder\n\nThe \"nuclear family with extras\" shape — couples, kids, sometimes grandparents — dominates national housing economics.\n\nPromo pack sizes, \"family\" menu tiers, and data plan sharing assumptions should default to **multi-person homes**, not single-person condos.\n\n**Takeaway:** solo urban professional marketing is real in NCR, but it is not **54.8%** of homes."
+  },
+  {
+    "day": 29,
+    "date": "2026-09-06",
+    "title": "NCR: 13.5 million people — dense, smaller households",
+    "key_stat": "NCR: ~13.5M persons · lower AHS than national average",
+    "tags": [
+      "regions",
+      "ncr"
+    ],
+    "sources": "PSA 2020 CPH regional counts",
+    "body": "**National Capital Region** holds about **13.5 million** people — roughly **one in eight** Filipinos in the 2020 census frame.\n\nNCR households run **smaller on average** than the national **4.1** AHS: more condos, migrated workers, and nuclear setups. Density drives delivery economics, mall traffic, and wage premiums — but also higher rent and smaller living space.\n\nNational campaigns weighted equally per region **underweight** NCR peso volume and **overweight** per-capita reach elsewhere.\n\n**Sim override:** regional tabs should lift NCR population share and adjust AHS when modeling Metro Manila specifically."
+  },
+  {
+    "day": 30,
+    "date": "2026-09-07",
+    "title": "CALABARZON is the largest region by population",
+    "key_stat": "CALABARZON: largest population among regions (2020 CPH)",
+    "tags": [
+      "regions",
+      "calabarzon"
+    ],
+    "sources": "PSA 2020 CPH regional population",
+    "body": "**CALABARZON** (Cavite, Laguna, Batangas, Rizal, Quezon) surpassed NCR as the **most populous region** in 2020 — industrial parks, subdivisions, and commuter belts pulling growth south and east of Manila.\n\nFor supply chain and retail expansion, \"beyond NCR\" often starts here — not in a distant province.\n\nPopulation gravity means warehouse placement, trucking lanes, and provincial mall strategies should treat CALABARZON as a **first-class market**, not an afterthought to Metro Manila.\n\n**Business reading:** national sims without a strong CALABARZON weight misallocate where packages and foot traffic actually land."
+  },
+  {
+    "day": 31,
+    "date": "2026-09-08",
+    "title": "Top 3 regions hold about 38.6% of the 2020 population",
+    "key_stat": "Top 3 regions: ~38.6% of national population",
+    "tags": [
+      "regions",
+      "concentration"
+    ],
+    "sources": "PSA 2020 CPH regional shares",
+    "body": "The three largest regions by population — **CALABARZON, NCR, and Central Luzon** — together held about **38.6%** of the 2020 national count.\n\nNearly **two in five** Filipinos lived in this Luzon triangle. Visayas and Mindanao matter enormously — but national scale decisions (distribution centers, media buys, telco rollout) concentrate here.\n\n**Takeaway:** a \"national\" launch that only tests Manila misses a third of the country; one that ignores the top three regions misses where two-fifths of demand pools."
+  },
+  {
+    "day": 32,
+    "date": "2026-09-09",
+    "title": "Visayas snapshot: Western, Central, Eastern",
+    "key_stat": "Visayas: three major regional clusters, distinct urban anchors",
+    "tags": [
+      "regions",
+      "visayas"
+    ],
+    "sources": "PSA 2020 CPH; regional economic briefs",
+    "body": "Visayas is not monolithic — three PSA regions anchor different stories:\n\n- **Western Visayas** (Region VI): Iloilo, Bacolod hubs  \n- **Central Visayas** (Region VII): Cebu metro, tourism, BPO  \n- **Eastern Visayas** (Region VIII): typhoon exposure, migration, slower urban concentration  \n\nCebu alone behaves like a mini-NCR for central Philippines logistics. Iloilo and Bacolod carry distinct middle-city retail rhythms.\n\n**Merchant rule:** do not paste \"Visayas promo\" without picking which region's income and port access you mean."
+  },
+  {
+    "day": 33,
+    "date": "2026-09-10",
+    "title": "Mindanao is not one market — six-plus regional stories",
+    "key_stat": "Mindanao: 6+ PSA regions · BARMM, Davao, SOCCSKSARGEN, others",
+    "tags": [
+      "regions",
+      "mindanao"
+    ],
+    "sources": "PSA 2020 CPH regional population",
+    "body": "Mindanao spans **six or more** administrative regions — **Davao, SOCCSKSARGEN, Northern Mindanao, Zamboanga Peninsula, Caraga, BARMM**, and overlaps with Region IX.\n\nAgri coasts, conflict-affected areas, emerging metros, and BARMM's distinct governance each shift purchasing power and logistics cost.\n\nA single \"Mindanao strategy\" usually means \"Davao plus guesswork.\" Population tables justify **region-by-region** weights.\n\n**Sim use:** we keep Mindanao broken into PSA regions rather than one blended agent pool."
+  },
+  {
+    "day": 34,
+    "date": "2026-09-11",
+    "title": "BARMM households run larger — AHS about 5.9",
+    "key_stat": "BARMM average household size: ~5.9",
+    "tags": [
+      "regions",
+      "barmm"
+    ],
+    "sources": "PSA 2020 CPH BARMM household statistics",
+    "body": "**BARMM** reports **average household size around 5.9** — well above the national **4.1**. Extended family living, younger cohorts, and survey geography all contribute.\n\nLarger households mean **more dependents per income earner** when you convert per capita poverty or class stats to monthly budgets.\n\nLogistics and financial access also differ from Luzon norms — not better or worse, but not interchangeable.\n\n**Business reading:** per-capita pricing and sachet economics still apply, but **total household basket** size is larger than NCR averages."
+  },
+  {
+    "day": 35,
+    "date": "2026-09-12",
+    "title": "Listahanan 3: 5.6 million poor households identified",
+    "key_stat": "Listahanan 3: 5.6M poor households identified",
+    "tags": [
+      "listahanan",
+      "dswd"
+    ],
+    "sources": "DSWD Listahanan 3 results",
+    "body": "DSWD's **Listahanan 3** nationwide assessment identified about **5.6 million poor households** for social protection targeting.\n\nListahanan is an **administrative registry** built for program delivery — Pantawid, livelihood grants, prioritization. It uses community validation and a poverty proxy score, not the same questionnaire as PSA's annual poverty incidence.\n\n**5.6 million households** is a large absolute count — but it is **households**, not persons, and not interchangeable with FIES class shares.\n\n**Merchant note:** being \"on Listahanan\" is sensitive; public analytics use aggregates only."
+  },
+  {
+    "day": 36,
+    "date": "2026-09-13",
+    "title": "Do not equate Listahanan 36% with PSA poverty 15.5%",
+    "key_stat": "Listahanan poor share ≠ PSA poverty incidence — different methods",
+    "tags": [
+      "listahanan",
+      "poverty"
+    ],
+    "sources": "DSWD Listahanan 3; PSA Official Poverty Statistics 2023",
+    "body": "Social posts sometimes compare **\"36% poor households in Listahanan\"** to **PSA's 15.5% population poverty** and declare a contradiction. They measure different things:\n\n- **PSA 15.5%:** official poverty line, person-based, survey inference  \n- **Listahanan share:** household-based registry, targeting threshold, validated lists  \n\nNumerators, denominators, and purposes differ. One is national accounting; the other is program intake.\n\n**Our rule:** never merge them into one \"true poverty rate.\" Use PSA for macro poverty trends and Listahanan for social-program scale context."
+  },
+  {
+    "day": 37,
+    "date": "2026-09-14",
+    "title": "OpenSTAT: the machine-readable PSA spine",
+    "key_stat": "OpenSTAT: PSA's open data portal for API/bulk access",
+    "tags": [
+      "data",
+      "openstat"
+    ],
+    "sources": "PSA OpenSTAT portal",
+    "body": "**OpenSTAT** is PSA's push toward **machine-readable** official statistics — datasets, metadata, and APIs instead of PDF-only tables.\n\nFor simulations and dashboards, reproducibility needs **versioned downloads**, not screenshots. OpenSTAT is where we pull population, poverty, and labor series when building automated priors.\n\nCoverage is still growing; not every LFS subtable is one click away. But the direction is clear: **bulk access beats manual retyping**.\n\n**Takeaway:** if your market model cannot cite an OpenSTAT or PSA bulk file, flag it as manual or third-hand."
+  },
+  {
+    "day": 38,
+    "date": "2026-09-15",
+    "title": "Why PSA is the demography spine of our simulation",
+    "key_stat": "PSA = national demography spine for person/household weights",
+    "tags": [
+      "simulation",
+      "psa"
+    ],
+    "sources": "PSA CPH, FIES, LFS integrated",
+    "body": "Private apps guess users; we start from **PSA** because it is the legal national statistics authority.\n\nPopulation stock, age-sex shares, household counts, income deciles, and labor rates all trace to PSA surveys. PIDS and NEDA add interpretation; DSWD adds program lists — but the **demography spine** is PSA.\n\nWhen priors update (new POPCEN stock, new FIES year), the sim rebases — we do not silently drift to trending tweets.\n\n**Why merchants should care:** shared public spine means your scenario discussions align with numbers journalists and policymakers can audit."
+  },
+  {
+    "day": 39,
+    "date": "2026-09-16",
+    "title": "What \"market behaviour + people simulation\" means here",
+    "key_stat": "People sim + market behaviour = agents with income, sector, shocks",
+    "tags": [
+      "simulation",
+      "method"
+    ],
+    "sources": "EIS Bridge Insights methodology",
+    "body": "**People simulation** here means sampling millions of lightweight agents with official weights — age, class cluster, region, employment — then applying rules for shocks and spending.\n\n**Market behaviour** layers merchant-side realities: sari-sari restock cycles, Shopee promo spikes, payroll-linked remittance days.\n\nIt is not a video game and not a crystal ball. It is a **structured what-if** desk when policy or news drops a number (job cuts, cash aid) and you need peso-scale intuition fast.\n\n**Boundary:** outputs are illustrative unless back-tested against observed sales — we say so explicitly."
+  },
+  {
+    "day": 40,
+    "date": "2026-09-17",
+    "title": "Merchant personas: sheets, Shopee exports, POS vs books",
+    "key_stat": "Merchant layers: spreadsheets · marketplace exports · POS ≠ accounting books",
+    "tags": [
+      "merchants",
+      "data"
+    ],
+    "sources": "EIS Bridge field patterns; MSME practice",
+    "body": "Real merchants run on **different data layers**:\n\n- **Spreadsheets** — flexible, error-prone, beloved  \n- **Shopee/Lazada exports** — channel truth, not full P&L  \n- **POS** — basket and shift data, often no cost of goods  \n- **Books** — tax-facing, lagging, sometimes never reconciled with POS  \n\nSimulation personas encode these splits so scenarios do not assume every store has ERP-grade data.\n\n**Takeaway:** connector tools that merge layers solve behaviour and trust problems — not just API wiring."
+  },
+  {
+    "day": 41,
+    "date": "2026-09-18",
+    "title": "Scenario S1 — What 4,000 job losses can mean in pesos",
+    "key_stat": "S1: 4,000 jobs × illustrative wage loss = millions in monthly income gone",
+    "tags": [
+      "scenario",
+      "jobs"
+    ],
+    "sources": "Illustrative; PSA LFS wage anchors",
+    "body": "**Scenario S1:** a headline announces **4,000 layoffs** in a sector cluster. What might that mean in pesos?\n\nIf affected workers averaged **₱20,000/month** in lost wages (illustrative mid-low wage), monthly payroll income drops **₱80 million** immediately. Add multiplier effects cautiously — local rent and carinderia spend contract fast; national GDP barely blips.\n\n4,000 jobs sounds small against **53.25M** labor force — but it is catastrophic for 4,000 families and material in a host municipality.\n\n**Sim output:** regional stress maps, not precision forecasting."
+  },
+  {
+    "day": 42,
+    "date": "2026-09-19",
+    "title": "Scenario S2 — ₱40B livelihood cash at ₱30k per person",
+    "key_stat": "₱40B ÷ ₱30k/person ≈ 1.33M recipients (illustrative)",
+    "tags": [
+      "scenario",
+      "cash-aid"
+    ],
+    "sources": "Illustrative division; budget scale context",
+    "body": "**Scenario S2:** **₱40 billion** livelihood assistance imagined as **₱30,000 per person** lump sums.\n\nStraight division: **~1.33 million recipients** — meaningful, but not \"every Filipino.\" Against **112.7M** persons, that is about **1.2%** of the population touched if perfectly targeted.\n\nDelivery speed, leakage, and local spend patterns matter more than the press-release total. Carinderias and sari-sari see cash first; durable goods spike only if recipients expect repeated aid.\n\n**Takeaway:** big billions sound universal; per-person math grounds hype."
+  },
+  {
+    "day": 43,
+    "date": "2026-09-20",
+    "title": "Scenario S3 — Same ₱40B entering MSMEs",
+    "key_stat": "₱40B via MSME channels ≠ ₱40B in household pockets",
+    "tags": [
+      "scenario",
+      "msme"
+    ],
+    "sources": "Illustrative; DTI MSME definitions",
+    "body": "**Scenario S3:** the same **₱40B** flows as **credit, grants, or purchase orders through MSMEs** instead of direct cash.\n\nFirms may hire, restock, or repay debt before owners draw household income. Time lags stretch; geography concentrates in contractor hubs.\n\nMSME absorption does not mean instant sari-sari demand — inventory and input costs eat first.\n\n**Contrast S2 vs S3:** identical budget labels, different agent rules in the sim. Merchants should ask which channel a policy actually uses."
+  },
+  {
+    "day": 44,
+    "date": "2026-09-21",
+    "title": "Multipliers: local CCT studies ≠ national GDP buttons",
+    "key_stat": "Local transfer multipliers exist; national GDP multipliers are contested",
+    "tags": [
+      "scenario",
+      "multipliers"
+    ],
+    "sources": "PIDS/BSP local impact studies; national accounts caution",
+    "body": "Conditional cash transfer evaluations in specific provinces show **local spending bumps** — rice, school supplies, neighbor trade.\n\nThose studies do **not** license arbitrary **national GDP multipliers** (\"every ₱1 becomes ₱3 economy-wide\") without model assumptions.\n\nLeakage to imports, savings, and debt payment dilutes pulses. National accounts move slowly relative to barangay cash cycles.\n\n**Sim rule:** we apply **conservative, documented** local multipliers in micro scenarios — not cinematic chain reactions."
+  },
+  {
+    "day": 45,
+    "date": "2026-09-22",
+    "title": "Illustrative household stress: when one earner drops out",
+    "key_stat": "One lost earner in dual-income HH can cut cash flow ~40–50%+ (illustrative)",
+    "tags": [
+      "household",
+      "stress"
+    ],
+    "sources": "Illustrative; FIES cluster budgets",
+    "body": "Take a **lower-middle cluster** household with two earners bringing **₱18,000** and **₱12,000** monthly (illustrative). Lose the **₱18,000** job:\n\n- Cash inflow falls **60%** before any unemployment insurance  \n- Fixed costs (rent, utilities, school) may still exceed remaining pay  \n- Discretionary categories zero out first — dining, data plans, installments  \n\nNational unemployment **4.9%** understates this **household** pain when the primary breadwinner is the one displaced.\n\n**Merchant lens:** promo sensitivity spikes in stressed HHs — not because tastes changed, because liquidity vanished."
+  },
+  {
+    "day": 46,
+    "date": "2026-09-23",
+    "title": "Second earners: a 28% heuristic when the primary is employed",
+    "key_stat": "Second-earner rate heuristic: ~28% when primary employed",
+    "tags": [
+      "household",
+      "labor"
+    ],
+    "sources": "LFS-derived heuristic; EIS Bridge prior",
+    "body": "Not every household has two paychecks. Our prior: when a **primary worker is employed**, roughly **28%** of matching households also have a **second earner** contributing meaningful cash income — spouses, adult children, side gigs.\n\nThe rate rises in urban service jobs and falls where unpaid family work dominates agriculture.\n\nThis **28%** is a **heuristic** for simulation, not a PSA published headline. It prevents scenarios from assuming universal dual income or universal single breadwinner extremes.\n\n**Use:** stress tests toggle second earners off to model shocks realistically."
+  },
+  {
+    "day": 47,
+    "date": "2026-09-24",
+    "title": "DepEd scale: ~27.6 million learners in SY 2023–2024",
+    "key_stat": "K–12 learners: ~27.6M (SY 2023–2024)",
+    "tags": [
+      "education",
+      "deped"
+    ],
+    "sources": "DepEd Basic Education Enrollment Report SY 2023–2024",
+    "body": "DepEd reports about **27.6 million learners** in **SY 2023–2024** — public and private basic education combined.\n\nThat number anchors **school-age demand**: uniforms, baon, tablets, tutoring, transport. It also explains why **30.7%** of the population is under 15 — many are in this pipeline.\n\nEnrollment ≠ attendance every day, but scale is undeniable. National back-to-school promos move volume comparable to small countries' entire populations.\n\n**Sim link:** education agents and household school-cost burdens use DepEd scale as a sanity check."
+  },
+  {
+    "day": 48,
+    "date": "2026-09-25",
+    "title": "Higher education: ~3.4M students and 2,300+ HEIs",
+    "key_stat": "HE students ~3.4M · 2,300+ HEIs (CHED data)",
+    "tags": [
+      "education",
+      "ched"
+    ],
+    "sources": "CHED Philippine Higher Education Facts and Figures",
+    "body": "Higher education is smaller than basic ed but still massive:\n\n- **~3.4 million students** enrolled in higher education institutions  \n- **2,300+ HEIs** nationwide — universities, colleges, tech-voc attached  \n\nCollege attainment is **aspirational** for many families — tuition spikes, remittance pressure, and \"graduation season\" consumer pulses.\n\nIt is not the median adult experience (most adults did not finish college), but it shapes urban middle-class identity and marketing.\n\n**Business reading:** EdTech and fintech often over-index on this **3.4M** slice versus **27.6M** basic learners."
+  },
+  {
+    "day": 49,
+    "date": "2026-09-26",
+    "title": "TESDA: million-scale TVET participation",
+    "key_stat": "TESDA: millions trained/certified annually (program-year totals)",
+    "tags": [
+      "education",
+      "tesda"
+    ],
+    "sources": "TESDA annual accomplishment reports",
+    "body": "**TESDA** technical-vocational programs touch **millions per program year** — certifications, scholarships, enterprise training. Exact totals swing with funding and pandemic recovery, but scale is consistently **seven figures**.\n\nTVET feeds construction, hospitality, BPO adjacency, and overseas deployment pipelines — income bumps are real but uneven by course and completion.\n\nMerchants near training centers see boarding houses, tool vendors, and uniform shops — a geographic micro-economy on national stats.\n\n**Sim note:** upskilling shocks are modeled as occupation transition probabilities, not instant wage doubling."
+  },
+  {
+    "day": 50,
+    "date": "2026-09-27",
+    "title": "PDP 2023–2028: poverty ambition 8%–9% by 2028",
+    "key_stat": "PDP 2023–2028 poverty target: 8%–9% by 2028",
+    "tags": [
+      "policy",
+      "pdp"
+    ],
+    "sources": "NEDA Philippine Development Plan 2023–2028",
+    "body": "The **Philippine Development Plan 2023–2028** sets an official poverty reduction ambition: bring poverty incidence down to about **8%–9%** by **2028**, from the **15.5%** 2023 actual.\n\nThat is a steep slope — requiring sustained growth, food price stability, and program delivery. Plans are not guarantees.\n\nFor market models, PDP targets are **scenario labels** — \"optimistic policy path\" — not inputs we treat as achieved facts.\n\n**Takeaway:** sell to today's **15.5%** reality; use PDP as forward stress, not current truth."
+  },
+  {
+    "day": 51,
+    "date": "2026-09-28",
+    "title": "Discovery hubs: where we look when numbers conflict",
+    "key_stat": "Discovery order: PSA → agency primary → PIDS/NEDA → field",
+    "tags": [
+      "data",
+      "method"
+    ],
+    "sources": "EIS Bridge discovery workflow",
+    "body": "When Twitter fights about poverty or enrollment, we run a **discovery hub** order:\n\n1. **PSA** primary release (date, definition, unit)  \n2. Owning agency (**DepEd, DSWD, CHED, TESDA**) PDF or data portal  \n3. **PIDS / NEDA** interpretation and policy context  \n4. Field merchant signals last — ground truth, not national denominator  \n\nConflicts usually mean **different years, units, or populations** — not \"someone lied.\"\n\n**Habit:** screenshot the table footer before resharing a stat."
+  },
+  {
+    "day": 52,
+    "date": "2026-09-29",
+    "title": "Sheets-to-cloud is a behaviour problem, not only a software feature",
+    "key_stat": "Spreadsheet habits persist — cloud sync needs trust + workflow fit",
+    "tags": [
+      "merchants",
+      "behaviour"
+    ],
+    "sources": "MSME digitization literature; field observation",
+    "body": "Merchants \"know\" they should leave Excel — yet **sheets persist** because they are forgiving, offline, and owned.\n\nMoving to cloud is not just a login screen. It requires **who enters data**, **when**, and **whether owners believe the numbers**. Without that, POS and connectors become parallel books that never match.\n\nSoftware features do not erase decades of notebook habit in one quarter.\n\n**Product reading:** behaviour change (staff roles, end-of-day ritual) beats feature checklists for adoption."
+  },
+  {
+    "day": 53,
+    "date": "2026-09-30",
+    "title": "Connector tools vs books vs POS — keep the layers straight",
+    "key_stat": "Three layers: POS (sales) · connectors (sync) · books (tax/compliance)",
+    "tags": [
+      "merchants",
+      "tools"
+    ],
+    "sources": "EIS Bridge stack model",
+    "body": "Stack clarity prevents double counting:\n\n- **POS** — line items, shifts, inventory movement at register truth  \n- **Connectors** — move exports into dashboards or accounting; fragile mappings  \n- **Books** — BIR-facing ledgers, often monthly, adjusted for tax  \n\nA connector is not automatically \"the books.\" A POS total is not automatically \"profit.\"\n\nSimulations that ingest merchant data must tag **which layer** fed the metric.\n\n**Takeaway:** ask \"which book?\" before debating gross margin."
+  },
+  {
+    "day": 54,
+    "date": "2026-10-01",
+    "title": "Walang bayad, walang simula — deposit behaviour is a prior",
+    "key_stat": "\"No pay, no start\" — deposit/custom upfront payment as MSME prior",
+    "tags": [
+      "merchants",
+      "behaviour"
+    ],
+    "sources": "Filipino MSME practice; field heuristic",
+    "body": "**\"Walang bayad, walang simula\"** — no payment, no start — captures how many small suppliers and contractors manage risk.\n\nUpfront deposits, partial payments, and \"tabi muna\" credit are **behavioural priors**, not bugs in \"formal\" finance models.\n\nCash-constrained merchants rationally demand deposits before material spend. Customers with irregular wages prefer installments.\n\n**Sim use:** payment-term rules on B2B edges reflect this — not every agent can net-30."
+  },
+  {
+    "day": 55,
+    "date": "2026-10-02",
+    "title": "What we can claim from public data — and what we cannot",
+    "key_stat": "Public data: aggregates yes · individual salaries/names no",
+    "tags": [
+      "data",
+      "ethics"
+    ],
+    "sources": "PSA publications; privacy boundaries",
+    "body": "**We can claim:** population shares, poverty rates, wage **anchors**, enrollment totals, regional counts — with sources and years attached.\n\n**We cannot claim:** how much Juan dela Cruz earns this month, whether a named barangay household is on Listahanan, or precise six-figure salary headcounts from secret tax files.\n\nScenarios are **labeled illustrative** when we multiply headlines into pesos.\n\n**Trust model:** readers should always be able to back each number to an agency table or a declared assumption."
+  },
+  {
+    "day": 56,
+    "date": "2026-10-03",
+    "title": "How to read a sim dashboard without fooling yourself",
+    "key_stat": "Read dashboards: check units, year, scenario label, denominator",
+    "tags": [
+      "simulation",
+      "literacy"
+    ],
+    "sources": "EIS Bridge dashboard guidance",
+    "body": "Simulation dashboards seduce with color. Before reacting:\n\n- **Unit:** persons, households, or pesos?  \n- **Year:** 2021 FIES vs 2023 poverty vs 2026 LFS?  \n- **Scenario:** baseline or S1/S2/S3 shock?  \n- **Denominator:** percent of what total?  \n\nA spike in \"affected agents\" may be **4,000** people — tragic, but not national collapse.\n\n**Discipline:** if the footer lacks source + assumption, treat the chart as decoration."
+  },
+  {
+    "day": 57,
+    "date": "2026-10-04",
+    "title": "From one household to national — the scale path",
+    "key_stat": "Scale path: household story × weights → regional → national",
+    "tags": [
+      "simulation",
+      "scale"
+    ],
+    "sources": "EIS Bridge aggregation method",
+    "body": "Good analytics moves **up the ladder** with explicit weights:\n\n1. **One household story** — income, earners, dependents  \n2. **Cluster weight** — how many similar HH in FIES/PIDS class  \n3. **Regional weight** — NCR vs Visayas vs BARMM AHS adjustments  \n4. **National total** — sum with PSA population constraint  \n\nSkipping steps produces viral nonsense (\"everyone lost ₱50k\"). Our pipeline never jumps from anecdote to **112.7M** without a weight.\n\n**Merchant use:** your store's top customers are not a national random sample."
+  },
+  {
+    "day": 58,
+    "date": "2026-10-05",
+    "title": "Youth share: 28.9% ages 15–30 — the pipeline generation",
+    "key_stat": "Ages 15–30: 28.9% of household population",
+    "tags": [
+      "demography",
+      "youth"
+    ],
+    "sources": "PSA 2020 CPH age distribution",
+    "body": "Ages **15–30** account for **28.9%** of the 2020 household population — nearly **one in three** Filipinos in the youth-young adult band.\n\nThis is the pipeline from school to first job, from first phone plan to first business loan. Median age **25.3** sits inside this band by design.\n\nYouth unemployment and underemployment rates often exceed national averages — volume does not equal purchasing power.\n\n**Marketing:** win youth with affordability and access; do not assume all **28.9%** are discretionary spenders."
+  },
+  {
+    "day": 59,
+    "date": "2026-10-06",
+    "title": "₱40B sounds huge — until you place it next to ₱23T GDP",
+    "key_stat": "₱40B ≈ 0.17% of ~₱23T nominal GDP (illustrative ratio)",
+    "tags": [
+      "macro",
+      "scale"
+    ],
+    "sources": "PSA national accounts; illustrative ratio",
+    "body": "Headlines love **₱40 billion**. National **nominal GDP** is on the order of **₱23 trillion** annually (recent PSA national accounts magnitudes).\n\n**₱40B ÷ ₱23T ≈ 0.17%** — meaningful for targeted programs, invisible as a one-time blip in aggregate GDP unless repeated or leveraged.\n\nHouseholds and municipalities **feel** ₱40B when it lands as cash; macro dashboards may not twitch.\n\n**Sim lesson:** always place program pesos next to **GDP**, **population**, and **recipient count** — three denominators, three stories."
+  },
+  {
+    "day": 60,
+    "date": "2026-10-07",
+    "title": "Why this 60-day series exists",
+    "key_stat": "60 days · one public-data anchor per day · shared spine for sims + reading",
+    "tags": [
+      "series",
+      "mission"
+    ],
+    "sources": "EIS Bridge Insights PH Findings series",
+    "body": "This series exists because **Filipino market conversation** runs on vibes, screenshots, and mismatched denominators — while PSA, DepEd, and DSWD already publish spine numbers.\n\nSixty days is enough to walk from **112.7M persons** through class clusters, labor, regions, programs, scenarios, and merchant behaviour — without pretending we have secret tax files.\n\nEach article is one **anchor** you can cite in meetings: population, poverty, wages, households, Listahanan vs PSA, what sims can and cannot say.\n\n**Closing takeaway:** better business reading is not more opinions — it is shared weights from public data, refreshed when official tables update. That is the spine we will keep extending after Day 60."
+  }
+]

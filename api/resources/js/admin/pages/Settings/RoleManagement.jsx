@@ -1,5 +1,6 @@
 import { Typography } from 'antd';
 import DataTable from '../../components/DataTable';
+import { PHASE1_MOCK } from '../../config/phase1';
 
 const columns = [
     { title: 'Role', dataIndex: 'role', key: 'role' },
@@ -16,6 +17,11 @@ export default function RoleManagement() {
     return (
         <>
             <Typography.Title level={4}>Role Management</Typography.Title>
+            {PHASE1_MOCK && (
+                <Typography.Paragraph type="secondary">
+                    Roles are currently rendered from the local scaffold until settings APIs are connected.
+                </Typography.Paragraph>
+            )}
             <DataTable columns={columns} dataSource={roles} loading={false} pagination={false} />
         </>
     );

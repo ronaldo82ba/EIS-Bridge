@@ -118,12 +118,17 @@ class MerchantController extends AdminController
         $this->authorize('create', Merchant::class);
 
         $data = $request->validate([
-            'vendor_id'     => ['required', 'exists:vendors,id'],
-            'merchant_code' => ['nullable', 'string', 'max:255'],
-            'name'          => ['required', 'string', 'max:255'],
-            'tin'           => ['required', 'string', 'max:255'],
-            'address'       => ['required', 'string'],
-            'status'        => ['nullable', Rule::in(['active', 'inactive'])],
+            'vendor_id'       => ['required', 'exists:vendors,id'],
+            'merchant_code'   => ['nullable', 'string', 'max:255'],
+            'name'            => ['required', 'string', 'max:255'],
+            'trade_name'      => ['nullable', 'string', 'max:255'],
+            'tin'             => ['required', 'string', 'max:255'],
+            'vat_registered'  => ['nullable', 'boolean'],
+            'rdo_code'        => ['nullable', 'string', 'max:32'],
+            'bir_ack_number'  => ['nullable', 'string', 'max:255'],
+            'bir_ack_date'    => ['nullable', 'date'],
+            'address'         => ['required', 'string'],
+            'status'          => ['nullable', Rule::in(['active', 'inactive'])],
         ]);
 
         if (! AdminScope::belongsToVendor($this->adminUser(), (int) $data['vendor_id'])) {
@@ -146,11 +151,16 @@ class MerchantController extends AdminController
         $this->authorize('update', $merchant);
 
         $data = $request->validate([
-            'name'          => ['sometimes', 'string', 'max:255'],
-            'merchant_code' => ['sometimes', 'string', 'max:255'],
-            'tin'           => ['sometimes', 'string', 'max:255'],
-            'address'       => ['sometimes', 'string'],
-            'status'        => ['sometimes', Rule::in(['active', 'inactive'])],
+            'name'           => ['sometimes', 'string', 'max:255'],
+            'trade_name'     => ['sometimes', 'nullable', 'string', 'max:255'],
+            'merchant_code'  => ['sometimes', 'string', 'max:255'],
+            'tin'            => ['sometimes', 'string', 'max:255'],
+            'vat_registered' => ['sometimes', 'nullable', 'boolean'],
+            'rdo_code'       => ['sometimes', 'nullable', 'string', 'max:32'],
+            'bir_ack_number' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'bir_ack_date'   => ['sometimes', 'nullable', 'date'],
+            'address'        => ['sometimes', 'string'],
+            'status'         => ['sometimes', Rule::in(['active', 'inactive'])],
         ]);
 
         $merchant->update($data);

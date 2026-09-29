@@ -2,10 +2,11 @@ import { Button, DatePicker, Form, Input, Select, Space, Typography } from 'antd
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import DataTable from '../../components/DataTable';
-import JsonViewer from '../../components/JsonViewer';
+import JsonDetailModal from '../../components/JsonDetailModal';
 import Pagination from '../../components/Pagination';
 import { useAuth } from '../../hooks/useAuth';
 import { logService } from '../../services/logService';
+import { hasJsonContent } from '../../utils/tableHelpers';
 
 const { RangePicker } = DatePicker;
 
@@ -14,7 +15,7 @@ export default function AuditLogs() {
     const [filters, setFilters] = useState({});
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(25);
-    const [expanded, setExpanded] = useState(null);
+    const [detail, setDetail] = useState(null);
 
     const { data, isLoading } = useQuery({
         queryKey: ['logs', 'audit', filters, page, perPage],
@@ -38,8 +39,14 @@ export default function AuditLogs() {
             title: 'Changes',
             key: 'changes',
             render: (_, record) =>
-                record.changes ? (
-                    <Typography.Link onClick={() => setExpanded(record.id)}>View</Typography.Link>
+                hasJsonContent(record.changes) ? (
+                    <Typography.Link
+                        onClick={() =>
+                            setDetail({ title: 'Audit changes', data: record.changes })
+                        }
+                    >
+                        View
+                    </Typography.Link>
                 ) : (
                     '—'
                 ),
@@ -66,8 +73,6 @@ export default function AuditLogs() {
         link.click();
         window.URL.revokeObjectURL(url);
     };
-
-    const expandedRow = data?.data?.find((row) => row.id === expanded);
 
     return (
         <>
@@ -122,11 +127,12 @@ export default function AuditLogs() {
                 }}
             />
 
-            {expandedRow && (
-                <div style={{ marginTop: 16 }}>
-                    <JsonViewer data={expandedRow.changes} title="Audit changes" />
-                </div>
-            )}
+            <JsonDetailModal
+                open={!!detail}
+                title={detail?.title}
+                data={detail?.data}
+                onClose={() => setDetail(null)}
+            />
         </>
     );
 }

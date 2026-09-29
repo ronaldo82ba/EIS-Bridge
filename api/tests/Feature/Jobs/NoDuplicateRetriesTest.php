@@ -17,14 +17,16 @@ class NoDuplicateRetriesTest extends TestCase
     {
         $job = new MapInvoiceJob(1);
 
-        $this->assertSame(1, $job->tries);
+        $this->assertGreaterThanOrEqual(3, $job->tries);
+        $this->assertSame([30, 120, 300], $job->backoff);
     }
 
     public function test_sign_invoice_job_has_single_try(): void
     {
         $job = new SignInvoiceJob(1);
 
-        $this->assertSame(1, $job->tries);
+        $this->assertGreaterThanOrEqual(3, $job->tries);
+        $this->assertSame([30, 120, 300], $job->backoff);
     }
 
     public function test_map_invoice_job_does_not_rethrow_after_mark_failed(): void

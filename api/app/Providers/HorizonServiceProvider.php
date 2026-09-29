@@ -12,10 +12,12 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         parent::boot();
 
-        Horizon::routeSlackNotificationsTo(
-            config('services.slack.notifications.channel'),
-            config('services.slack.notifications.bot_user_oauth_token')
-        );
+        $slackChannel = config('services.slack.notifications.channel');
+        $slackToken = config('services.slack.notifications.bot_user_oauth_token');
+
+        if ($slackChannel && $slackToken) {
+            Horizon::routeSlackNotificationsTo($slackChannel, $slackToken);
+        }
     }
 
     protected function gate(): void

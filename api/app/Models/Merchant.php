@@ -13,10 +13,25 @@ class Merchant extends Model
         'vendor_id',
         'merchant_code',
         'name',
+        'trade_name',
         'tin',
+        'vat_registered',
+        'rdo_code',
+        'bir_ack_number',
+        'bir_ack_date',
         'address',
         'status',
+        'prepaid_wallet_balance',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'vat_registered' => 'boolean',
+            'bir_ack_date' => 'date',
+            'prepaid_wallet_balance' => 'decimal:2',
+        ];
+    }
 
     public function vendor(): BelongsTo
     {
@@ -68,6 +83,16 @@ class Merchant extends Model
     public function licenses(): HasMany
     {
         return $this->hasMany(MerchantLicense::class);
+    }
+
+    public function prepaidWalletLedgers(): HasMany
+    {
+        return $this->hasMany(PrepaidWalletLedger::class);
+    }
+
+    public function dailyVolumes(): HasMany
+    {
+        return $this->hasMany(MerchantDailyVolume::class);
     }
 
     public function billingInvoices(): \Illuminate\Database\Eloquent\Relations\MorphMany

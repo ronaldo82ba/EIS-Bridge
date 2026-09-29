@@ -43,6 +43,51 @@ class ProductionSandboxGuardTest extends TestCase
             ->assertJson(['status' => 'up']);
     }
 
+    public function test_health_check_fails_when_production_endpoint_is_empty_and_sandbox_is_disabled(): void
+    {
+        config([
+            'eis.sandbox_mode' => false,
+            'eis.endpoint' => '',
+            'app.debug' => false,
+        ]);
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $response = $this->getJson('/up');
+
+        $response->assertStatus(500)
+            ->assertJson(['status' => 'down']);
+    }
+
+    public function test_health_check_fails_when_production_endpoint_uses_private_host(): void
+    {
+        config([
+            'eis.sandbox_mode' => false,
+            'eis.endpoint' => 'https://127.0.0.1/eis',
+            'app.debug' => false,
+        ]);
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $response = $this->getJson('/up');
+
+        $response->assertStatus(500)
+            ->assertJson(['status' => 'down']);
+    }
+
+    public function test_health_check_allows_empty_endpoint_in_non_production_when_sandbox_disabled(): void
+    {
+        config([
+            'eis.sandbox_mode' => false,
+            'eis.endpoint' => '',
+            'app.debug' => false,
+        ]);
+        $this->app->detectEnvironment(fn () => 'staging');
+
+        $response = $this->getJson('/up');
+
+        $response->assertOk()
+            ->assertJson(['status' => 'up']);
+    }
+
     public function test_diagnosing_health_event_triggers_sandbox_guard(): void
     {
         config(['eis.sandbox_mode' => true]);
@@ -52,5 +97,30 @@ class ProductionSandboxGuardTest extends TestCase
         $this->expectExceptionMessage('EIS sandbox mode');
 
         Event::dispatch(new DiagnosingHealth);
+    }
+
+    public function test_guard_trusts_live_env_file_when_config_cache_still_says_production(): void
+    {
+        config([
+            'eis.sandbox_mode' => true,
+            'app.debug' => false,
+        ]);
+
+        $envPath = $this->app->environmentFilePath();
+        $original = file_get_contents($envPath);
+
+        try {
+            file_put_contents($envPath, "APP_ENV=production\nEIS_SANDBOX_MODE=true\n");
+            $this->artisan('config:cache');
+
+            // Forge corrected .env to staging but deploy has not re-cached config yet.
+            file_put_contents($envPath, "APP_ENV=staging\nEIS_SANDBOX_MODE=true\n");
+
+            $response = $this->getJson('/up');
+            $response->assertOk()->assertJson(['status' => 'up']);
+        } finally {
+            file_put_contents($envPath, $original);
+            $this->artisan('config:clear');
+        }
     }
 }

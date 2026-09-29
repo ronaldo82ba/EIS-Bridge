@@ -40,11 +40,24 @@ class PosToBirMapper
 
         $this->validator->validate($pos);
 
-        $merchant = Merchant::where('merchant_code', $pos['merchant_code'])->first();
-        $branch = $merchant
+        if ($input instanceof Invoice) {
+            $merchant = $input->resolveMerchant();
+            $branch = $input->branch_id
+                ? Branch::find($input->branch_id)
+                : null;
+            $device = $input->device_id
+                ? Device::find($input->device_id)
+                : null;
+        } else {
+            $merchant = Merchant::where('merchant_code', $pos['merchant_code'])->first();
+            $branch = null;
+            $device = null;
+        }
+
+        $branch ??= $merchant
             ? Branch::where('merchant_id', $merchant->id)->where('branch_code', $pos['branch_code'])->first()
             : null;
-        $device = $branch
+        $device ??= $branch
             ? Device::where('branch_id', $branch->id)->where('pos_device_id', $pos['pos_device_id'])->first()
             : null;
         $ptt = $merchant?->ptt;
@@ -60,11 +73,18 @@ class PosToBirMapper
             'transaction_id' => (string) $pos['transaction_id'],
             'transaction_datetime' => $transactionDatetime,
             'currency' => strtoupper((string) ($pos['currency'] ?? 'PHP')),
+            // Company/CAS fields are for EIS-ready JSON only (print face stays in CodeBooks).
+            // BIR-spec nesting for ack fields is not confirmed in-repo; carried under merchant.
             'merchant' => [
                 'code' => (string) $pos['merchant_code'],
                 'name' => $merchant?->name,
+                'trade_name' => $merchant?->trade_name,
                 'tin' => $merchant?->tin,
+                'vat_registered' => $merchant?->vat_registered,
+                'rdo_code' => $merchant?->rdo_code,
                 'address' => $merchant?->address,
+                'bir_ack_number' => $merchant?->bir_ack_number,
+                'bir_ack_date' => $merchant?->bir_ack_date?->toDateString(),
             ],
             'branch' => [
                 'code' => (string) $pos['branch_code'],

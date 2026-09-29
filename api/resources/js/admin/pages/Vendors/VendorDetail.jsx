@@ -10,8 +10,19 @@ import { vendorService } from '../../services/vendorService';
 const inputClass =
     'w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500';
 
+function hasUsableVendorId(value) {
+    if (value === undefined || value === null) {
+        return false;
+    }
+
+    const normalized = String(value).trim().toLowerCase();
+
+    return normalized !== '' && normalized !== 'undefined' && normalized !== 'null';
+}
+
 export default function VendorDetail() {
     const { id: vendorId } = useParams();
+    const hasVendorId = hasUsableVendorId(vendorId);
     const queryClient = useQueryClient();
     const [webhook, setWebhook] = useState({ url: '', secret: '' });
     const [showKey, setShowKey] = useState(false);
@@ -20,7 +31,7 @@ export default function VendorDetail() {
     const { data: vendor, isLoading, isError } = useQuery({
         queryKey: ['vendors', vendorId],
         queryFn: async () => (await vendorService.get(vendorId)).data?.data,
-        enabled: Boolean(vendorId),
+        enabled: hasVendorId,
     });
 
     useEffect(() => {
@@ -61,6 +72,14 @@ export default function VendorDetail() {
 
     if (isLoading) {
         return <div className="text-sm text-slate-500">Loading…</div>;
+    }
+
+    if (!hasVendorId) {
+        return (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                Vendor ID is missing. <Link to="/vendors" className="font-medium underline">Back to vendors</Link>
+            </div>
+        );
     }
 
     if (isError || !vendor) {

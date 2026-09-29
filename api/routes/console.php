@@ -8,22 +8,28 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+$schedulerLog = storage_path('logs/scheduler.log');
+
 Schedule::command('observability:check')
     ->everyTenMinutes()
     ->withoutOverlapping()
-    ->runInBackground();
+    ->runInBackground()
+    ->appendOutputTo($schedulerLog);
 
 Schedule::command('queues:broadcast')
     ->everyThirtySeconds()
     ->withoutOverlapping()
-    ->runInBackground();
+    ->runInBackground()
+    ->appendOutputTo($schedulerLog);
 
 Schedule::command('licenses:check-renewals')
     ->daily()
     ->withoutOverlapping()
-    ->runInBackground();
+    ->runInBackground()
+    ->appendOutputTo($schedulerLog);
 
 Schedule::command('certificates:scan-expiry')
     ->dailyAt('01:00')
     ->withoutOverlapping()
-    ->runInBackground();
+    ->runInBackground()
+    ->appendOutputTo($schedulerLog);

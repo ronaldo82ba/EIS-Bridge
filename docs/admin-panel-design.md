@@ -2,7 +2,7 @@
 
 > **Audience:** Frontend developers building the EIS Bridge Console (admin panel).  
 > **Backend:** Laravel 13 app in `api/`.  
-> **Status:** Design only — no implementation in this document.
+> **Status:** Reference design and architecture baseline.
 
 ---
 
@@ -10,7 +10,7 @@
 
 EIS Bridge today is a **vendor-facing JSON API** (`/v1/*`) backed by a Laravel application with a mature domain model for vendors, merchants, branches, devices, invoices, and transmission logs. Transaction ingestion (`POST /v1/transactions`), status queries, listing, and webhook configuration are implemented. Authentication for the public API is **vendor API key** (`Authorization: Bearer {api_key}`) via `ApiKeyMiddleware` — not session or token auth for humans.
 
-There is **no admin panel, no admin API routes, no RBAC, and no SPA frontend** yet. The `users` table exists with standard Laravel auth fields (`name`, `email`, `password`) but has no `role` or `vendor_id` linkage. Several fields referenced in the product spec (vendor `status`, merchant `tin`/`address`, device `status`, certificates, PTT, audit logs, webhook delivery history) **do not exist in migrations** and must be added before the corresponding screens can be fully wired.
+The admin console and admin API routes are now present in the Laravel app and React SPA. This document remains a structural reference for route/feature mapping and phased enhancements.
 
 The admin panel ("EIS Bridge Console") is the **command center** for platform operators: onboarding vendors, managing merchant hierarchy, monitoring invoice pipeline health, inspecting EIS transmission logs, operating queue/failed jobs, and administering certificates/PTT. The static HTML **Developer Portal** in `portal/` serves external POS integrators — it is separate from the admin console and should remain so. The admin SPA will be a new application served from Laravel via Vite (or a dedicated `admin/` Vite entry), consuming new `/admin/*` JSON endpoints protected by **Laravel Sanctum** and role-based policies.
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,6 +38,27 @@ class Invoice extends Model
     public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class, 'merchant_code', 'merchant_code');
+    }
+
+    public function resolveMerchant(): ?Merchant
+    {
+        return $this->merchant ?: Merchant::query()
+            ->where('merchant_code', $this->merchant_code)
+            ->first();
+    }
+
+    public function resolveVendor(): ?Vendor
+    {
+        return $this->resolveMerchant()?->vendor;
+    }
+
+    public function scopeForVendor(Builder $query, Vendor|int $vendor): Builder
+    {
+        $vendorId = $vendor instanceof Vendor ? $vendor->id : $vendor;
+
+        return $query->whereIn('merchant_code', Merchant::query()
+            ->select('merchant_code')
+            ->where('vendor_id', $vendorId));
     }
 
     public function webhookDeliveries(): HasMany
