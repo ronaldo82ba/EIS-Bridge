@@ -805,16 +805,24 @@ html.media-ready main > .cta-panel {
 
 .partner-logos__item {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.7rem;
-  min-height: 3.5rem;
-  padding: 0.65rem 1.15rem;
-  border-radius: 999px;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 4.35rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 1rem;
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
   text-decoration: none;
   transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
+}
+
+.partner-logos__brand-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
 }
 
 .partner-logos__item:hover {
@@ -866,6 +874,10 @@ html[data-theme="dark"] .partner-logos__logo--codebooks {
   filter: brightness(0) invert(1);
 }
 
+html[data-theme="dark"] .partner-logos__logo--globalshoppe {
+  filter: brightness(0) invert(1);
+}
+
 .partner-logos__name {
   font-family: var(--font-display);
   font-size: 1.0625rem;
@@ -875,6 +887,17 @@ html[data-theme="dark"] .partner-logos__logo--codebooks {
   line-height: 1.1;
 }
 
+.partner-logos__role {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+  text-align: center;
+}
+
 .partner-logos__row--footer {
   justify-content: flex-start;
   gap: 0.5rem 0.65rem;
@@ -882,11 +905,21 @@ html[data-theme="dark"] .partner-logos__logo--codebooks {
 }
 
 .partner-logos__item--compact {
+  flex-direction: row;
   min-height: 2.5rem;
   padding: 0.4rem 0.8rem;
+  border-radius: 999px;
   background: color-mix(in oklab, var(--on-panel) 8%, transparent);
   border-color: color-mix(in oklab, var(--on-panel) 18%, transparent);
   color: var(--on-panel);
+}
+
+.partner-logos__item--compact .partner-logos__brand-row {
+  gap: 0.45rem;
+}
+
+.partner-logos__item--compact .partner-logos__role {
+  display: none;
 }
 
 .partner-logos__item--compact .partner-logos__logo {

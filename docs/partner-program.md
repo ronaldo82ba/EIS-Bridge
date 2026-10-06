@@ -57,6 +57,17 @@ Full API reference: [vendor-api.md](vendor-api.md) · Quick start: [pos-develope
 
 ---
 
+## Ownership and channel
+
+| Role | Party |
+|------|--------|
+| **System owner** | **GlobalShoppe** — owns EIS Bridge&trade; |
+| **National distributor** | **WebShoppe** |
+| **Connectable CAS 1** | **GlobalShoppe Celsura** — from GlobalShoppe (system owner); pairs as GlobalShoppe Celsura + EIS Bridge&trade; |
+| **Connectable CAS 2** | **CodeBooks** — from WebShoppe (national distributor); pairs as CodeBooks / CodeBooks Lite + EIS Bridge&trade; |
+
+---
+
 ## Partner economics (Vendor Edition)
 
 Pricing is structured for POS vendor channel economics — a core platform license plus per-merchant activation fees as you roll out across your install base.
@@ -68,10 +79,10 @@ Pricing is structured for POS vendor channel economics — a core platform licen
 | **EIS Bridge Lite (prepaid)** | **₱17,000** setup + **₱1**/upload | Prepaid wallet; not the same SKU as CodeBooks Lite bundle |
 | **Postpaid Standard** | **₱1,500**/mo | ≤800 e-invoices/day (Asia/Manila); after store activation |
 | **Postpaid High volume** | **₱2,500**/mo | Up to 3,000 e-invoices/day (Asia/Manila); after store activation |
-| **CodeBooks Lite + EIS Bridge Bundle** | **₱35,000** regular · **₱15,000** promo | SI/OR + lite books + EIS Bridge. First 100 takers at promo |
-| **CodeBooks + EIS Bridge Bundle** | **₱65,000** | Invoice-first path for businesses without POS/CAS yet |
-| **CodeBooks alone** | **₱35,000** | Principal SI/OR source only; no EIS Bridge transmission |
-| **GlobalShoppe Celsura + EIS Bridge Bundle Enterprise** | **₱150,000** regular · **₱75,000** promo | Launch 15 September 2026; first 100 takers at promo |
+| **CodeBooks Lite + EIS Bridge Bundle** | **₱35,000** regular · **₱15,000** promo | Connectable CAS from WebShoppe. SI/OR + lite books + EIS Bridge. First 100 takers at promo |
+| **CodeBooks + EIS Bridge Bundle** | **₱65,000** | Connectable CAS from WebShoppe. Invoice-first path for businesses without POS/CAS yet |
+| **CodeBooks alone** | **₱35,000** | WebShoppe CAS without EIS Bridge transmission |
+| **GlobalShoppe Celsura + EIS Bridge Bundle Enterprise** | **₱150,000** regular · **₱75,000** promo | Connectable CAS from GlobalShoppe (system owner). Launch 15 September 2026; first 100 takers at promo |
 | **Monthly hosting** (optional) | Per agreement | Managed infrastructure for vendors who prefer not to self-host |
 
 Contact [support@eisbridge.ph](mailto:support@eisbridge.ph) for a Vendor Edition, merchant, or CodeBooks quote.
